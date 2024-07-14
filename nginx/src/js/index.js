@@ -1,4 +1,4 @@
-fetch(new Request("django:8000/"))
+fetch(new Request("https://loalhost:8000/"))
 	.then(r => r.text())
 	.then(r => console.log(r))
 	.catch(e => console.error(e));
