@@ -11,17 +11,20 @@ services:
       - network
     volumes:
       - django-src:/app
+      - staticfiles:/app/static
 
   nginx:
     container_name: nginx
     build: nginx
     ports:
-      - 8080:80
+      - 80:80
     init: true
     networks:
       - network
     volumes:
-      - nginx-src:/usr/share/nginx
+      - staticfiles:/usr/share/nginx
+    depends_on:
+      - django
 
 networks:
   network:
@@ -35,9 +38,9 @@ volumes:
       type: 'none'
       o: 'bind'
       device: ./django/src
-  nginx-src:
+  staticfiles:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: ./nginx/src
+      device: ./static
