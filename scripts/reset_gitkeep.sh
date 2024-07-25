@@ -1,9 +1,9 @@
 #!/bin/sh
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-DATA_DIR=$SCRIPT_DIR/../data
-STATIC_DIR=$SCRIPT_DIR/../django/src/static
-MEDIA_DIR=$SCRIPT_DIR/../django/src/media
+DATA_DIR=$SCRIPT_DIR/../temp/data
+STATIC_DIR=$SCRIPT_DIR/../temp/static
+MEDIA_DIR=$SCRIPT_DIR/../temp/media
 
 echo "Creating .gitkeep in data folder"
 touch $DATA_DIR/.gitkeep

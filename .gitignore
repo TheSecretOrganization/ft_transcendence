@@ -1,11 +1,7 @@
 # Project specific files
 .env
-data/*
-!data/.gitkeep
-django/src/static/*
-!django/src/static/.gitkeep
-django/src/media/*
-!django/src/media/.gitkeep
+temp/*/*
+!temp/*/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
