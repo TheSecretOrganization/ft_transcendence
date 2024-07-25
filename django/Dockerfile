@@ -1,15 +1,20 @@
 FROM python:3.12.4-slim
 
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y netcat-openbsd && apt-get clean
+
+ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /app
-EXPOSE 8000
-VOLUME [ "/app" ]
-
-COPY conf/requirements.txt /app/
+RUN pip install --upgrade pip
+COPY conf/requirements.txt .
 RUN pip install -r requirements.txt
 
-# RUN python manage.py migrate
-# RUN python manage.py createsuperuser
+COPY conf/entrypoint.sh /entrypoint.sh
+RUN chmod a+x /entrypoint.sh
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+COPY conf/gunicorn.conf.py .
+
+
+ENTRYPOINT ["sh", "/entrypoint.sh"]

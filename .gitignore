@@ -1,6 +1,7 @@
 # Project specific files
 .env
 data
+django/src/static
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
