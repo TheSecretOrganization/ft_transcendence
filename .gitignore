@@ -2,10 +2,10 @@
 .env
 data/*
 !data/.gitkeep
-static/*
-!static/.gitkeep
-media/*
-!media/.gitkeep
+django/src/static/*
+!django/src/static/.gitkeep
+django/src/media/*
+!django/src/media/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
