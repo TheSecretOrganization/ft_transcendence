@@ -1,22 +1,22 @@
 name: ft
 
 services:
-  django:
-    container_name: django
-    build: django
-    ports:
-      - 8000:8000
-    init: true
-    networks:
-      - network
-    volumes:
-      - django-src:/app
+  # django:
+  #   container_name: django
+  #   build: django
+  #   ports:
+  #     - 8000:8000
+  #   init: true
+  #   networks:
+  #     - network
+  #   volumes:
+  #     - django-src:/app
 
   nginx:
     container_name: nginx
     build: nginx
     ports:
-      - 8080:80
+      - 80:80
     init: true
     networks:
       - network
