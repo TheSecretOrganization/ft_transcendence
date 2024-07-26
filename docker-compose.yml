@@ -1,16 +1,20 @@
 name: ft
 
 services:
-  # django:
-  #   container_name: django
-  #   build: django
-  #   ports:
-  #     - 8000:8000
-  #   init: true
-  #   networks:
-  #     - network
-  #   volumes:
-  #     - django-src:/app
+  django:
+    container_name: django
+    build: django
+    expose:
+      - 8000
+    init: true
+    networks:
+      - network
+    volumes:
+      - django-src:/app
+      - /static:/static
+      - /media:/media
+    env_file:
+      - .env
 
   nginx:
     container_name: nginx
@@ -22,6 +26,10 @@ services:
       - network
     volumes:
       - nginx-src:/usr/share/nginx
+      - /static:/static
+      - /media:/media
+    depends_on:
+      - django
 
 networks:
   network:
