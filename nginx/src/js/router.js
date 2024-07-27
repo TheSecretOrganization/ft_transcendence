@@ -5,51 +5,44 @@ const route = (event) => {
     handleLocation();
 };
 
-// Route definitions
-const routes = {
-    404: { url: "pages/404.html", title: "Page Not Found" },
-    "/": { url: "pages/index.html", title: "Home" },
-    "/about": { url: "pages/about.html", title: "About" },
-    "/test": { url: "pages/test.html", title: "Test" },
-};
-
-// Page cache to store fetched pages
-const pageCache = {};
-
 // Fetch page content with caching
-const fetchPage = async (url) => {
-    if (pageCache[url]) {
-        return pageCache[url];
-    }
-
-    const response = await fetch(url);
+const fetchPage = async (pageName) => {
+    const response = await fetch(`/api/fetch-page/${pageName}/`);
     if (!response.ok) {
-        console.error(`Failed to fetch ${url}: ${response.statusText}`);
+        console.error(`Failed to fetch ${pageName}: ${response.statusText}`);
         return null;
     }
-    const text = await response.text();
-    pageCache[url] = text;
-    return text;
+    const data = await response.json();
+    if (data.error) {
+        console.error(`Failed to fetch ${pageName}: ${data.error}`);
+        return null;
+    }
+    return data.html;
 };
 
 // Handle location changes
 const handleLocation = async () => {
     let path = window.location.pathname;
-
-    let route = routes[path];
-    if (!route) {
-        route = routes[404];
-        path = "404";
-    }
-
-    let html = await fetchPage(route.url);
+    let pageName = path === '/' ? 'index' : path.substring(1);
+    let html = await fetchPage(pageName);
     if (html === null) {
-        html = await fetchPage(routes[404].url);
-        path = "404";
+        html = await fetchPage('404');
     }
 
     document.getElementById("page").innerHTML = html;
-    document.title = routes[path].title;
+    updateTitle(pageName);
+};
+
+// Update the document title based on the path
+const updateTitle = (pageName) => {
+    const titles = {
+        "index": "Home",
+        "about": "About",
+        "test": "Test",
+        "404": "Page Not Found"
+    };
+    const title = titles[pageName] || "Page Not Found";
+    document.title = title;
 };
 
 // Initialize routing

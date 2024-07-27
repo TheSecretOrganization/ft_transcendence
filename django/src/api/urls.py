@@ -1,6 +1,6 @@
 from django.urls import path
-from . import views
+from .views import FetchPageView
 
 urlpatterns = [
-    path('example/', views.ExampleView.as_view(), name='example'),
+    path('fetch-page/<str:page_name>/', FetchPageView.as_view(), name='fetch_page'),
 ]
