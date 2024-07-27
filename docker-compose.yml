@@ -11,8 +11,8 @@ services:
       - network
     volumes:
       - django-src:/app
-      - /static:/static
-      - /media:/media
+      - static-files:/static
+      - media-files:/media
     env_file:
       - .env
 
@@ -26,8 +26,8 @@ services:
       - network
     volumes:
       - nginx-src:/usr/share/nginx
-      - /static:/static
-      - /media:/media
+      - static-files:/static
+      - media-files:/media
     depends_on:
       - django
 
@@ -49,3 +49,15 @@ volumes:
       type: 'none'
       o: 'bind'
       device: ./nginx/src
+  static-files:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ./tmp/static
+  media-files:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ./tmp/media
