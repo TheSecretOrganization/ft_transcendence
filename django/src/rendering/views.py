@@ -5,10 +5,10 @@ from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import PageSerializer
 
-class FetchPageView(APIView):
+class PagesView(APIView):
     def get(self, request, page_name):
         try:
-            html_content = render_to_string(f'pages/{page_name}.html')
+            html_content = render_to_string(f'{page_name}.html')
             serializer = PageSerializer(data={'html': html_content})
             if serializer.is_valid():
                 return Response(serializer.data)

@@ -7,7 +7,7 @@ const route = (event) => {
 
 // Fetch page content with caching
 const fetchPage = async (pageName) => {
-    const response = await fetch(`/api/fetch-page/${pageName}/`);
+    const response = await fetch(`/api/pages/${pageName}/`);
     if (!response.ok) {
         console.error(`Failed to fetch ${pageName}: ${response.statusText}`);
         return null;
