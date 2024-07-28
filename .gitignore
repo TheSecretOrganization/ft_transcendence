@@ -1,7 +1,5 @@
 # Project special files
 .DS_Store
-tmp/*/*
-!tmp/*/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
