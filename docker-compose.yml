@@ -51,13 +51,5 @@ volumes:
       device: ./nginx/src
   static-files:
     driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: ./tmp/static
   media-files:
     driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: ./tmp/media
