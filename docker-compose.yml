@@ -1,0 +1,55 @@
+name: ft
+
+services:
+  django:
+    container_name: django
+    build: django
+    expose:
+      - 8000
+    init: true
+    networks:
+      - network
+    volumes:
+      - django-src:/app
+      - static-files:/static
+      - media-files:/media
+    env_file:
+      - .env
+
+  nginx:
+    container_name: nginx
+    build: nginx
+    ports:
+      - 8080:80
+    init: true
+    networks:
+      - network
+    volumes:
+      - nginx-src:/usr/share/nginx
+      - static-files:/static
+      - media-files:/media
+    depends_on:
+      - django
+
+networks:
+  network:
+    name: network
+    driver: bridge
+
+volumes:
+  django-src:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ./django/src
+  nginx-src:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ./nginx/src
+  static-files:
+    driver: local
+  media-files:
+    driver: local
