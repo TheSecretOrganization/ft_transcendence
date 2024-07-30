@@ -1,0 +1,26 @@
+Table users {
+  id integer [primary key]
+  username varchar
+  created_at timestamp
+}
+
+Table auth_method {
+  user integer [primary key, ref: <users.id]
+  method method
+}
+
+enum method {
+  password
+  ft
+}
+
+Table password {
+  user integer [primary key, ref: <users.id]
+  password string
+}
+
+Table ft {
+  user integer [primary key, ref: <users.id]
+  ft_id integer [unique]
+  token string [note: 'necessary?']
+}
