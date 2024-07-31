@@ -37,8 +37,7 @@ const handleLocation = async () => {
 const updateTitle = (pageName) => {
     const titles = {
         "index": "Home",
-        "about": "About",
-        "test": "Test",
+        "pong": "Pong",
         "404": "Page Not Found"
     };
     const title = titles[pageName] || "Page Not Found";
