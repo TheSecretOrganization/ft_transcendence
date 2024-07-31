@@ -4,16 +4,6 @@ Table users {
   created_at timestamp
 }
 
-Table auth_method {
-  user integer [primary key, ref: <users.id]
-  method method
-}
-
-enum method {
-  password
-  ft
-}
-
 Table password {
   user integer [primary key, ref: <users.id]
   password string
