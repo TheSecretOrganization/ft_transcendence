@@ -20,6 +20,24 @@ const fetchPage = async (pageName) => {
     return data.html;
 };
 
+// Handle new scripts
+const loadScripts = (html) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    const scripts = tempDiv.querySelectorAll('script');
+    scripts.forEach(script => {
+        const newScript = document.createElement('script');
+        if (script.src) {
+            newScript.src = script.src;
+        } else {
+            newScript.textContent = script.textContent;
+        }
+        document.body.appendChild(newScript);
+        document.body.removeChild(newScript);
+    });
+    return tempDiv.innerHTML;
+};
+
 // Handle location changes
 const handleLocation = async () => {
     let path = window.location.pathname;
@@ -29,6 +47,7 @@ const handleLocation = async () => {
         html = await fetchPage('404');
     }
 
+    html = loadScripts(html); // Load any scripts in the HTML
     document.getElementById("page").innerHTML = html;
     updateTitle(pageName);
 };
