@@ -1,11 +1,9 @@
-// Route handler
 const route = (event) => {
     event.preventDefault();
     window.history.pushState({}, "", event.target.href);
     handleLocation();
 };
 
-// Fetch page content with caching
 const fetchPage = async (pageName) => {
     const response = await fetch(`/api/pages/${pageName}/`);
     if (!response.ok) {
@@ -20,11 +18,10 @@ const fetchPage = async (pageName) => {
     return data.html;
 };
 
-// Handle new scripts
-const loadScripts = (html) => {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
-    const scripts = tempDiv.querySelectorAll('script');
+const loadScripts = () => {
+    const container = document.getElementById("page");
+    const scripts = container.querySelectorAll('script');
+
     scripts.forEach(script => {
         const newScript = document.createElement('script');
         if (script.src) {
@@ -35,10 +32,8 @@ const loadScripts = (html) => {
         document.body.appendChild(newScript);
         document.body.removeChild(newScript);
     });
-    return tempDiv.innerHTML;
 };
 
-// Handle location changes
 const handleLocation = async () => {
     let path = window.location.pathname;
     let pageName = path === '/' ? 'index' : path.substring(1);
@@ -47,12 +42,11 @@ const handleLocation = async () => {
         html = await fetchPage('404');
     }
 
-    html = loadScripts(html); // Load any scripts in the HTML
     document.getElementById("page").innerHTML = html;
+    loadScripts();
     updateTitle(pageName);
 };
 
-// Update the document title based on the path
 const updateTitle = (pageName) => {
     const titles = {
         "index": "Home",
@@ -63,13 +57,11 @@ const updateTitle = (pageName) => {
     document.title = title;
 };
 
-// Initialize routing
 document.addEventListener("DOMContentLoaded", () => {
     window.onpopstate = handleLocation;
     window.route = route;
     handleLocation();
 
-    // Event delegation for links
     document.addEventListener("click", (event) => {
         if (event.target.matches("a[data-route]")) {
             route(event);
