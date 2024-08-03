@@ -1,10 +1,10 @@
-const route = (event) => {
+function route(event) {
     event.preventDefault();
     window.history.pushState({}, "", event.target.href);
     handleLocation();
 };
 
-const fetchPage = async (pageName) => {
+async function fetchPage(pageName) {
     const response = await fetch(`/api/pages/${pageName}/`);
     if (!response.ok) {
         console.error(`Failed to fetch ${pageName}: ${response.statusText}`);
@@ -18,7 +18,7 @@ const fetchPage = async (pageName) => {
     return data.html;
 };
 
-const loadScripts = () => {
+function loadScripts() {
     const container = document.getElementById("page");
     const scripts = container.querySelectorAll('script');
 
@@ -34,7 +34,7 @@ const loadScripts = () => {
     });
 };
 
-const handleLocation = async () => {
+async function handleLocation() {
     let path = window.location.pathname;
     let pageName = path === '/' ? 'index' : path.substring(1);
     let html = await fetchPage(pageName);
@@ -47,7 +47,7 @@ const handleLocation = async () => {
     updateTitle(pageName);
 };
 
-const updateTitle = (pageName) => {
+function updateTitle(pageName) {
     const titles = {
         "index": "Home",
         "pong": "Pong",
