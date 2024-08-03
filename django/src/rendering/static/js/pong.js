@@ -1,4 +1,4 @@
-var Pong = (function() {
+var Pong = (function () {
     const canvas = document.getElementById("pongCanvas");
     const context = canvas.getContext("2d");
     const paddleWidth = 10;
@@ -7,12 +7,16 @@ var Pong = (function() {
     const ballRadius = 10;
     const ballBaseSpeed = 5;
     const colorFill = "white";
+    const scoreFill = "white";
+    const scoreFont = "20px Arial";
+    let lastPointWonByLeft = false;
 
     class Paddle {
         constructor(x, y) {
             this.x = x;
             this.y = y;
             this.move = 0;
+            this.score = 0;
         }
 
         updatePosition() {
@@ -27,20 +31,24 @@ var Pong = (function() {
     }
 
     class Ball {
-        constructor(x, y, speedX, speedY) {
+        constructor(x, y) {
             this.x = x;
             this.y = y;
             this.speed = {
-                x: speedX,
-                y: speedY,
+                x: this.randomSpeed(),
+                y: this.randomSpeed(),
             };
+        }
+
+        randomSpeed() {
+            return (Math.floor(Math.random() * 10) % 2) ? ballBaseSpeed : -ballBaseSpeed;
         }
 
         reset() {
             this.x = canvas.width / 2;
             this.y = canvas.height / 2;
-            this.speed.x = ballBaseSpeed;
-            this.speed.y = ballBaseSpeed;
+            this.speed.x = (lastPointWonByLeft) ? ballBaseSpeed : -ballBaseSpeed;
+            this.speed.y = this.randomSpeed();
         }
 
         updatePosition() {
@@ -72,7 +80,14 @@ var Pong = (function() {
         }
 
         checkOutOfBounds() {
-            if (this.x - ballRadius < 0 || this.x + ballRadius > canvas.width) {
+            if (this.x - ballRadius < 0) {
+                rightPaddle.score++;
+                lastPointWonByLeft = false;
+                this.reset();
+            }
+            else if (this.x + ballRadius > canvas.width) {
+                leftPaddle.score++;
+                lastPointWonByLeft = true;
                 this.reset();
             }
         }
@@ -86,9 +101,9 @@ var Pong = (function() {
         }
     }
 
-    const playerPaddle = new Paddle(0, canvas.height / 2 - paddleHeight / 2);
-    const aiPaddle = new Paddle(canvas.width - paddleWidth, canvas.height / 2 - paddleHeight / 2);
-    const ball = new Ball(canvas.width / 2, canvas.height / 2, ballBaseSpeed, ballBaseSpeed);
+    const rightPaddle = new Paddle(0, canvas.height / 2 - paddleHeight / 2);
+    const leftPaddle = new Paddle(canvas.width - paddleWidth, canvas.height / 2 - paddleHeight / 2);
+    const ball = new Ball(canvas.width / 2, canvas.height / 2);
 
     function listenPlayerInput(input, speed = 0) {
         document.addEventListener(input, function (e) {
@@ -96,41 +111,49 @@ var Pong = (function() {
                 case "w":
                 case "W":
                 case "ArrowUp":
-                    playerPaddle.move = -speed;
+                    rightPaddle.move = -speed;
                     break;
                 case "s":
                 case "S":
                 case "ArrowDown":
-                    playerPaddle.move = speed;
+                    rightPaddle.move = speed;
                     break;
             }
         });
     }
 
     function handleAi() {
-        if (ball.y < aiPaddle.y + paddleHeight / 2) {
-            aiPaddle.y -= paddleSpeed;
+        if (ball.y < leftPaddle.y + paddleHeight / 2) {
+            leftPaddle.y -= paddleSpeed;
         } else {
-            aiPaddle.y += paddleSpeed;
+            leftPaddle.y += paddleSpeed;
         }
 
-        aiPaddle.y = Math.max(0, Math.min(aiPaddle.y, canvas.height - paddleHeight));
+        leftPaddle.y = Math.max(0, Math.min(leftPaddle.y, canvas.height - paddleHeight));
     }
 
     function updateGame() {
-        playerPaddle.updatePosition();
+        rightPaddle.updatePosition();
         ball.updatePosition();
-        ball.checkLeftPaddleCollision(playerPaddle);
-        ball.checkRightPaddleCollision(aiPaddle);
+        ball.checkLeftPaddleCollision(rightPaddle);
+        ball.checkRightPaddleCollision(leftPaddle);
         ball.checkOutOfBounds();
         handleAi();
     }
 
+    function drawPoints() {
+        context.fillStyle = scoreFill;
+        context.font = scoreFont;
+        context.fillText(`Player: ${leftPaddle.score}`, 20, 20);
+        context.fillText(`AI: ${rightPaddle.score}`, canvas.width - 80, 20);
+    }
+
     function drawGame() {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        playerPaddle.draw();
-        aiPaddle.draw();
+        rightPaddle.draw();
+        leftPaddle.draw();
         ball.draw();
+        drawPoints();
     }
 
     function gameLoop() {
@@ -140,7 +163,7 @@ var Pong = (function() {
     }
 
     return {
-        init: function() {
+        init: function () {
             listenPlayerInput("keydown", paddleSpeed);
             listenPlayerInput("keyup");
             gameLoop();
