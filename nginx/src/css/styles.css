@@ -41,4 +41,15 @@
 .game-canvas {
     background-color: black;
     border: 3px solid lightskyblue;
+    display: none;
+}
+
+.startBtn {
+    padding: 15px;
+    display: block;
+}
+
+#backBtn {
+    padding: 15px;
+    display: none;
 }

@@ -1,5 +1,5 @@
 var Pong = (function () {
-    const canvas = document.getElementById("pongCanvas");
+    const canvas = document.getElementById("gameCanvas");
     const context = canvas.getContext("2d");
     const paddleWidth = 10;
     const paddleHeight = 100;
@@ -9,7 +9,11 @@ var Pong = (function () {
     const colorFill = "white";
     const scoreFill = "white";
     const scoreFont = "20px Arial";
+    const initRX = 0;
+    const initLX = canvas.width - paddleWidth;
+    const initY = canvas.height / 2 - paddleHeight / 2;
     let lastPointWonByLeft = false;
+    let animationFrameId;
 
     class Paddle {
         constructor(x, y) {
@@ -28,27 +32,38 @@ var Pong = (function () {
             context.fillStyle = colorFill;
             context.fillRect(this.x, this.y, paddleWidth, paddleHeight);
         }
+
+        reset(x, y) {
+            this.x = x;
+            this.y = y;
+            this.move = 0;
+            this.score = 0;
+        }
     }
 
     class Ball {
         constructor(x, y) {
-            this.x = x;
-            this.y = y;
+            this.x = canvas.width / 2;
+            this.y = canvas.height / 2;
             this.speed = {
-                x: this.randomSpeed(),
-                y: this.randomSpeed(),
+                x: this.randomDirection(),
+                y: this.randomDirection(),
             };
         }
 
-        randomSpeed() {
+        randomDirection() {
             return (Math.floor(Math.random() * 10) % 2) ? ballBaseSpeed : -ballBaseSpeed;
         }
 
-        reset() {
+        reset(fullReset = false) {
             this.x = canvas.width / 2;
             this.y = canvas.height / 2;
-            this.speed.x = (lastPointWonByLeft) ? ballBaseSpeed : -ballBaseSpeed;
-            this.speed.y = this.randomSpeed();
+            if (fullReset) {
+                this.speed.x = this.randomDirection();
+            } else {
+                this.speed.x = (lastPointWonByLeft) ? -ballBaseSpeed : ballBaseSpeed;
+            }
+            this.speed.y = this.randomDirection();
         }
 
         updatePosition() {
@@ -68,6 +83,7 @@ var Pong = (function () {
                 this.y > paddle.y &&
                 this.y < paddle.y + paddleHeight) {
                 this.speed.x = -this.speed.x;
+                this.speed.y += paddle.move * 0.5;
             }
         }
 
@@ -76,6 +92,7 @@ var Pong = (function () {
                 this.y > paddle.y &&
                 this.y < paddle.y + paddleHeight) {
                 this.speed.x = -this.speed.x;
+                this.speed.y += paddle.move * 0.5;
             }
         }
 
@@ -101,9 +118,9 @@ var Pong = (function () {
         }
     }
 
-    const rightPaddle = new Paddle(0, canvas.height / 2 - paddleHeight / 2);
-    const leftPaddle = new Paddle(canvas.width - paddleWidth, canvas.height / 2 - paddleHeight / 2);
-    const ball = new Ball(canvas.width / 2, canvas.height / 2);
+    const rightPaddle = new Paddle(initRX, initY);
+    const leftPaddle = new Paddle(initLX, initY);
+    const ball = new Ball();
 
     function listenPlayerInput(input, speed = 0) {
         document.addEventListener(input, function (e) {
@@ -159,16 +176,44 @@ var Pong = (function () {
     function gameLoop() {
         updateGame();
         drawGame();
-        requestAnimationFrame(gameLoop);
+        animationFrameId = requestAnimationFrame(gameLoop);
+    }
+
+    function init() {
+        listenPlayerInput("keydown", paddleSpeed);
+        listenPlayerInput("keyup");
+        gameLoop();
+    }
+
+    function stop() {
+        cancelAnimationFrame(animationFrameId);
+        leftPaddle.reset(initLX, initY);
+        rightPaddle.reset(initRX, initY);
+        ball.reset(true);
+        document.removeEventListener("keydown");
+        document.removeEventListener("keyup");
     }
 
     return {
-        init: function () {
-            listenPlayerInput("keydown", paddleSpeed);
-            listenPlayerInput("keyup");
-            gameLoop();
+        start: function() {
+            document.querySelectorAll('.startBtn').forEach(btn => btn.style.display = 'none');
+            document.getElementById('backBtn').style.display = 'block';
+            canvas.style.display = 'block';
+            init();
+        },
+        reset: function() {
+            document.querySelectorAll('.startBtn').forEach(btn => btn.style.display = 'block');
+            document.getElementById('backBtn').style.display = 'none';
+            canvas.style.display = 'none';
+            stop();
         }
     };
 })();
 
-Pong.init();
+document.getElementById('pongBtn').addEventListener('click', function() {
+    Pong.start();
+});
+
+document.getElementById('backBtn').addEventListener('click', function() {
+    Pong.reset();
+});
