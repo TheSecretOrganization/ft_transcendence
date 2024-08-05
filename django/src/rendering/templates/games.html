@@ -1,8 +1,16 @@
 {% load static %}
-<button id="backBtn" class="btn btn-dark">Back</button>
+<div id="gameSelection">
+    <button class="btn btn-secondary pongBtn">Pong</button>
+    <button class="btn btn-secondary game2Btn">Tic-Tac-Toe</button>
+</div>
+<div id="game">
+    <button id="backBtn" class="btn btn-dark">Back</button>
+    <div class="container-fluid center-content">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+    </div>
+</div>
 <div class="container-fluid center-content">
-    <button id="pongBtn" class="btn btn-secondary startBtn">Pong</button>
-    <button class="btn btn-secondary startBtn">Tic-Tac-Toe</button>
-    <canvas id="gameCanvas" width="800" height="600" class="game-canvas"></canvas>
+    <button id="pongAgainBtn" class="btn btn-secondary pongBtn" style="display: none;">Play Again</button>
+    <button id="game2AgainBtn" class="btn btn-secondary game2Btn" style="display: none;">Play Again</button>
 </div>
 <script src="{% static 'js/pong.js' %}"></script>

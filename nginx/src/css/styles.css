@@ -26,6 +26,10 @@
     margin-left: -250px;
 }
 
+#menu-toggle {
+    margin-bottom: 10px;
+}
+
 #page-content-wrapper {
     width: 100%;
     padding: 15px;
@@ -38,21 +42,17 @@
     align-items: center;
 }
 
-.game-canvas {
+#gameSelection {
+    display: block;
+    margin-block: 5px;
+}
+
+#game {
+    display: none;
+    margin-block: 5px;
+}
+
+#gameCanvas {
     background-color: black;
     border: 3px solid lightskyblue;
-    display: none;
-}
-
-.startBtn {
-    margin: 5px;
-    display: block;
-}
-
-#backBtn {
-    display: none;
-}
-
-#menu-toggle {
-    margin-bottom: 10px;
 }

@@ -9,18 +9,20 @@ var Pong = (function () {
     const colorFill = "white";
     const scoreFill = "white";
     const scoreFont = "20px Arial";
-    const initRX = 0;
-    const initLX = canvas.width - paddleWidth;
+    const initLX = 0;
+    const initRX = canvas.width - paddleWidth;
     const initY = canvas.height / 2 - paddleHeight / 2;
+    const scoreToWin = 5;
     let lastPointWonByLeft = false;
     let animationFrameId;
 
     class Paddle {
-        constructor(x, y) {
+        constructor(x, y, name) {
             this.x = x;
             this.y = y;
             this.move = 0;
             this.score = 0;
+            this.name = name;
         }
 
         updatePosition() {
@@ -118,51 +120,47 @@ var Pong = (function () {
         }
     }
 
-    const rightPaddle = new Paddle(initRX, initY);
-    const leftPaddle = new Paddle(initLX, initY);
+    const leftPaddle = new Paddle(initLX, initY, "Left");
+    const rightPaddle = new Paddle(initRX, initY, "Right");
     const ball = new Ball();
 
-    function listenPlayerInput(input, speed = 0) {
-        document.addEventListener(input, function (e) {
-            switch (e.key) {
-                case "w":
-                case "W":
-                case "ArrowUp":
-                    rightPaddle.move = -speed;
-                    break;
-                case "s":
-                case "S":
-                case "ArrowDown":
-                    rightPaddle.move = speed;
-                    break;
-            }
-        });
-    }
-
-    function handleAi() {
-        if (ball.y < leftPaddle.y + paddleHeight / 2) {
-            leftPaddle.y -= paddleSpeed;
-        } else {
-            leftPaddle.y += paddleSpeed;
-        }
-
-        leftPaddle.y = Math.max(0, Math.min(leftPaddle.y, canvas.height - paddleHeight));
+    function handlePlayerInput(key, speed = 0) {
+        switch (key) {
+            case "w":
+            case "W":
+                leftPaddle.move = -speed;
+                break;
+            case "s":
+            case "S":
+                leftPaddle.move = speed;
+                break;
+            case "ArrowUp":
+                rightPaddle.move = -speed;
+                break;
+            case "ArrowDown":
+                rightPaddle.move = speed;
+                break;
+        };
     }
 
     function updateGame() {
+        leftPaddle.updatePosition();
         rightPaddle.updatePosition();
         ball.updatePosition();
-        ball.checkLeftPaddleCollision(rightPaddle);
-        ball.checkRightPaddleCollision(leftPaddle);
+        ball.checkLeftPaddleCollision(leftPaddle);
+        ball.checkRightPaddleCollision(rightPaddle);
         ball.checkOutOfBounds();
-        handleAi();
     }
 
-    function drawPoints() {
+    function drawText(text, x, y) {
         context.fillStyle = scoreFill;
         context.font = scoreFont;
-        context.fillText(`Player: ${leftPaddle.score}`, 20, 20);
-        context.fillText(`AI: ${rightPaddle.score}`, canvas.width - 80, 20);
+        context.fillText(text, x, y);
+    }
+
+    function drawScore() {
+        drawText(`${leftPaddle.name}: ${leftPaddle.score}`, 20, 20);
+        drawText(`${rightPaddle.name}: ${rightPaddle.score}`, canvas.width - 80, 20);
     }
 
     function drawGame() {
@@ -170,50 +168,78 @@ var Pong = (function () {
         rightPaddle.draw();
         leftPaddle.draw();
         ball.draw();
-        drawPoints();
+        drawScore();
+    }
+
+    function drawWinner(winner) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        const text = `Winner: ${winner}`;
+        context.font = scoreFont;
+        const textWidth = context.measureText(text).width;
+        const x = (canvas.width - textWidth) / 2;
+        const y = canvas.height / 2;
+        drawText(text, x, y);
+    }
+
+    function checkScore() {
+        if (leftPaddle.score >= scoreToWin || rightPaddle.score >= scoreToWin) {
+            winner = leftPaddle.score >= scoreToWin ? leftPaddle.name : rightPaddle.name;
+            drawWinner(winner);
+            stop();
+            document.getElementById("pongAgainBtn").style.display = "block";
+            return true;
+        }
+        return false;
     }
 
     function gameLoop() {
+        if (checkScore())
+            return;
         updateGame();
         drawGame();
         animationFrameId = requestAnimationFrame(gameLoop);
     }
 
     function init() {
-        listenPlayerInput("keydown", paddleSpeed);
-        listenPlayerInput("keyup");
+        document.addEventListener("keydown", function (e) { handlePlayerInput(e.key, paddleSpeed) });
+        document.addEventListener("keyup", function (e) { handlePlayerInput(e.key, 0) });
         gameLoop();
     }
 
     function stop() {
+        if (animationFrameId === undefined)
+            return;
         cancelAnimationFrame(animationFrameId);
+        animationFrameId = undefined;
         leftPaddle.reset(initLX, initY);
         rightPaddle.reset(initRX, initY);
         ball.reset(true);
-        document.removeEventListener("keydown");
-        document.removeEventListener("keyup");
+        document.removeEventListener("keydown", handlePlayerInput);
+        document.removeEventListener("keyup", handlePlayerInput);
     }
 
     return {
-        start: function() {
-            document.querySelectorAll('.startBtn').forEach(btn => btn.style.display = 'none');
-            document.getElementById('backBtn').style.display = 'block';
-            canvas.style.display = 'block';
+        start: function () {
+            document.getElementById('gameSelection').style.display = 'none';
+            document.getElementById('game').style.display = 'block';
+            document.getElementById("pongAgainBtn").style.display = "none";
             init();
         },
-        reset: function() {
-            document.querySelectorAll('.startBtn').forEach(btn => btn.style.display = 'block');
-            document.getElementById('backBtn').style.display = 'none';
-            canvas.style.display = 'none';
+        reset: function () {
+            document.getElementById('gameSelection').style.display = 'block';
+            document.getElementById('game').style.display = 'none';
+            document.getElementById("pongAgainBtn").style.display = "none";
             stop();
         }
     };
 })();
 
-document.getElementById('pongBtn').addEventListener('click', function() {
-    Pong.start();
+Array.from(document.getElementsByClassName('pongBtn')).forEach(function (button) {
+    button.addEventListener('click', function () {
+        Pong.start();
+    });
 });
 
-document.getElementById('backBtn').addEventListener('click', function() {
+document.getElementById('backBtn').addEventListener('click', function () {
     Pong.reset();
 });
