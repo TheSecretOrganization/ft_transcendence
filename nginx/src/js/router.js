@@ -1,12 +1,10 @@
-// Route handler
-const route = (event) => {
+function route(event) {
     event.preventDefault();
     window.history.pushState({}, "", event.target.href);
     handleLocation();
 };
 
-// Fetch page content with caching
-const fetchPage = async (pageName) => {
+async function fetchPage(pageName) {
     const response = await fetch(`/api/pages/${pageName}/`);
     if (!response.ok) {
         console.error(`Failed to fetch ${pageName}: ${response.statusText}`);
@@ -20,8 +18,23 @@ const fetchPage = async (pageName) => {
     return data.html;
 };
 
-// Handle location changes
-const handleLocation = async () => {
+function loadScripts() {
+    const container = document.getElementById("page");
+    const scripts = container.querySelectorAll('script');
+
+    scripts.forEach(script => {
+        const newScript = document.createElement('script');
+        if (script.src) {
+            newScript.src = script.src;
+        } else {
+            newScript.textContent = script.textContent;
+        }
+        document.body.appendChild(newScript);
+        document.body.removeChild(newScript);
+    });
+};
+
+async function handleLocation() {
     let path = window.location.pathname;
     let pageName = path === '/' ? 'index' : path.substring(1);
     let html = await fetchPage(pageName);
@@ -30,31 +43,33 @@ const handleLocation = async () => {
     }
 
     document.getElementById("page").innerHTML = html;
+    loadScripts();
     updateTitle(pageName);
 };
 
-// Update the document title based on the path
-const updateTitle = (pageName) => {
+function updateTitle(pageName) {
     const titles = {
         "index": "Home",
-        "about": "About",
-        "test": "Test",
+        "games": "Games",
         "404": "Page Not Found"
     };
     const title = titles[pageName] || "Page Not Found";
     document.title = title;
 };
 
-// Initialize routing
 document.addEventListener("DOMContentLoaded", () => {
     window.onpopstate = handleLocation;
     window.route = route;
     handleLocation();
 
-    // Event delegation for links
     document.addEventListener("click", (event) => {
         if (event.target.matches("a[data-route]")) {
             route(event);
         }
     });
+});
+
+document.getElementById("menu-toggle").addEventListener("click", function (e) {
+    e.preventDefault();
+    document.getElementById("wrapper").classList.toggle("toggled");
 });

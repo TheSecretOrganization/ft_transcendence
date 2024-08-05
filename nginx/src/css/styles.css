@@ -1,73 +1,64 @@
-/* Basic CSS for Testing */
-
-/* Reset some default styles */
-body, h1, h2, h3, p, ul {
-    margin: 0;
-    padding: 0;
-}
-
-/* Basic body styling */
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #f4f4f4;
-    color: #333;
+#wrapper {
+    width: 100%;
+    height: 100%;
     display: flex;
-    min-height: 100vh;
+    align-items: stretch;
 }
 
-/* Sidebar navigation styling */
-nav {
-    background: #444;
-    color: #fff;
-    width: 200px;
+#sidebar-wrapper {
     height: 100vh;
-    padding-top: 20px;
-    position: fixed;
-}
-
-nav ul {
-    list-style: none;
-    padding: 0;
-}
-
-nav ul li {
-    padding: 10px;
+    min-width: 250px;
+    max-width: 250px;
+    transition: all 0.3s ease;
     text-align: center;
 }
 
-nav ul li a {
-    color: #fff;
-    text-decoration: none;
+.sidebar-heading {
+    padding: 1rem;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.list-group-item {
+    padding: 1rem 1.5rem;
+    text-align: center;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: -250px;
+}
+
+#menu-toggle {
+    margin: 5px;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    padding: 15px;
+}
+
+.container-fluid.center-content {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameSelection {
     display: block;
-    padding: 10px 20px;
+    margin-block: 5px;
 }
 
-nav ul li a:hover {
-    background: #555;
+#game {
+    display: none;
+    margin-block: 5px;
 }
 
-/* Main content styling */
-.main-content {
-    background: #fff;
-    padding: 20px;
-    margin-left: 220px;
-    flex: 1;
+#gameCanvas {
+    background-color: black;
+    border: 3px solid lightskyblue;
 }
 
-h1, h2, h3 {
-    margin-bottom: 15px;
-}
-
-p {
-    margin-bottom: 20px;
-}
-
-/* Footer styling */
-footer {
-    background: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px 0;
-    margin-top: 20px;
+.gameBtn {
+    margin: 5px;
 }
