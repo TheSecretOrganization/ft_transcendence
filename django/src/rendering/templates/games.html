@@ -1,6 +1,8 @@
 {% load static %}
 <button id="backBtn" class="btn btn-dark">Back</button>
-<button id="pongBtn" class="btn btn-secondary startBtn">Pong</button>
-<button class="btn btn-secondary startBtn">Tic-Tac-Toe</button>
-<canvas id="gameCanvas" width="800" height="600" class="game-canvas" ></canvas>
+<div class="container-fluid center-content">
+    <button id="pongBtn" class="btn btn-secondary startBtn">Pong</button>
+    <button class="btn btn-secondary startBtn">Tic-Tac-Toe</button>
+    <canvas id="gameCanvas" width="800" height="600" class="game-canvas"></canvas>
+</div>
 <script src="{% static 'js/pong.js' %}"></script>
