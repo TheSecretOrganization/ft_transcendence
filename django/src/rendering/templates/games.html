@@ -1,16 +1,16 @@
 {% load static %}
 <div id="gameSelection">
-    <button class="btn btn-secondary pongBtn">Pong</button>
-    <button class="btn btn-secondary game2Btn">Tic-Tac-Toe</button>
+    <button class="btn btn-secondary gameBtn pongBtn">Pong</button>
+    <button class="btn btn-secondary gameBtn game2Btn">Tic-Tac-Toe</button>
 </div>
 <div id="game">
-    <button id="backBtn" class="btn btn-dark">Back</button>
+    <button id="backBtn" class="btn btn-dark gameBtn">Back</button>
     <div class="container-fluid center-content">
         <canvas id="gameCanvas" width="800" height="600"></canvas>
     </div>
 </div>
 <div class="container-fluid center-content">
-    <button id="pongAgainBtn" class="btn btn-secondary pongBtn" style="display: none;">Play Again</button>
-    <button id="game2AgainBtn" class="btn btn-secondary game2Btn" style="display: none;">Play Again</button>
+    <button id="pongAgainBtn" class="btn btn-secondary gameBtn pongBtn" style="display: none;">Play Again</button>
+    <button id="game2AgainBtn" class="btn btn-secondary gameBtn game2Btn" style="display: none;">Play Again</button>
 </div>
 <script src="{% static 'js/pong.js' %}"></script>
