@@ -1,4 +1,4 @@
-var Pong = (function () {
+(function () {
     const canvas = document.getElementById("gameCanvas");
     const context = canvas.getContext("2d");
     const paddleWidth = 10;
@@ -179,14 +179,14 @@ var Pong = (function () {
         const x = (canvas.width - textWidth) / 2;
         const y = canvas.height / 2;
         drawText(text, x, y);
+        createPlayAgainButton();
     }
 
     function checkScore() {
         if (leftPaddle.score >= scoreToWin || rightPaddle.score >= scoreToWin) {
-            winner = leftPaddle.score >= scoreToWin ? leftPaddle.name : rightPaddle.name;
+            const winner = leftPaddle.score >= scoreToWin ? leftPaddle.name : rightPaddle.name;
             drawWinner(winner);
             stop();
-            document.getElementById("pongAgainBtn").style.display = "block";
             return true;
         }
         return false;
@@ -200,11 +200,28 @@ var Pong = (function () {
         animationFrameId = requestAnimationFrame(gameLoop);
     }
 
-    function init() {
+    function createPlayAgainButton() {
+        let playAgainBtn = document.createElement('button');
+        playAgainBtn.id = 'pongAgainBtn';
+        playAgainBtn.className = 'btn btn-secondary gameBtn pongBtn';
+        playAgainBtn.textContent = 'Play Again';
+        playAgainBtn.addEventListener('click', start);
+        document.getElementById('gameAgain').appendChild(playAgainBtn);
+    }
+
+    function removePlayAgainButton() {
+        let playAgainBtn = document.getElementById("pongAgainBtn")
+        if (playAgainBtn) { playAgainBtn.remove(); }
+    }
+
+    const start = function () {
+        document.getElementById('gameSelection').style.display = 'none';
+        document.getElementById('game').style.display = 'block';
+        removePlayAgainButton();
         document.addEventListener("keydown", function (e) { handlePlayerInput(e.key, paddleSpeed) });
         document.addEventListener("keyup", function (e) { handlePlayerInput(e.key, 0) });
         gameLoop();
-    }
+    };
 
     function stop() {
         if (animationFrameId === undefined)
@@ -218,28 +235,13 @@ var Pong = (function () {
         document.removeEventListener("keyup", handlePlayerInput);
     }
 
-    return {
-        start: function () {
-            document.getElementById('gameSelection').style.display = 'none';
-            document.getElementById('game').style.display = 'block';
-            document.getElementById("pongAgainBtn").style.display = "none";
-            init();
-        },
-        reset: function () {
-            document.getElementById('gameSelection').style.display = 'block';
-            document.getElementById('game').style.display = 'none';
-            document.getElementById("pongAgainBtn").style.display = "none";
-            stop();
-        }
+    const resetGames = function () {
+        document.getElementById('gameSelection').style.display = 'block';
+        document.getElementById('game').style.display = 'none';
+        removePlayAgainButton();
+        stop();
     };
+
+    document.getElementById('pongBtn').addEventListener('click', start);
+    document.getElementById('backBtn').addEventListener('click', resetGames);
 })();
-
-Array.from(document.getElementsByClassName('pongBtn')).forEach(function (button) {
-    button.addEventListener('click', function () {
-        Pong.start();
-    });
-});
-
-document.getElementById('backBtn').addEventListener('click', function () {
-    Pong.reset();
-});
