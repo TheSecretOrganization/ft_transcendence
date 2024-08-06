@@ -1,0 +1,35 @@
+name: Deployment Check
+on:
+  push:
+    branches:
+     - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  docker-compose:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SECRET_KEY: "foo"
+      DJANGO_SUPERUSER_USERNAME: "bar"
+      DJANGO_SUPERUSER_EMAIL: "foo@bar.com"
+      DJANGO_SUPERUSER_PASSWORD: "foobar"
+      POSTGRES_DB: "foodb"
+      POSTGRES_USER: "bar"
+      POSTGRES_PASSWORD: "foobar"
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Build and up
+        run: docker compose up --build
+      - name: Health-checks
+        run: |
+          services=$(docker-compose ps --services)
+          for service in $services; do
+            status=$(docker inspect -f '{{.State.Health.Status}}' $service)
+            if [ "$status" != "healthy" ]; then
+              echo "$service is not healthy"
+              exit 1
+            fi
+          done
