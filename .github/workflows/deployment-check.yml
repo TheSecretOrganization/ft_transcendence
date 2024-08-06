@@ -21,6 +21,8 @@ jobs:
           DJANGO_SUPERUSER_USERNAME="bar"
           DJANGO_SUPERUSER_EMAIL="foo@bar.com"
           DJANGO_SUPERUSER_PASSWORD="foobar"
+          DJANGO_ALLOWED_HOSTS=localhost
+          DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost
           POSTGRES_DB="foodb"
           POSTGRES_USER="bar"
           POSTGRES_PASSWORD="foobar"
