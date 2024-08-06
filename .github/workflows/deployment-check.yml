@@ -33,7 +33,7 @@ jobs:
 
       - name: Health-checks
         run: |
-          services=$(docker-compose ps --services)
+          services=$(docker compose ps --services)
           for service in $services; do
             status=$(docker inspect -f '{{.State.Health.Status}}' $service)
             if [ "$status" != "healthy" ]; then
