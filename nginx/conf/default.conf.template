@@ -4,7 +4,7 @@ upstream django {
 
 server {
 	listen 80;
-	server_name ft_transcendence;
+	server_name ${HOSTNAME};
 
     # Serve the frontend
     root /usr/share/nginx;
@@ -27,28 +27,29 @@ server {
         expires 30d;
         access_log off;
     }
+}
+
+server {
+    listen 81;
+    server_name admin.${HOSTNAME};
 
     # Proxy requests to the Django backend
-    location /api/ {
+    location / {
         proxy_pass http://django;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
 
-server {
-    listen 81;
-    server_name admin.ft_transcendence;
+        # Add CORS headers
+        add_header "Access-Control-Allow-Origin" $cors_allow_origin;
+        add_header "Access-Control-Allow-Methods" "GET, POST, OPTIONS";
+        add_header "Access-Control-Allow-Headers" "Origin, Content-Type, Accept, Authorization";
 
-    # Proxy requests to the Django admin backend
-    location /admin/ {
-        proxy_pass http://django/admin/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        # Handle preflight requests
+        if ($request_method = "OPTIONS") {
+            return 204;
+        }
     }
 
     # Serve static files for Django admin
