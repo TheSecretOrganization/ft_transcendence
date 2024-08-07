@@ -1,0 +1,47 @@
+name: Deployment Check
+on:
+  push:
+    branches:
+     - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  docker-compose:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Create .env file
+        run: |
+          cat << EOF > .env
+          SECRET_KEY="foo"
+          DJANGO_SUPERUSER_USERNAME="bar"
+          DJANGO_SUPERUSER_EMAIL="foo@bar.com"
+          DJANGO_SUPERUSER_PASSWORD="foobar"
+          DJANGO_ALLOWED_HOSTS=localhost
+          DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost
+          POSTGRES_DB="foodb"
+          POSTGRES_USER="bar"
+          POSTGRES_PASSWORD="foobar"
+          EOF
+
+      - name: Build and start Docker containers
+        run: docker compose up --build -d
+
+      - name: Wait for services to initialize
+        run: sleep 30
+
+      - name: Perform health checks
+        run: |
+          services=$(docker compose ps --services)
+          for service in $services; do
+            status=$(docker inspect -f '{{.State.Health.Status}}' $service)
+            if [ "$status" != "healthy" ]; then
+              echo "$service is not healthy"
+              exit 1
+            fi
+          done
