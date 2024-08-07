@@ -27,6 +27,7 @@ services:
     build: nginx
     ports:
       - 8080:80
+      - 8081:81
     init: true
     networks:
       - network
