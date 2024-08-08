@@ -6,7 +6,6 @@ server {
 	listen 80;
 	server_name ${HOSTNAME};
 
-    # Serve the frontend
     root /usr/share/nginx;
     index index.html;
 
@@ -14,14 +13,12 @@ server {
         try_files $uri $uri/ /index.html =404;
     }
 
-    # Serve static files for Django
     location /static/ {
         alias /static/;
         expires 30d;
         access_log off;
 	}
 
-    # Serve media files for Django
     location /media/ {
         alias /media/;
         expires 30d;
