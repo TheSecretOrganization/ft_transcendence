@@ -57,7 +57,7 @@ function updateTitle(pageName) {
     document.title = title;
 };
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
     window.onpopstate = handleLocation;
     window.route = route;
     handleLocation();
