@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from django.template import loader
+from django.http import JsonResponse
 
-# Create your views here.
+def login(request):
+	content = loader.get_template('signin.html').render(request=request)
+	return JsonResponse({'html': content})
+
