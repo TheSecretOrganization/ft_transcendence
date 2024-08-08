@@ -7,6 +7,8 @@ WORKDIR /app
 EXPOSE 8000
 VOLUME [ "/app" ]
 
+RUN apt update && apt upgrade -y
+
 RUN groupadd -r appGroup && useradd -r -g appGroup ${DJANGO_SUPERUSER_USERNAME}
 RUN chown ${DJANGO_SUPERUSER_USERNAME}:appGroup /app
 RUN mkdir /static
@@ -14,8 +16,6 @@ RUN chown ${DJANGO_SUPERUSER_USERNAME}:appGroup /static
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED=1
-
-RUN apt update && apt upgrade -y
 
 RUN pip install --upgrade pip
 COPY conf/requirements.txt requirements.txt
