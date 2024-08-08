@@ -34,11 +34,8 @@ services:
       context: nginx
       args:
         HOSTNAME: ${HOSTNAME}
-        BASE_URL: ${BASE_URL}
-        API_BASE_URL: ${API_BASE_URL}
     ports:
       - 8080:80
-      - 8081:81
     init: true
     networks:
       - network

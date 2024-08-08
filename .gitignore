@@ -1,6 +1,5 @@
 # Project special files
 .DS_Store
-nginx/**/config.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

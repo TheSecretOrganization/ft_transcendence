@@ -5,7 +5,7 @@ function route(event) {
 };
 
 async function fetchPage(pageName) {
-    const response = await fetch(`${window.config.apiBaseUrl}/pages/${pageName}/`);
+    const response = await fetch(`/api/pages/${pageName}/`);
     if (!response.ok) {
         console.error(`Failed to fetch ${pageName}: ${response.statusText}`);
         return null;
@@ -57,19 +57,9 @@ function updateTitle(pageName) {
     document.title = title;
 };
 
-async function fetchConfig() {
-    const response = await fetch('/config.json');
-    if (!response.ok) {
-        console.error(`Failed to fetch config: ${response.statusText}`);
-        return null;
-    }
-    return response.json();
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
     window.onpopstate = handleLocation;
     window.route = route;
-    window.config = await fetchConfig();
     handleLocation();
 
     document.addEventListener("click", (event) => {

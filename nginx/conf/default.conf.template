@@ -27,42 +27,20 @@ server {
         expires 30d;
         access_log off;
     }
-}
 
-server {
-    listen 81;
-    server_name admin.${HOSTNAME};
-
-    # Proxy requests to the Django backend
-    location / {
-        proxy_pass http://django;
+    location /api/ {
+        proxy_pass http://django/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-
-        # Add CORS headers
-        add_header "Access-Control-Allow-Origin" $cors_allow_origin;
-        add_header "Access-Control-Allow-Methods" "GET, POST, OPTIONS";
-        add_header "Access-Control-Allow-Headers" "Origin, Content-Type, Accept, Authorization";
-
-        # Handle preflight requests
-        if ($request_method = "OPTIONS") {
-            return 204;
-        }
     }
 
-    # Serve static files for Django admin
-    location /static/ {
-        alias /static/;
-        expires 30d;
-        access_log off;
-    }
-
-    # Serve media files for Django admin
-    location /media/ {
-        alias /media/;
-        expires 30d;
-        access_log off;
+    location /admin/ {
+        proxy_pass http://django/admin/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
