@@ -22,7 +22,7 @@ from rendering.views import PagesView
 router = routers.DefaultRouter()
 
 urlpatterns = [
+    path('/', include(router.urls)),
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
-    path('api/pages/<str:page_name>/', PagesView.as_view(), name='pages'),
+    path('pages/<str:page_name>/', PagesView.as_view(), name='pages'),
 ]
