@@ -6,6 +6,9 @@ services:
     build:
       context: django
       args:
+        DEV: ${DEV}
+        HOSTNAME: ${HOSTNAME}
+        ADMIN_MAIL: ${ADMIN_MAIL}
         DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
     expose:
       - 8000
@@ -16,6 +19,8 @@ services:
       - django-src:/app
       - static-files:/static
       - media-files:/media
+      - public-keys:/etc/ssl/certs/
+      - private-keys:/etc/ssl/private/
     env_file:
       - .env
     depends_on:
@@ -26,7 +31,7 @@ services:
       interval: 2s
       timeout: 2s
       retries: 5
-      start_period: 5s
+      start_period: 10s
 
   nginx:
     container_name: nginx
@@ -35,7 +40,7 @@ services:
       args:
         HOSTNAME: ${HOSTNAME}
     ports:
-      - 8080:80
+      - 4443:443
     init: true
     networks:
       - network
@@ -43,6 +48,8 @@ services:
       - nginx-src:/usr/share/nginx
       - static-files:/static
       - media-files:/media
+      - public-keys:/etc/ssl/certs/
+      - private-keys:/etc/ssl/private/
     env_file:
       - .env
     depends_on:
@@ -53,7 +60,7 @@ services:
       interval: 2s
       timeout: 2s
       retries: 5
-      start_period: 5s
+      start_period: 10s
 
   postgres:
     container_name: postgres
@@ -74,7 +81,7 @@ services:
       interval: 2s
       timeout: 2s
       retries: 5
-      start_period: 5s
+      start_period: 10s
 
 networks:
   network:
@@ -99,4 +106,8 @@ volumes:
   media-files:
     driver: local
   postgres-data:
+    driver: local
+  public-keys:
+    driver: local
+  private-keys:
     driver: local
