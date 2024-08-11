@@ -16,21 +16,14 @@ jobs:
           fetch-depth: 0
 
       - name: Create .env file
-        run: |
-          cat << EOF > .env
-          SECRET_KEY="foo"
-          DJANGO_SUPERUSER_USERNAME="bar"
-          DJANGO_SUPERUSER_EMAIL="foo@bar.com"
-          DJANGO_SUPERUSER_PASSWORD="foobar"
-          DJANGO_ALLOWED_HOSTS=localhost
-          DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost
-          POSTGRES_DB="foodb"
-          POSTGRES_USER="bar"
-          POSTGRES_PASSWORD="foobar"
-          EOF
+        run: cp .env.template .env
 
       - name: Build and start Docker containers
-        run: docker compose up --build -d
+        run: docker compose up --build
+
+      - name: Output PostgreSQL logs if failure occurs
+        if: failure()
+        run: docker logs postgres
 
       - name: Wait for services to initialize
         run: sleep 30

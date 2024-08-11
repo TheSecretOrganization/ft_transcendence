@@ -6,12 +6,10 @@ services:
     build:
       context: django
       args:
-        DEV: ${DEV}
-        HOSTNAME: ${HOSTNAME}
-        ADMIN_MAIL: ${ADMIN_MAIL}
         DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+        HOSTNAME: ${HOSTNAME}
     expose:
-      - 8000
+      - 443
     init: true
     networks:
       - network
@@ -19,8 +17,7 @@ services:
       - django-src:/app
       - static-files:/static
       - media-files:/media
-      - public-keys:/etc/ssl/certs/
-      - private-keys:/etc/ssl/private/
+      - ssl-keys:/ssl
     env_file:
       - .env
     depends_on:
@@ -31,7 +28,7 @@ services:
       interval: 2s
       timeout: 2s
       retries: 5
-      start_period: 10s
+      start_period: 5s
 
   nginx:
     container_name: nginx
@@ -48,8 +45,7 @@ services:
       - nginx-src:/usr/share/nginx
       - static-files:/static
       - media-files:/media
-      - public-keys:/etc/ssl/certs/
-      - private-keys:/etc/ssl/private/
+      - ssl-keys:/ssl
     env_file:
       - .env
     depends_on:
@@ -60,7 +56,7 @@ services:
       interval: 2s
       timeout: 2s
       retries: 5
-      start_period: 10s
+      start_period: 5s
 
   postgres:
     container_name: postgres
@@ -81,7 +77,7 @@ services:
       interval: 2s
       timeout: 2s
       retries: 5
-      start_period: 10s
+      start_period: 5s
 
 networks:
   network:
@@ -107,7 +103,9 @@ volumes:
     driver: local
   postgres-data:
     driver: local
-  public-keys:
-    driver: local
-  private-keys:
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ./data/postgres
+  ssl-keys:
     driver: local

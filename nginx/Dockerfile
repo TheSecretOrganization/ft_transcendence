@@ -6,7 +6,8 @@ ENV HOSTNAME=${HOSTNAME}
 EXPOSE 443
 VOLUME [ "/usr/share/nginx" ]
 
-RUN apt update && apt upgrade -y
+RUN apt update && \
+    apt upgrade -y
 
 COPY conf/default.conf /etc/nginx/conf.d/default.conf.template
 RUN envsubst '${HOSTNAME}' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf
