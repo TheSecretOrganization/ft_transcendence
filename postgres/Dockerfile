@@ -14,7 +14,8 @@ RUN apt update && \
 RUN groupadd -r appGroup && \
     useradd -r -g appGroup ${POSTGRES_USER} && \
     mkdir -p ${PGDATA} && \
-    chown ${POSTGRES_USER}:appGroup ${PGDATA}
+    chown ${POSTGRES_USER}:appGroup ${PGDATA} && \
+    chmod 766 ${PGDATA}
 
 USER ${POSTGRES_USER}
 
