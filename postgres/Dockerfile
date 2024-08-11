@@ -3,7 +3,7 @@ FROM postgres:16.3
 ARG POSTGRES_USER
 ENV POSTGRES_USER=${POSTGRES_USER}
 
-ENV PGDATA=/var/lib/postgresql/data/pgdata
+ENV PGDATA=/data/pgdata
 
 EXPOSE 5432
 
