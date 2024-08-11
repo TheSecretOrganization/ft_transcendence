@@ -15,6 +15,6 @@ RUN mkdir -p ${PGDATA} && \
     useradd -r -g appGroup ${POSTGRES_USER} && \
     chown ${POSTGRES_USER}:appGroup ${PGDATA}
 
-USER ${POSTGRES_USER}
+# USER ${POSTGRES_USER}
 
 CMD ["postgres"]
