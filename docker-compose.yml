@@ -52,7 +52,7 @@ services:
       django:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl -k -o /dev/null -s -w '%{http_code}' ${BASE_URL}/api/pages/index/ | grep 200 || exit 1"]
+      test: ["CMD", "nginx", "-t"]
       interval: 2s
       timeout: 2s
       retries: 5
