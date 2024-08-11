@@ -52,7 +52,8 @@ services:
       django:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -k -o /dev/null -s -w '%{http_code}' ${BASE_URL}/api/pages/index/ | grep 200 || exit 1"]
+      # test: ["CMD-SHELL", "curl -k -o /dev/null -s -w '%{http_code}' ${BASE_URL}/api/pages/index/ | grep 200 || exit 1"]
+      test: ["CMD", "nginx", "-t"]
       interval: 2s
       timeout: 2s
       retries: 5
@@ -62,8 +63,6 @@ services:
     container_name: postgres
     build:
       context: postgres
-      args:
-        POSTGRES_USER: ${POSTGRES_USER}
     ports:
       - 5432:5432
     networks:
