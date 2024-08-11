@@ -22,7 +22,7 @@ jobs:
         run: docker compose up --build -d
 
       - name: Wait for services to initialize
-        run: sleep 45
+        run: sleep 30
 
       - name: Perform health checks
         run: |
