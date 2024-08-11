@@ -37,7 +37,7 @@ services:
       args:
         HOSTNAME: ${HOSTNAME}
     ports:
-      - ${PORT}:443
+      - 4443:443
     init: true
     networks:
       - network
