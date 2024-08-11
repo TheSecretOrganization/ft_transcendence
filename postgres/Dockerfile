@@ -10,11 +10,11 @@ EXPOSE 5432
 RUN apt update && \
     apt upgrade -y
 
-RUN mkdir -p ${PGDATA} && \
-    groupadd -r appGroup && \
+RUN groupadd -r appGroup && \
     useradd -r -g appGroup ${POSTGRES_USER} && \
+    mkdir -p ${PGDATA} && \
     chown ${POSTGRES_USER}:appGroup ${PGDATA}
 
-# USER ${POSTGRES_USER}
+USER ${POSTGRES_USER}
 
 CMD ["postgres"]
