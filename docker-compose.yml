@@ -7,8 +7,9 @@ services:
       context: django
       args:
         DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+        HOSTNAME: ${HOSTNAME}
     expose:
-      - 8000
+      - 443
     init: true
     networks:
       - network
@@ -16,6 +17,7 @@ services:
       - django-src:/app
       - static-files:/static
       - media-files:/media
+      - ssl-keys:/ssl
     env_file:
       - .env
     depends_on:
@@ -35,7 +37,7 @@ services:
       args:
         HOSTNAME: ${HOSTNAME}
     ports:
-      - 8080:80
+      - 4443:443
     init: true
     networks:
       - network
@@ -43,13 +45,14 @@ services:
       - nginx-src:/usr/share/nginx
       - static-files:/static
       - media-files:/media
+      - ssl-keys:/ssl
     env_file:
       - .env
     depends_on:
       django:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -o /dev/null -s -w '%{http_code}' ${BASE_URL} | grep 200 || exit 1"]
+      test: ["CMD", "nginx", "-t"]
       interval: 2s
       timeout: 2s
       retries: 5
@@ -59,14 +62,12 @@ services:
     container_name: postgres
     build:
       context: postgres
-      args:
-        POSTGRES_USER: ${POSTGRES_USER}
     ports:
       - 5432:5432
     networks:
       - network
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data:/data
     env_file:
       - .env
     healthcheck:
@@ -99,4 +100,10 @@ volumes:
   media-files:
     driver: local
   postgres-data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ./data/postgres
+  ssl-keys:
     driver: local
