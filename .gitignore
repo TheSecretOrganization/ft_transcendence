@@ -1,5 +1,7 @@
 # Project special files
 .DS_Store
+data/postgres/*
+!data/postgres/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
