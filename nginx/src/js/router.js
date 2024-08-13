@@ -49,9 +49,10 @@ async function handleLocation() {
 
 function updateTitle(pageName) {
     const titles = {
+        "404": "Page Not Found",
         "index": "Home",
         "games": "Games",
-        "404": "Page Not Found"
+        "chat": "Chat",
     };
     const title = titles[pageName] || "Page Not Found";
     document.title = title;
