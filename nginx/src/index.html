@@ -18,7 +18,6 @@
 			<div class="list-group list-group-flush">
 				<a href="/" class="list-group-item list-group-item-action bg-light" data-route>Home</a>
 				<a href="/games" class="list-group-item list-group-item-action bg-light" data-route>Games</a>
-				<a href="/chat" class="list-group-item list-group-item-action bg-light" data-route>Chat</a>
 			</div>
 		</div>
 
@@ -27,12 +26,19 @@
 			<div id="page">
 			</div>
 		</div>
+
+		<div id="chat-container">
+			<textarea id="chat-log" cols="100" rows="20"></textarea><br>
+			<input id="chat-message-input" type="text" size="100"><br>
+			<input id="chat-message-submit" type="button" value="Send">
+		</div>
 	</div>
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 		crossorigin="anonymous"></script>
 	<script src="/js/router.js"></script>
+	<script src="/js/chat.js"></script>
 </body>
 
 </html>

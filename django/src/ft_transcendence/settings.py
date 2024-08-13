@@ -31,6 +31,9 @@ ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", default="").split(" ")
 
 CSRF_TRUSTED_ORIGINS = os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", default="").split(" ")
 
+if 'test' in os.sys.argv:
+    CSRF_TRUSTED_ORIGINS = []
+
 
 # Application definition
 
@@ -93,6 +96,16 @@ DATABASES = {
     }
 }
 
+# Override database settings for testing
+if 'test' in os.sys.argv:
+    DATABASES['default'] =  {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+        "TEST": {
+            "NAME": BASE_DIR / "db.sqlite3",
+        },
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -146,3 +159,11 @@ REST_FRAMEWORK = {
 }
 
 ASGI_APPLICATION = 'ft_transcendence.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
+}

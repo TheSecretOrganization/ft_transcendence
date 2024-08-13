@@ -52,7 +52,6 @@ function updateTitle(pageName) {
         "404": "Page Not Found",
         "index": "Home",
         "games": "Games",
-        "chat": "Chat",
     };
     const title = titles[pageName] || "Page Not Found";
     document.title = title;
