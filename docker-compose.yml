@@ -25,10 +25,10 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "python manage.py healthcheck || exit 1"]
-      interval: 2s
-      timeout: 1s
-      retries: 5
-      start_period: 2s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
   nginx:
     container_name: nginx
@@ -53,10 +53,10 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "nginx", "-t"]
-      interval: 2s
-      timeout: 1s
-      retries: 5
-      start_period: 2s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
   postgres:
     container_name: postgres
@@ -72,10 +72,28 @@ services:
       - .env
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} || exit 1"]
-      interval: 2s
-      timeout: 1s
-      retries: 5
-      start_period: 2s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  redis:
+    container_name: redis
+    build:
+      context: redis
+    expose:
+      - 6379
+    networks:
+      - network
+    depends_on:
+      nginx:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
 networks:
   network:
