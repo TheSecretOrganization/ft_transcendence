@@ -1,3 +1,4 @@
+/* Wrapper */
 #wrapper {
     width: 100%;
     height: 100%;
@@ -5,36 +6,10 @@
     align-items: stretch;
 }
 
-#sidebar-wrapper {
-    height: 100vh;
-    min-width: 250px;
-    max-width: 250px;
-    transition: all 0.3s ease;
-    text-align: center;
-}
-
-.sidebar-heading {
-    padding: 1rem;
-    font-size: 1.5rem;
-    text-align: center;
-}
-
-.list-group-item {
-    padding: 1rem 1.5rem;
-    text-align: center;
-}
-
-#wrapper.toggled #sidebar-wrapper {
-    margin-left: -250px;
-}
-
-#menu-toggle {
-    margin: 5px;
-}
-
-#page-content-wrapper {
+/* Page Content */
+#page-container-wrapper {
     width: 100%;
-    padding: 15px;
+    position: relative;
 }
 
 .container-fluid.center-content {
@@ -44,6 +19,113 @@
     align-items: center;
 }
 
+/* Sidebar Toggle */
+#sidebar-toggle {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    font-size: 20px;
+    z-index: 1050;
+    transition: all 0.3s ease;
+}
+
+#sidebar-toggle.toggled {
+    margin-left: 250px;
+}
+
+/* Sidebar */
+#sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 250px;
+    border-radius: 0 5px 5px 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    text-align: center;
+}
+
+#sidebar-wrapper.toggled {
+    margin-left: -250px;
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 1rem;
+    font-size: 1.5rem;
+}
+
+#sidebar-wrapper .list-group-item {
+    padding: 1rem 1.5rem;
+    text-align: center;
+}
+
+/* Chat Toggle */
+#chat-toggle {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    font-size: 20px;
+    z-index: 1050;
+    transition: all 0.3s ease;
+}
+
+#chat-toggle.toggled {
+    margin-bottom: 550px;
+}
+
+/* Chat Wrapper */
+#chat-wrapper {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 300px;
+    height: 550px;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+#chat-wrapper.toggled {
+    margin-bottom: -550px;
+}
+
+#chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#chat-log {
+    font-family: 'Arial', sans-serif;
+    height: calc(100% - 90px);
+    width: 100%;
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    color: #495057;
+    overflow-y: scroll;
+    resize: none;
+}
+
+#chat-message-input {
+    width: 100%;
+    font-family: 'Arial', sans-serif;
+    margin-right: 5px;
+}
+
+.chat-text {
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ced4da;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Games */
 #gameSelection {
     display: block;
     margin-block: 5px;
@@ -57,8 +139,4 @@
 #gameCanvas {
     background-color: black;
     border: 3px solid lightskyblue;
-}
-
-.gameBtn {
-    margin: 5px;
 }

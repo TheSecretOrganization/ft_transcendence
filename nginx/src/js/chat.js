@@ -1,28 +1,33 @@
 const roomName = "general";
-
 const chatSocket = new WebSocket(`wss://${window.location.host}/ws/chat/${roomName}/`);
+const chatLog = document.getElementById('chat-log');
+const chatInput = document.getElementById('chat-input');
 
 chatSocket.onmessage = function(e) {
     const data = JSON.parse(e.data);
-    document.querySelector('#chat-log').value += (data.message + '\n');
+    chatLog.value += (data.message + '\n');
 };
 
 chatSocket.onclose = function(e) {
     console.error('Chat socket closed unexpectedly');
 };
 
-document.querySelector('#chat-message-input').focus();
-document.querySelector('#chat-message-input').onkeyup = function(e) {
-    if (e.key === 'Enter') {
-        document.querySelector('#chat-message-submit').click();
+chatInput.onkeyup = function(e) {
+    if (e.key === 'Enter' && chatInput.value.length !== 0) {
+        chatSocket.send(JSON.stringify({
+            'message': chatInput.value
+        }));
+        chatInput.value = '';
     }
 };
 
-document.querySelector('#chat-message-submit').onclick = function(e) {
-    const messageInputDom = document.querySelector('#chat-message-input');
-    const message = messageInputDom.value;
-    chatSocket.send(JSON.stringify({
-        'message': message
-    }));
-    messageInputDom.value = '';
+document.addEventListener("DOMContentLoaded", () => {
+    chatLog.value = ""
+});
+
+/* Chat Toggle */
+document.getElementById('chat-toggle').onclick = function(e) {
+    e.preventDefault();
+    document.getElementById('chat-wrapper').classList.toggle("toggled");
+    this.classList.toggle("toggled");
 };

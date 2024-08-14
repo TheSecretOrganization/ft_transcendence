@@ -1,3 +1,4 @@
+/* Router */
 function route(event) {
     event.preventDefault();
     window.history.pushState({}, "", event.target.href);
@@ -19,7 +20,7 @@ async function fetchPage(pageName) {
 };
 
 function loadScripts() {
-    const container = document.getElementById("page");
+    const container = document.getElementById("page-container");
     const scripts = container.querySelectorAll('script');
 
     scripts.forEach(script => {
@@ -42,7 +43,7 @@ async function handleLocation() {
         html = await fetchPage('404');
     }
 
-    document.getElementById("page").innerHTML = html;
+    document.getElementById("page-container").innerHTML = html;
     loadScripts();
     updateTitle(pageName);
 };
@@ -69,7 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-document.getElementById("menu-toggle").addEventListener("click", function (e) {
+
+/* Sidebar Toggle */
+document.getElementById("sidebar-toggle").addEventListener("click", function (e) {
     e.preventDefault();
-    document.getElementById("wrapper").classList.toggle("toggled");
+    document.getElementById("sidebar-wrapper").classList.toggle("toggled");
+    this.classList.toggle("toggled");
 });
