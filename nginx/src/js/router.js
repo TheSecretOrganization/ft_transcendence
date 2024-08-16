@@ -1,7 +1,6 @@
-/* Router */
-function route(event) {
-    event.preventDefault();
-    window.history.pushState({}, "", event.target.href);
+function route(e) {
+    e.preventDefault();
+    window.history.pushState({}, "", e.target.getAttribute('data-route'));
     handleLocation();
 };
 
@@ -35,6 +34,26 @@ function loadScripts() {
     });
 };
 
+function updateTitle(pageName) {
+    const titles = {
+        "404": "Page Not Found",
+        "index": "Home",
+        "games": "Games",
+    };
+    const title = titles[pageName] || "Page Not Found";
+    document.title = title;
+};
+
+function updateActiveRoute(path) {
+    document.querySelectorAll('#sidebar-list .list-group-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    const activeRoute = document.querySelector(`[data-route="${path}"]`);
+    if (activeRoute) {
+        activeRoute.classList.add('active');
+    }
+}
+
 async function handleLocation() {
     let path = window.location.pathname;
     let pageName = path === '/' ? 'index' : path.substring(1);
@@ -46,32 +65,21 @@ async function handleLocation() {
     document.getElementById("page-container").innerHTML = html;
     loadScripts();
     updateTitle(pageName);
-};
-
-function updateTitle(pageName) {
-    const titles = {
-        "404": "Page Not Found",
-        "index": "Home",
-        "games": "Games",
-    };
-    const title = titles[pageName] || "Page Not Found";
-    document.title = title;
+    updateActiveRoute(path);
 };
 
 document.addEventListener("DOMContentLoaded", () => {
     window.onpopstate = handleLocation;
     window.route = route;
     handleLocation();
-
-    document.addEventListener("click", (event) => {
-        if (event.target.matches("a[data-route]")) {
-            route(event);
-        }
-    });
 });
 
+document.addEventListener("click", (e) => {
+    if (e.target && e.target.hasAttribute('data-route')) {
+        route(e);
+    }
+});
 
-/* Sidebar Toggle */
 document.getElementById("sidebar-toggle").addEventListener("click", function (e) {
     e.preventDefault();
     document.getElementById("sidebar-wrapper").classList.toggle("toggled");

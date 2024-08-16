@@ -15,10 +15,10 @@
 	<div id="wrapper">
 		<div id="sidebar-wrapper" class="bg-light border toggled">
 			<div class="sidebar-heading">ft_transcendence</div>
-			<div class="list-group list-group-flush">
-				<a href="/" class="list-group-item list-group-item-action bg-light" data-route>Home</a>
-				<a href="/games" class="list-group-item list-group-item-action bg-light" data-route>Games</a>
-			</div>
+			<ul id="sidebar-list" class="list-group list-group-flush">
+				<li class="list-group-item list-group-item-action" data-route="/">Home</li>
+				<li class="list-group-item list-group-item-action" data-route="/games">Games</li>
+			</ul>
 		</div>
 
 		<div id="page-container-wrapper">
@@ -28,13 +28,18 @@
 			<button id="chat-toggle" class="btn btn-primary">🗨</button>
 		</div>
 
-        <div id="chat-wrapper" class="bg-light border toggled">
-			<div class="chat-heading"></div>
-            <div id="chat-container">
-                <textarea id="chat-log" class="chat-text" readonly></textarea><br>
+		<div id="chat-wrapper" class="bg-light border toggled">
+			<div id="chat-rooms">
+				<ul id="chat-list" class="list-group">
+					<li class="list-group-item" data-room="general">General</li>
+					<li class="list-group-item" data-room="random">Random</li>
+				</ul>
+			</div>
+			<div id="chat-container">
+				<textarea id="chat-log" class="chat-text" readonly></textarea><br>
 				<input id="chat-input" class="chat-text" type="text" placeholder="Chat here...">
-            </div>
-        </div>
+			</div>
+		</div>
 	</div>
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
