@@ -55,34 +55,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 chatRooms.addEventListener('click', (e) => {
     if (e.target && e.target.hasAttribute('data-room')) {
-        e.preventDefault;
         switchRoom(e.target.getAttribute('data-room'));
     }
 });
-
-// fetch('/api/chatrooms')
-//     .then(response => response.json())
-//     .then(rooms => {
-//         rooms.forEach(room => {
-//             const li = document.createElement('li');
-//             li.className = 'list-group-item';
-//             li.setAttribute('data-room', room.name);
-//             li.innerText = room.displayName;
-//             chatRooms.appendChild(li);
-//         });
-
-//         // Reinitialize the click event listeners after loading
-//         chatRooms.addEventListener('click', (e) => {
-//             if (e.target && e.target.nodeName === "LI") {
-//                 const roomName = e.target.getAttribute('data-room');
-//                 document.querySelectorAll('#chat-list .list-group-item').forEach(item => {
-//                     item.classList.remove('active');
-//                 });
-//                 e.target.classList.add('active');
-//                 switchRoom(roomName);
-//             }
-//         });
-//     });
 
 document.getElementById('chat-toggle').onclick = function(e) {
     e.preventDefault();
