@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("click", (e) => {
-    if (e.target && e.target.hasAttribute('data-route')) {
+    if (e?.target?.hasAttribute('data-route')) {
         route(e);
     }
 });

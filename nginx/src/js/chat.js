@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 chatRooms.addEventListener('click', (e) => {
-    if (e.target && e.target.hasAttribute('data-room')) {
+    if (e?.target?.hasAttribute('data-room')) {
         switchRoom(e.target.getAttribute('data-room'));
     }
 });
