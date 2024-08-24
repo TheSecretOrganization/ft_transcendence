@@ -54,7 +54,7 @@ class LoginTest(TestCase):
 	
 	def test_logout_without_login(self):
 		c = Client()
-		request = c.post('/auth/logout/')
+		request = c.get('/auth/logout/')
 		self.assertEqual(request.status_code, 401)
 
 	def test_logout(self):
@@ -62,6 +62,6 @@ class LoginTest(TestCase):
 		request = c.post('/auth/login/', {'username': 'mich', 'password': 'mich334@'})
 		self.assertEqual(request.status_code, 200)
 		self.assertTrue('user_id' in c.session)
-		request = c.post('/auth/logout/')
+		request = c.get('/auth/logout/')
 		self.assertEqual(request.status_code, 200)
 		self.assertFalse('user_id' in c.session)
