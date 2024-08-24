@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.conf import settings
+from django.test import Client, TestCase
+from django.contrib.sessions.models import Session
 
 class UserManagerTest(TestCase):
 
@@ -27,3 +29,39 @@ class UserManagerTest(TestCase):
 		with self.assertRaises(TypeError):
 			user_model.objects.create_superuser(username='')
 
+class LoginTest(TestCase):
+
+	def setUp(self):
+		get_user_model().objects.create_user(username='mich', password='mich334@')
+
+	def test_login_without_param(self):
+		c = Client()
+		request = c.post('/auth/login/', {'wesh': 'alors'})
+		self.assertEqual(request.status_code, 400)
+		self.assertFalse('user_id' in c.session)
+
+	def test_login_wrong_credentials(self):
+		c = Client()
+		request = c.post('/auth/login/', {'username': 'mich', 'password': 'mich334'})
+		self.assertEqual(request.status_code, 401)
+		self.assertFalse('user_id' in c.session)
+
+	def test_login(self):
+		c = Client()
+		request = c.post('/auth/login/', {'username': 'mich', 'password': 'mich334@'})
+		self.assertEqual(request.status_code, 200)
+		self.assertTrue('user_id' in c.session)
+	
+	def test_logout_without_login(self):
+		c = Client()
+		request = c.post('/auth/logout/')
+		self.assertEqual(request.status_code, 401)
+
+	def test_logout(self):
+		c = Client()
+		request = c.post('/auth/login/', {'username': 'mich', 'password': 'mich334@'})
+		self.assertEqual(request.status_code, 200)
+		self.assertTrue('user_id' in c.session)
+		request = c.post('/auth/logout/')
+		self.assertEqual(request.status_code, 200)
+		self.assertFalse('user_id' in c.session)
