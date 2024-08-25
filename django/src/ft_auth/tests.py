@@ -66,3 +66,30 @@ class LoginTest(TestCase):
 		request = self.client.get('/auth/logout/')
 		self.assertEqual(request.status_code, 200)
 		self.assertFalse('user_id' in self.client.session)
+
+class RegisterTest(TestCase):
+
+	def setUp(self):
+		self.client = Client()
+
+	def test_register_without_param(self):
+		request = self.client.post('/auth/register/')
+		self.assertEqual(request.status_code, 400)
+		request = self.client.post('/auth/register/', {'username': 'ok'})
+		self.assertEqual(request.status_code, 400)
+		request = self.client.post('/auth/register/', {'password': 'ok'})
+		self.assertEqual(request.status_code, 400)
+
+	def test_register(self):
+		request = self.client.post('/auth/register/', {
+			'username': 'mich',
+			'password': 'mich334@',
+		})
+		self.assertEqual(request.status_code, 200)
+		user = get_user_model().objects.get(username='mich')
+		self.assertTrue(user is not None)
+
+	def test_register_already_exist(self):
+		get_user_model().objects.create_user(username='bob')
+		request = self.client.post('/auth/register/', {'username': 'bob', 'password': 'ok'})
+		self.assertEqual(request.status_code, 400)
