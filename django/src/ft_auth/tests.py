@@ -35,7 +35,13 @@ class LoginTest(TestCase):
 		get_user_model().objects.create_user(username='mich', password='mich334@')
 
 	def test_login_without_param(self):
-		request = self.client.post('/auth/login/', {'wesh': 'alors'})
+		request = self.client.post('/auth/login/')
+		self.assertEqual(request.status_code, 400)
+		self.assertFalse('user_id' in self.client.session)
+		request = self.client.post('/auth/login/', {'username': 'mich'})
+		self.assertEqual(request.status_code, 400)
+		self.assertFalse('user_id' in self.client.session)
+		request = self.client.post('/auth/login/', {'password': 'mich443@'})
 		self.assertEqual(request.status_code, 400)
 		self.assertFalse('user_id' in self.client.session)
 
