@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate
 
 @require_POST
 def login(request: HttpRequest):
-	if all(k not in request.POST for k in ('username', 'password')):
+	if not all(k in request.POST for k in ['username', 'password']):
 		return HttpResponseBadRequest({'message': 'Missing fields (required username and password)'})
 	username = request.POST['username']
 	password = request.POST['password']
