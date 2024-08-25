@@ -14,12 +14,16 @@ services:
     networks:
       - network
     volumes:
-      - django-src:/app
       - static-files:/static
       - media-files:/media
       - ssl-keys:/ssl
     env_file:
       - .env
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./django/src/
+          target: /app/
     depends_on:
       postgres:
         condition: service_healthy
@@ -42,12 +46,16 @@ services:
     networks:
       - network
     volumes:
-      - nginx-src:/usr/share/nginx
       - static-files:/static
       - media-files:/media
       - ssl-keys:/ssl
     env_file:
       - .env
+    develop:
+      watch:
+        - action: sync
+          path: ./nginx/src/
+          target: /usr/share/nginx/
     depends_on:
       django:
         condition: service_healthy
@@ -83,18 +91,6 @@ networks:
     driver: bridge
 
 volumes:
-  django-src:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: ./django/src
-  nginx-src:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: ./nginx/src
   static-files:
     driver: local
   media-files:
