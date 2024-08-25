@@ -32,36 +32,32 @@ class UserManagerTest(TestCase):
 class LoginTest(TestCase):
 
 	def setUp(self):
+		self.client = Client()
 		get_user_model().objects.create_user(username='mich', password='mich334@')
 
 	def test_login_without_param(self):
-		c = Client()
-		request = c.post('/auth/login/', {'wesh': 'alors'})
+		request = self.client.post('/auth/login/', {'wesh': 'alors'})
 		self.assertEqual(request.status_code, 400)
-		self.assertFalse('user_id' in c.session)
+		self.assertFalse('user_id' in self.client.session)
 
 	def test_login_wrong_credentials(self):
-		c = Client()
-		request = c.post('/auth/login/', {'username': 'mich', 'password': 'mich334'})
+		request = self.client.post('/auth/login/', {'username': 'mich', 'password': 'mich334'})
 		self.assertEqual(request.status_code, 401)
-		self.assertFalse('user_id' in c.session)
+		self.assertFalse('user_id' in self.client.session)
 
 	def test_login(self):
-		c = Client()
-		request = c.post('/auth/login/', {'username': 'mich', 'password': 'mich334@'})
+		request = self.client.post('/auth/login/', {'username': 'mich', 'password': 'mich334@'})
 		self.assertEqual(request.status_code, 200)
-		self.assertTrue('user_id' in c.session)
+		self.assertTrue('user_id' in self.client.session)
 	
 	def test_logout_without_login(self):
-		c = Client()
-		request = c.get('/auth/logout/')
+		request = self.client.get('/auth/logout/')
 		self.assertEqual(request.status_code, 401)
 
 	def test_logout(self):
-		c = Client()
-		request = c.post('/auth/login/', {'username': 'mich', 'password': 'mich334@'})
+		request = self.client.post('/auth/login/', {'username': 'mich', 'password': 'mich334@'})
 		self.assertEqual(request.status_code, 200)
-		self.assertTrue('user_id' in c.session)
-		request = c.get('/auth/logout/')
+		self.assertTrue('user_id' in self.client.session)
+		request = self.client.get('/auth/logout/')
 		self.assertEqual(request.status_code, 200)
-		self.assertFalse('user_id' in c.session)
+		self.assertFalse('user_id' in self.client.session)
