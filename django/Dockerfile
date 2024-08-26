@@ -11,21 +11,23 @@ EXPOSE 443
 VOLUME [ "/app" ]
 
 COPY conf/requirements.txt requirements.txt
+
 RUN apt update && \
     apt upgrade -y && \
     apt install -y openssl coreutils && \
     apt clean && \
     pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
-COPY src /app
-COPY conf/start.sh /start.sh
-RUN chmod a+x /start.sh && \
+    pip install --no-cache-dir -r requirements.txt && \
     groupadd -r appGroup && \
     useradd -r -g appGroup ${DJANGO_SUPERUSER_USERNAME} && \
     mkdir -p /static /ssl/ && \
-    chown ${DJANGO_SUPERUSER_USERNAME}:appGroup /app /static /ssl
+    chown ${DJANGO_SUPERUSER_USERNAME}:appGroup /static /ssl/
 
 USER ${DJANGO_SUPERUSER_USERNAME}
+
+COPY --chown=${DJANGO_SUPERUSER_USERNAME}:appGroup src /app
+COPY --chown=${DJANGO_SUPERUSER_USERNAME}:appGroup conf/start.sh /start.sh
+
+RUN chmod a+x /start.sh
 
 CMD [ "/start.sh" ]
