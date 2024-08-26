@@ -18,14 +18,16 @@ RUN apt update && \
     pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-COPY src /app
-COPY conf/start.sh /start.sh
-RUN chmod a+x /start.sh && \
-    groupadd -r appGroup && \
+RUN groupadd -r appGroup && \
     useradd -r -g appGroup ${DJANGO_SUPERUSER_USERNAME} && \
     mkdir -p /static /ssl/ && \
-    chown ${DJANGO_SUPERUSER_USERNAME}:appGroup /app /static /ssl
+    chown ${DJANGO_SUPERUSER_USERNAME}:appGroup /static /ssl/
 
 USER ${DJANGO_SUPERUSER_USERNAME}
+
+COPY --chown=${DJANGO_SUPERUSER_USERNAME}:appGroup src /app
+COPY --chown=${DJANGO_SUPERUSER_USERNAME}:appGroup conf/start.sh /start.sh
+
+RUN chmod a+x /start.sh
 
 CMD [ "/start.sh" ]
