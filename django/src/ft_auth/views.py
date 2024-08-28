@@ -1,4 +1,4 @@
-from django.http import HttpResponseBadRequest, HttpResponse, HttpRequest, JsonResponse
+from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST, require_GET
 from django.contrib.auth import authenticate, get_user_model
 from django.db.utils import IntegrityError
@@ -6,7 +6,7 @@ from django.db.utils import IntegrityError
 @require_POST
 def login(request: HttpRequest):
 	if not all(k in request.POST for k in ['username', 'password']):
-		return HttpResponseBadRequest({'message': 'Missing fields (required username and password)'})
+		return JsonResponse({'message': 'Missing fields (required username and password)'}, status=400)
 	username = request.POST['username']
 	password = request.POST['password']
 	user = authenticate(username=username, password=password)
