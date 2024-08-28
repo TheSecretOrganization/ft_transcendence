@@ -2,13 +2,15 @@ from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST, require_GET
 from django.contrib.auth import authenticate, get_user_model
 from django.db.utils import IntegrityError
+import json
 
 @require_POST
 def login(request: HttpRequest):
-	if not all(k in request.POST for k in ['username', 'password']):
+	data = json.loads(request.body.decode())
+	if not all(k in data for k in ['username', 'password']):
 		return JsonResponse({'message': 'Missing fields (required username and password)'}, status=400)
-	username = request.POST['username']
-	password = request.POST['password']
+	username = data['username']
+	password = data['password']
 	user = authenticate(username=username, password=password)
 	if user is None:
 		return JsonResponse({'message': 'Wrong credentials'}, status=401)
@@ -25,10 +27,11 @@ def logout(request: HttpRequest):
 
 @require_POST
 def register(request: HttpRequest):
-	if not all(k in request.POST for k in ['username', 'password']):
+	data = json.loads(request.body.decode())
+	if not all(k in data for k in ['username', 'password']):
 		return JsonResponse({'error': 'Missing fields'}, status=400)
-	username = request.POST['username']
-	password = request.POST['password']
+	username = data['username']
+	password = data['password']
 	try:
 		get_user_model().objects.create_user(username=username, password=password)
 	except IntegrityError:
