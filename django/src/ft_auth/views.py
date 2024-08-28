@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST, require_GET
-from django.contrib.auth import authenticate, login as dlogin, get_user_model
+from django.contrib.auth import authenticate, login as dlogin, logout as dlogout, get_user_model
 from django.db.utils import IntegrityError
 import json
 
@@ -20,7 +20,7 @@ def login(request: HttpRequest):
 @require_GET
 def logout(request: HttpRequest):
 	if 'user_id' in request.session:
-		del request.session['user_id']
+		dlogout(request)
 		return HttpResponse(status=200)
 	else:
 		return JsonResponse({'message': 'You\'re not logged in'}, status=401)
