@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.views.decorators.http import require_POST, require_GET
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import authenticate, login as dlogin, get_user_model
 from django.db.utils import IntegrityError
 import json
 
@@ -14,7 +14,7 @@ def login(request: HttpRequest):
 	user = authenticate(username=username, password=password)
 	if user is None:
 		return JsonResponse({'message': 'Wrong credentials'}, status=401)
-	request.session['user_id'] = user.id
+	dlogin(request, user)
 	return HttpResponse(status=200)
 
 @require_GET
