@@ -1,5 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
+import json
+
+def post(client, url, content):
+	return client.post(url, json.dumps(content), content_type='application/json')
 
 class UserManagerTest(TestCase):
 
@@ -34,23 +38,23 @@ class LoginTest(TestCase):
 		get_user_model().objects.create_user(username='mich', password='mich334@')
 
 	def test_login_without_param(self):
-		request = self.client.post('/auth/login/')
+		request = post(self.client, '/auth/login/', {})
 		self.assertEqual(request.status_code, 400)
 		self.assertFalse('user_id' in self.client.session)
-		request = self.client.post('/auth/login/', {'username': 'mich'})
+		request = post(self.client, '/auth/login/', {'username': 'mich'})
 		self.assertEqual(request.status_code, 400)
 		self.assertFalse('user_id' in self.client.session)
-		request = self.client.post('/auth/login/', {'password': 'mich443@'})
+		request = post(self.client, '/auth/login/', {'password': 'mich443@'})
 		self.assertEqual(request.status_code, 400)
 		self.assertFalse('user_id' in self.client.session)
 
 	def test_login_wrong_credentials(self):
-		request = self.client.post('/auth/login/', {'username': 'mich', 'password': 'mich334'})
+		request = post(self.client, '/auth/login/', {'username': 'mich', 'password': 'mich334'})
 		self.assertEqual(request.status_code, 401)
 		self.assertFalse('user_id' in self.client.session)
 
 	def test_login(self):
-		request = self.client.post('/auth/login/', {'username': 'mich', 'password': 'mich334@'})
+		request = post(self.client, '/auth/login/', {'username': 'mich', 'password': 'mich334@'})
 		self.assertEqual(request.status_code, 200)
 		self.assertTrue('user_id' in self.client.session)
 	
@@ -59,7 +63,7 @@ class LoginTest(TestCase):
 		self.assertEqual(request.status_code, 401)
 
 	def test_logout(self):
-		request = self.client.post('/auth/login/', {'username': 'mich', 'password': 'mich334@'})
+		request = post(self.client, '/auth/login/', {'username': 'mich', 'password': 'mich334@'})
 		self.assertEqual(request.status_code, 200)
 		self.assertTrue('user_id' in self.client.session)
 		request = self.client.get('/auth/logout/')
@@ -72,15 +76,15 @@ class RegisterTest(TestCase):
 		self.client = Client()
 
 	def test_register_without_param(self):
-		request = self.client.post('/auth/register/')
+		request = post(self.client, '/auth/register/', {})
 		self.assertEqual(request.status_code, 400)
-		request = self.client.post('/auth/register/', {'username': 'ok'})
+		request = post(self.client, '/auth/register/', {'username': 'ok'})
 		self.assertEqual(request.status_code, 400)
-		request = self.client.post('/auth/register/', {'password': 'ok'})
+		request = post(self.client, '/auth/register/', {'password': 'ok'})
 		self.assertEqual(request.status_code, 400)
 
 	def test_register(self):
-		request = self.client.post('/auth/register/', {
+		request = post(self.client, '/auth/register/', {
 			'username': 'mich',
 			'password': 'mich334@',
 		})
@@ -90,5 +94,5 @@ class RegisterTest(TestCase):
 
 	def test_register_already_exist(self):
 		get_user_model().objects.create_user(username='bob')
-		request = self.client.post('/auth/register/', {'username': 'bob', 'password': 'ok'})
+		request = post(self.client, '/auth/register/', {'username': 'bob', 'password': 'ok'})
 		self.assertEqual(request.status_code, 400)
