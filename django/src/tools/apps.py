@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class RenderingConfig(AppConfig):
+class ToolsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'rendering'
+    name = 'tools'
