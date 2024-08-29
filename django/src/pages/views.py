@@ -24,3 +24,7 @@ def index(request):
 @require_GET
 def games(request):
 	return create_response(request, 'games.html')
+
+@require_GET
+def error_404(request):
+	return create_response(request, '404.html')
