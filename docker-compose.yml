@@ -75,11 +75,29 @@ services:
     networks:
       - network
     volumes:
-      - postgres-data:/data
+      - postgres-data:/var/lib/postgresql/data
     env_file:
       - .env
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} || exit 1"]
+      interval: 2s
+      timeout: 2s
+      retries: 5
+      start_period: 5s
+
+  redis:
+    container_name: redis
+    build:
+      context: redis
+    expose:
+      - 6379
+    networks:
+      - network
+    depends_on:
+      nginx:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
       interval: 2s
       timeout: 2s
       retries: 5
@@ -95,11 +113,7 @@ volumes:
     driver: local
   media-files:
     driver: local
-  postgres-data:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: ./data/postgres
   ssl-keys:
+    driver: local
+  postgres-data:
     driver: local
