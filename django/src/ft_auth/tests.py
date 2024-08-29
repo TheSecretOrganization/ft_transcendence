@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, get_user
 from django.test import Client, TestCase
 import json
 
@@ -40,23 +40,23 @@ class LoginTest(TestCase):
 	def test_login_without_param(self):
 		request = post(self.client, '/auth/login/', {})
 		self.assertEqual(request.status_code, 400)
-		self.assertFalse('user_id' in self.client.session)
+		self.assertFalse(get_user(self.client).is_authenticated)
 		request = post(self.client, '/auth/login/', {'username': 'mich'})
 		self.assertEqual(request.status_code, 400)
-		self.assertFalse('user_id' in self.client.session)
+		self.assertFalse(get_user(self.client).is_authenticated)
 		request = post(self.client, '/auth/login/', {'password': 'mich443@'})
 		self.assertEqual(request.status_code, 400)
-		self.assertFalse('user_id' in self.client.session)
+		self.assertFalse(get_user(self.client).is_authenticated)
 
 	def test_login_wrong_credentials(self):
 		request = post(self.client, '/auth/login/', {'username': 'mich', 'password': 'mich334'})
 		self.assertEqual(request.status_code, 401)
-		self.assertFalse('user_id' in self.client.session)
+		self.assertFalse(get_user(self.client).is_authenticated)
 
 	def test_login(self):
 		request = post(self.client, '/auth/login/', {'username': 'mich', 'password': 'mich334@'})
 		self.assertEqual(request.status_code, 200)
-		self.assertTrue('user_id' in self.client.session)
+		self.assertTrue(get_user(self.client).is_authenticated)
 	
 	def test_logout_without_login(self):
 		request = self.client.get('/auth/logout/')
@@ -65,10 +65,10 @@ class LoginTest(TestCase):
 	def test_logout(self):
 		request = post(self.client, '/auth/login/', {'username': 'mich', 'password': 'mich334@'})
 		self.assertEqual(request.status_code, 200)
-		self.assertTrue('user_id' in self.client.session)
+		self.assertTrue(get_user(self.client).is_authenticated)
 		request = self.client.get('/auth/logout/')
 		self.assertEqual(request.status_code, 200)
-		self.assertFalse('user_id' in self.client.session)
+		self.assertFalse(get_user(self.client).is_authenticated)
 
 class RegisterTest(TestCase):
 
