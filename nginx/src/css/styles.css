@@ -1,52 +1,79 @@
-#wrapper {
-    width: 100%;
+/* General */
+html {
+    box-sizing: border-box;
+    font-size: 100%;
     height: 100%;
-    display: flex;
-    align-items: stretch;
+    scroll-behavior: smooth;
 }
 
-#sidebar-wrapper {
-    height: 100vh;
-    min-width: 250px;
-    max-width: 250px;
-    transition: all 0.3s ease;
-    text-align: center;
+*, *::before, *::after {
+    box-sizing: inherit;
 }
 
-.sidebar-heading {
-    padding: 1rem;
-    font-size: 1.5rem;
-    text-align: center;
+body {
+    min-height: 100%;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
 }
 
 .list-group-item {
-    padding: 1rem 1.5rem;
+    padding: 10px;
+    cursor: pointer;
     text-align: center;
 }
 
-#wrapper.toggled #sidebar-wrapper {
+.list-group-item.active {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Page Content */
+#page-container-wrapper {
+    position: relative;
+}
+
+/* Sidebar Toggle */
+#sidebar-toggle {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    font-size: 20px;
+    z-index: 1050;
+    transition: all 0.3s ease;
+}
+
+#sidebar-toggle.toggled {
+    margin-left: 250px;
+}
+
+/* Sidebar */
+#sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 250px;
+    border-radius: 0 5px 5px 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    text-align: center;
+}
+
+#sidebar-wrapper.toggled {
     margin-left: -250px;
 }
 
-#menu-toggle {
-    margin: 5px;
+#sidebar-wrapper .sidebar-heading {
+    padding: 1rem;
+    font-size: 1.5rem;
 }
 
-#page-content-wrapper {
-    width: 100%;
-    padding: 15px;
-}
-
-.container-fluid.center-content {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#gameSelection {
-    display: block;
-    margin-block: 5px;
+#sidebar-wrapper .list-group-item {
+    padding: 1rem 1.5rem;
 }
 
 #game {
@@ -57,8 +84,4 @@
 #gameCanvas {
     background-color: black;
     border: 3px solid lightskyblue;
-}
-
-.gameBtn {
-    margin: 5px;
 }
