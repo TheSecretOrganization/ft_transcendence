@@ -1,6 +1,6 @@
-function route(event) {
-    event.preventDefault();
-    window.history.pushState({}, "", event.target.href);
+function route(e) {
+    e.preventDefault();
+    window.history.pushState({}, "", e.target.getAttribute('data-route'));
     handleLocation();
 };
 
@@ -19,7 +19,7 @@ async function fetchPage(pageName) {
 };
 
 function loadScripts() {
-    const container = document.getElementById("page");
+    const container = document.getElementById("page-container");
     const scripts = container.querySelectorAll('script');
 
     scripts.forEach(script => {
@@ -42,7 +42,7 @@ async function handleLocation() {
         html = await fetchPage('404');
     }
 
-    document.getElementById("page").innerHTML = html;
+    document.getElementById("page-container").innerHTML = html;
     loadScripts();
     updateTitle(pageName);
 };
@@ -61,15 +61,16 @@ document.addEventListener("DOMContentLoaded", () => {
     window.onpopstate = handleLocation;
     window.route = route;
     handleLocation();
-
-    document.addEventListener("click", (event) => {
-        if (event.target.matches("a[data-route]")) {
-            route(event);
-        }
-    });
 });
 
-document.getElementById("menu-toggle").addEventListener("click", function (e) {
+document.addEventListener("click", (e) => {
+    if (e?.target?.hasAttribute('data-route')) {
+        route(e);
+    }
+});
+
+document.getElementById("sidebar-toggle").addEventListener("click", function (e) {
     e.preventDefault();
-    document.getElementById("wrapper").classList.toggle("toggled");
+    document.getElementById("sidebar-wrapper").classList.toggle("toggled");
+    this.classList.toggle("toggled");
 });
