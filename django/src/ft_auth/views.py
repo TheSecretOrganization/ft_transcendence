@@ -19,7 +19,7 @@ def login(request: HttpRequest):
 
 @require_GET
 def logout(request: HttpRequest):
-	if 'user_id' in request.session:
+	if request.user.is_authenticated:
 		dlogout(request)
 		return HttpResponse(status=200)
 	else:
