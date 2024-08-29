@@ -12,18 +12,18 @@
 </head>
 
 <body>
-	<div id="wrapper" class="d-flex">
-		<div id="sidebar-wrapper" class="bg-light border-right">
+	<div id="wrapper">
+		<div id="sidebar-wrapper" class="bg-light border toggled">
 			<div class="sidebar-heading">ft_transcendence</div>
-			<div class="list-group list-group-flush">
-				<a href="/" class="list-group-item list-group-item-action bg-light" data-route>Home</a>
-				<a href="/games" class="list-group-item list-group-item-action bg-light" data-route>Games</a>
-			</div>
+			<ul id="sidebar-list" class="list-group list-group-flush">
+				<li class="list-group-item list-group-item-action" data-route="/">Home</li>
+				<li class="list-group-item list-group-item-action" data-route="/games">Games</li>
+			</ul>
 		</div>
 
-		<div id="page-content-wrapper">
-			<button id="menu-toggle" class="btn btn-primary">Menu</button>
-			<div id="page">
+		<div id="page-container-wrapper">
+			<button id="sidebar-toggle" class="btn btn-primary">☰</button>
+			<div id="page-container">
 			</div>
 		</div>
 	</div>
