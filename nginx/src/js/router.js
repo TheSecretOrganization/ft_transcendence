@@ -34,6 +34,16 @@ function loadScripts() {
     });
 };
 
+function updateActiveRoute(path) {
+    document.querySelectorAll('#sidebar-list .list-group-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    const activeRoute = document.querySelector(`[data-route="${path}"]`);
+    if (activeRoute) {
+        activeRoute.classList.add('active');
+    }
+}
+
 async function handleLocation() {
     let path = window.location.pathname;
     let pageName = path === '/' ? 'index' : path.substring(1);
@@ -45,6 +55,7 @@ async function handleLocation() {
     document.getElementById("page-container").innerHTML = html;
     loadScripts();
     updateTitle(pageName);
+    updateActiveRoute(path);
 };
 
 function updateTitle(pageName) {
