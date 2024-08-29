@@ -24,5 +24,6 @@ router = routers.DefaultRouter()
 urlpatterns = [
     path('/', include(router.urls)),
     path('admin/', admin.site.urls),
+    path('pages/', include('pages.urls')),
     path('pages/<str:page_name>/', PagesView.as_view(), name='pages'),
 ]
