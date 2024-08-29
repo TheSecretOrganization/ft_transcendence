@@ -75,7 +75,7 @@ services:
     networks:
       - network
     volumes:
-      - postgres-data:/data
+      - postgres-data:/var/lib/postgresql/data
     env_file:
       - .env
     healthcheck:
@@ -95,11 +95,7 @@ volumes:
     driver: local
   media-files:
     driver: local
-  postgres-data:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: ./data/postgres
   ssl-keys:
+    driver: local
+  postgres-data:
     driver: local
