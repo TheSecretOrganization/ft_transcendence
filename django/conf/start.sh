@@ -40,4 +40,4 @@ python manage.py collectstatic --noinput
 echo "Static files collected."
 
 echo "Starting Daphne server with SSL..."
-daphne -e ssl:443:privateKey=/ssl/${HOSTNAME}.key:certKey=/ssl/${HOSTNAME}.crt ft_transcendence.asgi:application
+daphne -e ssl:443:privateKey=/ssl/${HOSTNAME}.key:certKey=/ssl/${HOSTNAME}.crt core.asgi:application
