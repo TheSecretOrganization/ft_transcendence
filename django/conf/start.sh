@@ -39,5 +39,5 @@ echo "Collecting static files..."
 python manage.py collectstatic --noinput
 echo "Static files collected."
 
-echo "Starting Gunicorn server with SSL..."
-gunicorn --certfile=/ssl/${HOSTNAME}.crt --keyfile=/ssl/${HOSTNAME}.key ft_transcendence.wsgi:application --bind 0.0.0.0:443
+echo "Starting Daphne server with SSL..."
+daphne -e ssl:443:privateKey=/ssl/${HOSTNAME}.key:certKey=/ssl/${HOSTNAME}.crt ft_transcendence.asgi:application
