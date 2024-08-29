@@ -34,6 +34,16 @@ function loadScripts() {
     });
 };
 
+function updateTitle(pageName) {
+    const titles = {
+        "index": "Home",
+        "games": "Games",
+        "404": "Page Not Found"
+    };
+    const title = titles[pageName] || "Page Not Found";
+    document.title = title;
+};
+
 function updateActiveRoute(path) {
     document.querySelectorAll('#sidebar-list .list-group-item').forEach(item => {
         item.classList.remove('active');
@@ -56,16 +66,6 @@ async function handleLocation() {
     loadScripts();
     updateTitle(pageName);
     updateActiveRoute(path);
-};
-
-function updateTitle(pageName) {
-    const titles = {
-        "index": "Home",
-        "games": "Games",
-        "404": "Page Not Found"
-    };
-    const title = titles[pageName] || "Page Not Found";
-    document.title = title;
 };
 
 document.addEventListener("DOMContentLoaded", () => {
