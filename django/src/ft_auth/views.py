@@ -8,12 +8,12 @@ import json
 def login(request: HttpRequest):
 	data = json.loads(request.body.decode())
 	if not all(k in data for k in ['username', 'password']):
-		return JsonResponse({'message': 'Missing fields (required username and password)'}, status=400)
+		return JsonResponse({'error': 'Missing fields (required username and password)'}, status=400)
 	username = data['username']
 	password = data['password']
 	user = authenticate(username=username, password=password)
 	if user is None:
-		return JsonResponse({'message': 'Wrong credentials'}, status=401)
+		return JsonResponse({'error': 'Wrong credentials'}, status=401)
 	dlogin(request, user)
 	return HttpResponse(status=200)
 
@@ -23,7 +23,7 @@ def logout(request: HttpRequest):
 		dlogout(request)
 		return HttpResponse(status=200)
 	else:
-		return JsonResponse({'message': 'You\'re not logged in'}, status=401)
+		return JsonResponse({'error': 'You\'re not logged in'}, status=401)
 
 @require_POST
 def register(request: HttpRequest):
