@@ -8,22 +8,17 @@ on:
 jobs:
   docker-compose:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
       - name: Create .env file
         run: cp .env.template .env
-
       - name: Build and start Docker containers
         run: docker compose up --build -d
-
       - name: Wait for services to initialize
         run: sleep 30
-
       - name: Perform health checks
         run: |
           services=$(docker compose ps --services)
