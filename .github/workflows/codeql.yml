@@ -1,4 +1,4 @@
-name: Build
+name: CodeQL
 on:
   push:
     branches:

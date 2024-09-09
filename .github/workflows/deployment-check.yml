@@ -1,4 +1,4 @@
-name: Deployment Check
+name: Deployment
 on:
   push:
     branches:
