@@ -26,8 +26,7 @@ if [ "$DJANGO_SUPERUSER_USERNAME" ]; then
         echo "Superuser ${DJANGO_SUPERUSER_USERNAME} does not exist. Creating superuser..."
         (python manage.py createsuperuser \
             --noinput \
-            --username $DJANGO_SUPERUSER_USERNAME \
-            --email $DJANGO_SUPERUSER_EMAIL) \
+            --username $DJANGO_SUPERUSER_USERNAME) \
         || true
         echo "Superuser ${DJANGO_SUPERUSER_USERNAME} created."
     fi
