@@ -1,0 +1,25 @@
+<h1>Login</h1>
+
+<form id="login-form" data-url="/api/auth/login/">
+	<div id="login-error"></div>
+	{% csrf_token %}
+	<div>
+		<label for="username">Username</label>
+		<input id="username" type="text" autocomplete="username" />
+	</div>
+	<div>
+		<label for="password">Password</label>
+		<input id="password" type="password" />
+	</div>
+	<button id="form-btn">Login</button>
+</form>
+
+<script>
+	document.getElementById('form-btn').onclick = function(e) {
+		document.getElementById('login-error').textContent = '';
+		e.preventDefault();
+		submitForm('login-form', () => route('/'), (json) => {
+			document.getElementById('login-error').textContent = json.error;
+		});
+	};
+</script>
