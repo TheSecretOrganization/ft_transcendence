@@ -1,9 +1,8 @@
 
-function route(e) {
-	e.preventDefault();
-	window.history.pushState({}, "", e.target.getAttribute('data-route'));
+function route(url) {
+	window.history.pushState({}, "", url);
 	handleLocation();
-};
+}
 
 async function fetchPage(pageName) {
 	const response = await fetch(`/api/pages/${pageName}/`);
@@ -77,7 +76,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("click", (e) => {
 	if (e?.target?.hasAttribute('data-route')) {
-		route(e);
+		e.preventDefault();
+		route(e.target.getAttribute('data-route'));
 	}
 });
 
