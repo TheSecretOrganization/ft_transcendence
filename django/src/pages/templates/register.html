@@ -1,0 +1,46 @@
+{% extends "./extends/base.html" %}
+
+{% block content %}
+<h1>Register</h1>
+
+<form id="register-form" data-url="/api/auth/register/">
+	<div id="register-error"></div>
+	{% csrf_token %}
+	<div>
+		<label for="username">Username</label>
+		<input id="username" type="text" autocomplete="username" />
+	</div>
+	<div>
+		<label for="password">Password</label>
+		<input id="password" type="password" />
+	</div>
+	<div></div>
+		<label for="password-confirm">Confirm password</label>
+		<input id="password-confirm" type="password" data-ignore="true" />
+	</div>
+	<button id="register-btn">Register</button>
+</form>
+
+<script>
+	function validate() {
+		let password = document.getElementById('password').value;
+		let passwordcfrm = document.getElementById('password-confirm').value;
+
+		return password == passwordcfrm;
+	}
+
+	document.getElementById('register-btn').onclick = function(e) {
+		document.getElementById('register-error').textContent = '';
+		e.preventDefault();
+
+		if (!validate()) {
+			document.getElementById('register-error').textContent = 'Passwords doesn\'t match';
+			return ;
+		}
+
+		submitForm('register-form', () => route('/'), (json) => {
+			document.getElementById('register-error').textContent = json.error;
+		});
+	};
+</script>
+{% endblock %}
