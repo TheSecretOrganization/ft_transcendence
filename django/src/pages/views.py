@@ -10,7 +10,7 @@ def create_response(
 		title: str|None = None
 		):
 	if need_authentication and not request.user.is_authenticated:
-		return JsonResponse({'error': 'Need authentication'}, status=403)
+		return JsonResponse({'error': 'Need authentication', 'redirect': '/login'}, status=403)
 	content = {}
 	content['html'] = get_template(template_name).render(context, request)
 	if title:
@@ -24,6 +24,12 @@ def index(request):
 @require_GET
 def games(request):
 	return create_response(request, 'games.html')
+
+@require_GET
+def login(request: HttpRequest):
+	if (request.user.is_authenticated):
+		return JsonResponse({'redirect': '/'}, status=403)
+	return create_response(request, 'login.html', title='Login')
 
 @require_GET
 def error_404(request):
