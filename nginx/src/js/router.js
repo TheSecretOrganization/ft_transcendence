@@ -1,16 +1,20 @@
 
-function route(e) {
-	e.preventDefault();
-	window.history.pushState({}, "", e.target.getAttribute('data-route'));
+function route(url) {
+	window.history.pushState({}, "", url);
 	handleLocation();
-};
+}
 
 async function fetchPage(pageName) {
 	const response = await fetch(`/api/pages/${pageName}/`);
-	if (!response.ok) {
-		console.error(`Failed to fetch ${pageName}: ${response.statusText}`);
-		return null;
+
+	if (response.status != 200) {
+		response.json().then(json => {
+			if ('redirect' in json)
+				route(json.redirect);
+		}).catch(error => console.error(error));
+		return ;
 	}
+
 	const data = await response.json();
 	if (data.error) {
 		console.error(`Failed to fetch ${pageName}: ${data.error}`);
@@ -77,7 +81,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("click", (e) => {
 	if (e?.target?.hasAttribute('data-route')) {
-		route(e);
+		e.preventDefault();
+		route(e.target.getAttribute('data-route'));
 	}
 });
 
