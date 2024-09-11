@@ -1,3 +1,6 @@
+{% extends "./extends/base.html" %}
+
+{% block content %}
 <h1>Login</h1>
 
 <form id="login-form" data-url="/api/auth/login/">
@@ -23,3 +26,4 @@
 		});
 	};
 </script>
+{% endblock %}
