@@ -85,9 +85,3 @@ document.addEventListener("click", (e) => {
 		route(e.target.getAttribute('data-route'));
 	}
 });
-
-document.getElementById("sidebar-toggle").addEventListener("click", function (e) {
-	e.preventDefault();
-	document.getElementById("sidebar-wrapper").classList.toggle("toggled");
-	this.classList.toggle("toggled");
-});
