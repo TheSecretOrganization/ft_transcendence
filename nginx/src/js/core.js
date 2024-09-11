@@ -11,8 +11,11 @@ function submitForm(id, oncomplete, onerror) {
 		throw new Error(`Missing data url in form id ${id}`);
 	let url = form.dataset.url;
 
-	for (let input of inputs)
+	for (let input of inputs) {
+		if (input.type == 'hidden') continue ;
+		if ('ignore' in input.dataset) continue ;
 		values[input.id] = input.value
+	}
 
 	postFetch(url, getCookie('csrftoken'), values)
 		.then((response) => {
