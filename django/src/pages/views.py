@@ -32,5 +32,11 @@ def login(request: HttpRequest):
 	return create_response(request, 'login.html', title='Login')
 
 @require_GET
+def register(request: HttpRequest):
+	if (request.user.is_authenticated):
+		return JsonResponse({'redirect': '/'}, status=403)
+	return create_response(request, 'register.html', title='Register')
+
+@require_GET
 def error_404(request):
 	return create_response(request, '404.html')
