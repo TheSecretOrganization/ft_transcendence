@@ -7,6 +7,9 @@ function route(url) {
 async function fetchPage(pageName) {
 	const response = await fetch(`/api/pages/${pageName}/`);
 
+	if (response.status == 404)
+		return null;
+
 	if (response.status != 200) {
 		response.json().then(json => {
 			if ('redirect' in json)
