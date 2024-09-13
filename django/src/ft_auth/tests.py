@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model, get_user
 from django.test import Client, TestCase
 import json
@@ -18,6 +19,13 @@ class UserManagerTest(TestCase):
 			user_model.objects.create_user()
 		with self.assertRaises(TypeError):
 			user_model.objects.create_user(username='')
+
+	def test_invalid_username(self):
+		user_model = get_user_model()
+		with self.assertRaises(ValidationError):
+			user_model.objects.create_user(username='a', password='password')
+		with self.assertRaises(ValidationError):
+			user_model.objects.create_user(username='a b', password='password')
 
 	def test_create_superuser(self):
 		user_model = get_user_model()
