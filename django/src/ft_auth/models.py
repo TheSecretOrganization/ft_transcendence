@@ -1,9 +1,11 @@
 from django.db import models
+from django.core.validators import MinLengthValidator
 from django.contrib.auth.models import AbstractBaseUser
+from .validators import validate_alnum
 from .manager import UserManager
 
 class User(AbstractBaseUser):
-	username = models.CharField(max_length=15, unique=True)
+	username = models.CharField(max_length=15, unique=True, validators=[MinLengthValidator(3), validate_alnum])
 	is_active = models.BooleanField(default=True)
 	is_admin = models.BooleanField(default=False)
 

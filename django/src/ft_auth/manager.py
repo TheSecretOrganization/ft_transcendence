@@ -8,6 +8,7 @@ class UserManager(BaseUserManager):
 			raise TypeError(_('No username provided'))
 		user = self.model(username=username)
 		user.set_password(password)
+		user.clean_fields()
 		user.save()
 		return user
 
