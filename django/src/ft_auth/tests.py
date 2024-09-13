@@ -23,6 +23,8 @@ class UserManagerTest(TestCase):
 	def test_invalid_username(self):
 		user_model = get_user_model()
 		with self.assertRaises(ValidationError):
+			user_model.objects.create_user(username='abcdefghijklmnopqrstuvwxyz', password='password')
+		with self.assertRaises(ValidationError):
 			user_model.objects.create_user(username='a', password='password')
 		with self.assertRaises(ValidationError):
 			user_model.objects.create_user(username='a b', password='password')
