@@ -54,3 +54,11 @@ function postFetch(url, csrf, body) {
 		body: JSON.stringify(body),
 	});
 }
+
+function logout() {
+	fetch('/api/auth/logout/')
+		.then(r => {
+			if (r.status == 200) route('/');
+			else r.json().then(json => console.log(json.error));
+		}).catch(error => console.error(error));
+}
