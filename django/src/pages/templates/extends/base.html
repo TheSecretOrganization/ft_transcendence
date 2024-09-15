@@ -5,7 +5,7 @@
 			<li class="list-group-item list-group-item-action" data-route="/">Home</li>
 			<li class="list-group-item list-group-item-action" data-route="/games">Games</li>
 			{% if user.is_authenticated %}
-				<li class="list-group-item list-group-item-action">Logout</li>
+				<li class="list-group-item list-group-item-action" onclick="logout()">Logout</li>
 			{% else %}
 				<li class="list-group-item list-group-item-action" data-route="/login">Login</li>
 				<li class="list-group-item list-group-item-action" data-route="/register">Register</li>
