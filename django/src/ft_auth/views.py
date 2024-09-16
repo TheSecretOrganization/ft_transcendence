@@ -9,7 +9,7 @@ import json
 @require_POST
 def login(request: HttpRequest):
 	data = json.loads(request.body.decode())
-	if not all(k in data for k in ['username', 'password']):
+	if not data or not all(k in data for k in ['username', 'password']):
 		return JsonResponse({'error': 'Missing fields (required username and password)'}, status=400)
 	user = authenticate(username=data['username'], password=data['password'])
 	if user is None:
@@ -28,7 +28,7 @@ def logout(request: HttpRequest):
 @require_POST
 def register(request: HttpRequest):
 	data = json.loads(request.body.decode())
-	if not all(k in data for k in ['username', 'password']):
+	if not data or not all(k in data for k in ['username', 'password']):
 		return JsonResponse({'error': 'Missing fields'}, status=400)
 	try:
 		validate_password(data['password'])
