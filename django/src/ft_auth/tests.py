@@ -113,3 +113,44 @@ class RegisterTest(TestCase):
 		self.assertEqual(request.status_code, 400)
 		with self.assertRaises(User.DoesNotExist):
 			get_user_model().objects.get(username='mich')
+
+class ChangePasswordTest(TestCase):
+
+	def setUp(self):
+		self.client = Client()
+		self.route = '/auth/password/update/'
+		self.password = 'pBrp#fg4LKDeg8$X'
+		self.new_password = 'n@LtmYNaYfHtA69$'
+		get_user_model().objects.create_user(username='bob', password=self.password)
+		self.client.login(username='bob', password=self.password)
+
+	def test_change_password(self):
+		request = post(self.client, self.route,
+				 {'current_password': self.password, 'new_password': self.new_password})
+		self.assertEqual(request.status_code, 200)
+		user = get_user_model().objects.get(username='bob')
+		self.assertFalse(user.check_password(self.password))
+		self.assertTrue(user.check_password(self.new_password))
+
+	def test_change_password_without_param(self):
+		request = post(self.client, self.route, None)
+		self.assertEqual(request.status_code, 400)
+		request = post(self.client, self.route, {'none': 'none'})
+		self.assertEqual(request.status_code, 400)
+		request = post(self.client, self.route, {'current_password': 'none'})
+		self.assertEqual(request.status_code, 400)
+		request = post(self.client, self.route, {'new_password': 'none'})
+		self.assertEqual(request.status_code, 400)
+
+	def test_change_wrong_password(self):
+		request = post(self.client, self.route,
+				 {'current_password': self.new_password, 'new_password': self.password})
+		self.assertEqual(request.status_code, 400)
+		self.assertTrue(get_user(self.client).check_password(self.password))
+		self.assertFalse(get_user(self.client).check_password(self.new_password))
+
+	def test_change_invalid_password(self):
+		request = post(self.client, self.route, 
+				 {'current_password': self.password, 'new_password': '6chars'})
+		self.assertEqual(request.status_code, 400)
+		self.assertTrue(get_user(self.client).check_password(self.password))
