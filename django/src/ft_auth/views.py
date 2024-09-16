@@ -38,3 +38,20 @@ def register(request: HttpRequest):
 	except ValidationError as error:
 		return JsonResponse({'error': error.messages}, status=400)
 	return HttpResponse(status=200)
+
+@require_POST
+def password_update(request: HttpRequest):
+	data = json.loads(request.body.decode())
+	if not data or not all(k in data for k in ['current_password', 'new_password']):
+		return JsonResponse({'error': 'Missing fields'}, status=400)
+	if not request.user.is_authenticated:
+		return JsonResponse({'error': 'You must be authenticated to update password'}, status=401)
+	if not request.user.check_password(data['current_password']):
+		return JsonResponse({'error': 'Invalid current password'}, status=400)
+	try:
+		validate_password(data['new_password'])
+	except ValidationError as error:
+		return JsonResponse({'error': error.messages}, status=400)
+	request.user.set_password(data['new_password'])
+	request.user.save()
+	return HttpResponse(status=200)
