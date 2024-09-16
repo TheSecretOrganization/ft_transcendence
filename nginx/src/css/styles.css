@@ -1,4 +1,3 @@
-/* General */
 html {
 	box-sizing: border-box;
 	font-size: 100%;
@@ -31,57 +30,6 @@ body {
 	color: white;
 }
 
-/* Page Content */
 #page-container-wrapper {
 	position: relative;
-}
-
-/* Sidebar Toggle */
-#sidebar-toggle {
-	position: fixed;
-	top: 1rem;
-	left: 1rem;
-	font-size: 20px;
-	z-index: 1050;
-	transition: all 0.3s ease;
-}
-
-#sidebar-toggle.toggled {
-	margin-left: 250px;
-}
-
-/* Sidebar */
-#sidebar-wrapper {
-	position: fixed;
-	top: 0;
-	left: 0;
-	height: 100vh;
-	width: 250px;
-	border-radius: 0 5px 5px 0;
-	transition: all 0.3s ease;
-	z-index: 1000;
-	text-align: center;
-}
-
-#sidebar-wrapper.toggled {
-	margin-left: -250px;
-}
-
-#sidebar-wrapper .sidebar-heading {
-	padding: 1rem;
-	font-size: 1.5rem;
-}
-
-#sidebar-wrapper .list-group-item {
-	padding: 1rem 1.5rem;
-}
-
-#game {
-	display: none;
-	margin-block: 5px;
-}
-
-#gameCanvas {
-	background-color: black;
-	border: 3px solid lightskyblue;
 }
