@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model, get_user
 from django.test import Client, TestCase
+from .models import User
 import json
 
 def post(client, url, content):
@@ -106,3 +107,9 @@ class RegisterTest(TestCase):
 		get_user_model().objects.create_user(username='bob')
 		request = post(self.client, '/auth/register/', {'username': 'bob', 'password': 'ok'})
 		self.assertEqual(request.status_code, 400)
+
+	def test_register_invalid_password(self):
+		request = post(self.client, '/auth/register/', {'username': 'mich', 'new_password': '6chars'})
+		self.assertEqual(request.status_code, 400)
+		with self.assertRaises(User.DoesNotExist):
+			get_user_model().objects.get(username='mich')
