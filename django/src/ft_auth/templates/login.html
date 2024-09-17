@@ -17,6 +17,12 @@
 	<button id="form-btn">Login</button>
 </form>
 
+<h2>Or</h2>
+
+<div>
+	<a href="{{ oauth_url }}">Login with 42</a>
+</div>
+
 <script>
 	document.getElementById('form-btn').onclick = function(e) {
 		document.getElementById('login-error').textContent = '';
