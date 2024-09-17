@@ -78,11 +78,13 @@ TEMPLATES = [
 
 ASGI_APPLICATION = 'core.asgi.application'
 
+REDIS_HOST = "redis"
+REDIS_PORT = 6379
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis", 6379)],
+            "hosts": [(REDIS_HOST, REDIS_PORT)],
         },
     },
 }
