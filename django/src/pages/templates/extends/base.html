@@ -2,13 +2,13 @@
 	<div id="sidebar-wrapper" class="bg-light border toggled">
 		<div class="sidebar-heading">ft_transcendence</div>
 		<ul id="sidebar-list" class="list-group list-group-flush">
-			<li class="list-group-item list-group-item-action" data-route="/">Home</li>
-			<li class="list-group-item list-group-item-action" data-route="/games">Games</li>
+			<li><a class="list-group-item list-group-item-action" data-route="/" href="/">Home</a></li>
+			<li><a class="list-group-item list-group-item-action" data-route="/games" href="/games">Games</a></li>
 			{% if user.is_authenticated %}
-				<li class="list-group-item list-group-item-action"><a onclick="logout()">Logout</a></li>
+				<li><a class="list-group-item list-group-item-action" onclick="logout()">Logout</a></li>
 			{% else %}
-				<li class="list-group-item list-group-item-action" data-route="/login">Login</li>
-				<li class="list-group-item list-group-item-action" data-route="/register">Register</li>
+				<li><a class="list-group-item list-group-item-action" data-route="/login" href="/login">Login</a></li>
+				<li><a class="list-group-item list-group-item-action" data-route="/register" href="/register">Register</a></li>
 			{% endif %}
 		</ul>
 	</div>
