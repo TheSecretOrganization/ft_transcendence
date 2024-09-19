@@ -25,4 +25,11 @@
 		document.getElementById("sidebar-wrapper").classList.toggle("toggled");
 		this.classList.toggle("toggled");
 	});
+
+	document.querySelectorAll('[data-route]').forEach((element) => {
+		element.addEventListener("click", (event) => {
+			event.preventDefault();
+			route(event.target.getAttribute('href'));
+		});
+	});
 </script>

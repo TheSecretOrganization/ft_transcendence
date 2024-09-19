@@ -77,11 +77,4 @@ document.addEventListener("DOMContentLoaded", () => {
 	window.onpopstate = handleLocation;
 	window.route = route;
 	handleLocation();
-});
-
-document.querySelectorAll('a[data-route]').forEach((el) => {
-	el.addEventListener("click", (e) => {
-		e.preventDefault();
-		route(e.target.getAttribute('href'));
-	});
 })
