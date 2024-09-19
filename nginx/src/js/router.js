@@ -53,10 +53,7 @@ function updateTitle(pageName) {
 }
 
 function updateActiveRoute(path) {
-	document.querySelectorAll('#sidebar-list .list-group-item').forEach(item => {
-		item.classList.remove('active');
-	});
-	const activeRoute = document.querySelector(`[data-route="${path}"]`);
+	const activeRoute = document.querySelector(`a[href="${path}"]`);
 	if (activeRoute) {
 		activeRoute.classList.add('active');
 	}
