@@ -82,9 +82,9 @@ document.addEventListener("DOMContentLoaded", () => {
 	handleLocation();
 });
 
-document.addEventListener("click", (e) => {
-	if (e?.target?.hasAttribute('data-route')) {
+document.querySelectorAll('a[data-route]').forEach((el) => {
+	el.addEventListener("click", (e) => {
 		e.preventDefault();
-		route(e.target.getAttribute('data-route'));
-	}
+		route(e.target.getAttribute('href'));
+	});
 });
