@@ -19,11 +19,11 @@ def create_response(
 
 @require_GET
 def index(request):
-	return create_response(request, 'index.html')
+	return create_response(request, 'index.html', title="Home")
 
 @require_GET
 def games(request):
-	return create_response(request, 'games.html')
+	return create_response(request, 'games.html', title='Games')
 
 @require_GET
 def login(request: HttpRequest):
@@ -39,4 +39,4 @@ def register(request: HttpRequest):
 
 @require_GET
 def error_404(request):
-	return create_response(request, '404.html')
+	return create_response(request, '404.html', title="Page not found")

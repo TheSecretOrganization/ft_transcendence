@@ -23,17 +23,10 @@ async function fetchPage(pageName) {
 		console.error(`Failed to fetch ${pageName}: ${data.error}`);
 		return null;
 	}
-	return data.html;
-}
 
-function updateTitle(pageName) {
-	const titles = {
-		"index": "Home",
-		"games": "Games",
-		"404": "Page Not Found"
-	};
-	const title = titles[pageName] || "Page Not Found";
-	document.title = title;
+	document.title = ('title' in data) ? data.title : "Missing title";
+
+	return data.html;
 }
 
 function updateActiveRoute(path) {
@@ -54,7 +47,6 @@ async function handleLocation() {
 	const content = document.getElementById("content");
 	content.innerHTML = html;
 	content.querySelectorAll('script').forEach(script => eval(script.textContent));
-	updateTitle(pageName);
 	updateActiveRoute(path);
 }
 
