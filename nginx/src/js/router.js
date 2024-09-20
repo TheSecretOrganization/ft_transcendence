@@ -24,10 +24,7 @@ async function fetchPage(pageName) {
 		return null;
 	}
 
-	if ('title' in data)
-		document.title = data.title;
-	else
-		document.title = "Missing title";
+	document.title = ('title' in data) ? data.title : "Missing title";
 
 	return data.html;
 }
