@@ -78,13 +78,11 @@ TEMPLATES = [
 
 ASGI_APPLICATION = 'core.asgi.application'
 
-REDIS_HOST = os.getenv('REDIS_HOST')
-REDIS_PORT = int(os.getenv('REDIS_PORT', default="6379"))
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(REDIS_HOST, REDIS_PORT)],
+            "hosts": [("redis", 6379)],
         },
     },
 }
