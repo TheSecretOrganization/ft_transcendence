@@ -15,7 +15,7 @@ async function fetchPage(pageName) {
 			if ('redirect' in json)
 				route(json.redirect);
 		}).catch(error => console.error(error));
-		return ;
+		return;
 	}
 
 	const data = await response.json();
@@ -24,22 +24,6 @@ async function fetchPage(pageName) {
 		return null;
 	}
 	return data.html;
-}
-
-function loadScripts() {
-	const container = document.getElementById("content");
-	const scripts = container.querySelectorAll('script');
-
-	scripts.forEach(script => {
-		const newScript = document.createElement('script');
-		if (script.src) {
-			newScript.src = script.src;
-		} else {
-			newScript.textContent = script.textContent;
-		}
-		document.body.appendChild(newScript);
-		document.body.removeChild(newScript);
-	});
 }
 
 function updateTitle(pageName) {
@@ -67,8 +51,9 @@ async function handleLocation() {
 		html = await fetchPage('404');
 	}
 
-	document.getElementById("content").innerHTML = html;
-	loadScripts();
+	const content = document.getElementById("content");
+	content.innerHTML = html;
+	content.querySelectorAll('script').forEach(script => eval(script.textContent));
 	updateTitle(pageName);
 	updateActiveRoute(path);
 }
