@@ -38,7 +38,7 @@
 			return ;
 		}
 
-		submitForm('register-form', () => route('/'), (json) => {
+		submitForm('register-form', () => route('/login'), (json) => {
 			document.getElementById('register-error').textContent = json.error;
 		});
 	};
