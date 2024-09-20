@@ -2,13 +2,13 @@
 	<div id="sidebar-wrapper" class="bg-light border toggled">
 		<div class="sidebar-heading">ft_transcendence</div>
 		<ul id="sidebar-list" class="list-group list-group-flush">
-			<li class="list-group-item list-group-item-action" data-route="/">Home</li>
-			<li class="list-group-item list-group-item-action" data-route="/games">Games</li>
+			<li><a class="list-group-item list-group-item-action" data-route href="/">Home</a></li>
+			<li><a class="list-group-item list-group-item-action" data-route href="/games">Games</a></li>
 			{% if user.is_authenticated %}
-				<li class="list-group-item list-group-item-action"><a onclick="logout()">Logout</a></li>
+				<li><a class="list-group-item list-group-item-action" onclick="logout()">Logout</a></li>
 			{% else %}
-				<li class="list-group-item list-group-item-action" data-route="/login">Login</li>
-				<li class="list-group-item list-group-item-action" data-route="/register">Register</li>
+				<li><a class="list-group-item list-group-item-action" data-route href="/login">Login</a></li>
+				<li><a class="list-group-item list-group-item-action" data-route href="/register">Register</a></li>
 			{% endif %}
 		</ul>
 	</div>
@@ -24,5 +24,12 @@
 		e.preventDefault();
 		document.getElementById("sidebar-wrapper").classList.toggle("toggled");
 		this.classList.toggle("toggled");
+	});
+
+	document.querySelectorAll('[data-route]').forEach((element) => {
+		element.addEventListener("click", (event) => {
+			event.preventDefault();
+			route(event.target.getAttribute('href'));
+		});
 	});
 </script>

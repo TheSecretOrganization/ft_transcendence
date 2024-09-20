@@ -24,7 +24,7 @@ async function fetchPage(pageName) {
 		return null;
 	}
 	return data.html;
-};
+}
 
 function loadScripts() {
 	const container = document.getElementById("content");
@@ -40,7 +40,7 @@ function loadScripts() {
 		document.body.appendChild(newScript);
 		document.body.removeChild(newScript);
 	});
-};
+}
 
 function updateTitle(pageName) {
 	const titles = {
@@ -50,13 +50,10 @@ function updateTitle(pageName) {
 	};
 	const title = titles[pageName] || "Page Not Found";
 	document.title = title;
-};
+}
 
 function updateActiveRoute(path) {
-	document.querySelectorAll('#sidebar-list .list-group-item').forEach(item => {
-		item.classList.remove('active');
-	});
-	const activeRoute = document.querySelector(`[data-route="${path}"]`);
+	const activeRoute = document.querySelector(`a[href="${path}"]`);
 	if (activeRoute) {
 		activeRoute.classList.add('active');
 	}
@@ -74,17 +71,10 @@ async function handleLocation() {
 	loadScripts();
 	updateTitle(pageName);
 	updateActiveRoute(path);
-};
+}
 
 document.addEventListener("DOMContentLoaded", () => {
 	window.onpopstate = handleLocation;
 	window.route = route;
 	handleLocation();
-});
-
-document.addEventListener("click", (e) => {
-	if (e?.target?.hasAttribute('data-route')) {
-		e.preventDefault();
-		route(e.target.getAttribute('data-route'));
-	}
-});
+})
