@@ -23,6 +23,12 @@ async function fetchPage(pageName) {
 		console.error(`Failed to fetch ${pageName}: ${data.error}`);
 		return null;
 	}
+
+	if ('title' in data)
+		document.title = data.title;
+	else
+		document.title = "Missing title";
+
 	return data.html;
 }
 
@@ -42,16 +48,6 @@ function loadScripts() {
 	});
 }
 
-function updateTitle(pageName) {
-	const titles = {
-		"index": "Home",
-		"games": "Games",
-		"404": "Page Not Found"
-	};
-	const title = titles[pageName] || "Page Not Found";
-	document.title = title;
-}
-
 function updateActiveRoute(path) {
 	const activeRoute = document.querySelector(`a[href="${path}"]`);
 	if (activeRoute) {
@@ -69,7 +65,6 @@ async function handleLocation() {
 
 	document.getElementById("content").innerHTML = html;
 	loadScripts();
-	updateTitle(pageName);
 	updateActiveRoute(path);
 }
 
