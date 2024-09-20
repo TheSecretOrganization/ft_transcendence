@@ -6,5 +6,6 @@ urlpatterns = [
 	path('games/', views.games),
 	path('login/', views.login),
 	path('register/', views.register),
+	path('authorize/', views.authorize),
 	path('404/', views.error_404),
 ]
