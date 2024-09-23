@@ -1,0 +1,43 @@
+<h1>Loading..</h1>
+
+<form id="username-form" class="hidden" data-url="/api/auth/authorize/">
+	<div id="username-error"></div>
+	<input type="text" id="username" />
+	<button type="submit">Register with 42</button>
+</form>
+
+<script>
+	document.getElementById('username-form').onsubmit = function(e) {
+		e.preventDefault();
+		document.getElementById('username-error').textContent = '';
+		submitForm('username-form', () => route('/'), (json) => {
+			if (!json.code) route('/login') ;
+			if (json.code == 2)
+				document.getElementById('username-error').textContent = json.error;
+		});
+	}
+
+	let params = new URLSearchParams(document.location.search);
+	if (!params.get('code')) {
+		console.error('missing code field');
+		route('/login');
+	} else {
+		postFetch('/api/auth/authorize/', {'code': params.get('code')})
+			.then(response => {
+				if (response.status == 200) {
+					route('/');
+					return ;
+				}
+
+				response.json().then(json => {
+					if (!json.code) {
+						route('/login');
+						return ;
+					}
+					if (json.code == 1)
+						document.getElementById('username-form').classList.remove('hidden');
+				});
+			})
+			.catch(error => console.error(error))
+	}
+</script>

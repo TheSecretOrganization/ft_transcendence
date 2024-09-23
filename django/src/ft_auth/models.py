@@ -22,3 +22,8 @@ class User(AbstractBaseUser):
 	@property
 	def is_staff(self):
 		return self.is_admin
+
+class FtOauth(models.Model):
+	ft_id = models.PositiveIntegerField()
+	login = models.CharField(max_length=15)
+	user = models.OneToOneField(User, on_delete=models.CASCADE)

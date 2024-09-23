@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login as dlogin, logout as dlogout
 from django.contrib.auth.password_validation import validate_password
 from django.db.utils import IntegrityError
 from django.core.exceptions import ValidationError
+from .oauth import get_token, ft_oauth, ft_register, RequestError
+from .models import FtOauth
 import json
 
 @require_POST
@@ -55,3 +57,37 @@ def password_update(request: HttpRequest):
 	request.user.set_password(data['new_password'])
 	request.user.save()
 	return HttpResponse(status=200)
+
+@require_POST
+def authorize(request: HttpRequest):
+	data = json.loads(request.body.decode())
+	if not data:
+		return JsonResponse({'error': 'Missing body', 'code': 0}, status=400)
+
+	try:
+		token = get_token(data['code']) if 'token' not in request.session else request.session['token']
+		if 'token' not in request.session and 'code' not in data:
+				return JsonResponse({'error': 'Missing code field', 'code': 3}, status=400)
+
+		user = ft_oauth(token).user
+		dlogin(request, user)
+		return HttpResponse(status=200)
+	except FtOauth.DoesNotExist:
+		request.session['token'] = token
+		if 'username' not in data:
+			return JsonResponse({'error': 'Unknown account', 'code': 1}, status=404)
+
+		try:
+			user = ft_register(token, data['username']).user
+			dlogin(request, user)
+			return HttpResponse(status=200)
+		except IntegrityError:
+			return JsonResponse({'error': 'Username already taken', 'code': 2}, status=400)
+		except (ValidationError, TypeError) as err:
+			return JsonResponse({'error': err.messages, 'code': 2}, status=400)
+		except RequestError as err:
+			request.session.pop('token', None)
+			return JsonResponse(err.json, status=401)
+	except RequestError as err:
+		request.session.pop('token', None)
+		return JsonResponse(err.json, status=401)

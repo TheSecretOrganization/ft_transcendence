@@ -1,6 +1,8 @@
 from django.views.decorators.http import require_GET
 from django.http import JsonResponse, HttpRequest
 from django.template.loader import get_template
+from urllib.parse import quote
+import os
 
 def create_response(
 		request: HttpRequest,
@@ -29,13 +31,22 @@ def games(request):
 def login(request: HttpRequest):
 	if (request.user.is_authenticated):
 		return JsonResponse({'redirect': '/'}, status=403)
-	return create_response(request, 'login.html', title='Login')
+	return create_response(request, 'login.html', {
+		'oauth_url': (f"https://api.intra.42.fr/oauth/authorize?client_id={os.getenv('OAUTH_UID')}"
+		  f"&redirect_uri={quote(os.getenv('OAUTH_FALLBACK'))}&response_type=code")
+	}, title='Login')
 
 @require_GET
 def register(request: HttpRequest):
 	if (request.user.is_authenticated):
 		return JsonResponse({'redirect': '/'}, status=403)
 	return create_response(request, 'register.html', title='Register')
+
+@require_GET
+def authorize(request: HttpRequest):
+	if (request.user.is_authenticated):
+		return JsonResponse({'redirect': '/'}, status=403)
+	return create_response(request, 'authorize.html')
 
 @require_GET
 def error_404(request):

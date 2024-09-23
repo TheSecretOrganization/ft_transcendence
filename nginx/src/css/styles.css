@@ -33,3 +33,7 @@ body {
 #page-container-wrapper {
 	position: relative;
 }
+
+.hidden {
+	display: none;
+}
