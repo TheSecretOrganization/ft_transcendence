@@ -17,7 +17,7 @@ function submitForm(id, oncomplete, onerror) {
 		values[input.id] = input.value
 	}
 
-	postFetch(url, getCookie('csrftoken'), values)
+	postFetch(url, values)
 		.then((response) => {
 			if (response.status == 200)
 				oncomplete();
@@ -43,11 +43,11 @@ function getCookie(name) {
 	return cookieValue;
 }
 
-function postFetch(url, csrf, body) {
+function postFetch(url, body) {
 	return fetch(url, {
 		method: 'POST',
 		headers: {
-			'X-CSRFToken': csrf,
+			'X-CSRFToken': getCookie('csrftoken'),
 			'Content-Type': 'application/json',
 		},
 		mode: 'same-origin',

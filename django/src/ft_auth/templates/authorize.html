@@ -24,7 +24,7 @@
 		console.error('missing code field');
 		route('/login');
 	} else {
-		postFetch('/api/auth/authorize/', '', {'code': params.get('code')})
+		postFetch('/api/auth/authorize/', {'code': params.get('code')})
 			.then(response => {
 				if (response.status == 200) {
 					route('/');
