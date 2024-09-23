@@ -1,4 +1,20 @@
 <div id="wrapper">
+	<nav class="navbar navbar-light">
+		<a class="navbar-brand nav navbar-nav navbar-left" data-route href="/">Brand<span class="glyphicon glyphicon-log-in"></span></a>
+		<!-- <div class="div-navbar-profile column d-flex justify-content-center"> -->
+			<ul id="navbar-list" class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
+				{% if user.is_authenticated %}
+					<li><a class="list-group-item" onclick="logout()">Profile</a></li>
+				{% else %}
+					<li><a class="list-group-item" data-route href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+					<li><a class="list-group-item" data-route href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+				{% endif %}
+			</ul>
+		<!-- </div> -->
+	</nav>
+</div>
+
+<div id="wrapper">
 	<div id="sidebar-wrapper" class="bg-light border toggled">
 		<div class="sidebar-heading">ft_transcendence</div>
 		<ul id="sidebar-list" class="list-group list-group-flush">
