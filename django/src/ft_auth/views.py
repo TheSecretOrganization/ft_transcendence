@@ -64,40 +64,30 @@ def authorize(request: HttpRequest):
 	if not data:
 		return JsonResponse({'error': 'Missing body', 'code': 0}, status=400)
 
-	token = None
 	try:
-		if 'token' not in request.session:
-			if 'code' not in data:
+		token = get_token(data['code']) if 'token' not in request.session else request.session['token']
+		if 'token' not in request.session and 'code' not in data:
 				return JsonResponse({'error': 'Missing code field', 'code': 3}, status=400)
-			else:
-				token = get_token(data['code'])
-		else:
-			token = request.session['token']
-	except RequestError as err:
-		return JsonResponse(err.json, status=500)
 
-	try:
 		user = ft_oauth(token).user
 		dlogin(request, user)
 		return HttpResponse(status=200)
 	except FtOauth.DoesNotExist:
 		request.session['token'] = token
-		if 'username' in data:
-			try:
-				user = ft_register(token, data['username']).user
-				dlogin(request, user)
-				return HttpResponse(status=200)
-			except IntegrityError:
-				return JsonResponse({'error': 'Username already taken', 'code': 2}, status=400)
-			except ValidationError or TypeError as err:
-				return JsonResponse({'error': err.messages, 'code': 2}, status=400)
-			except RequestError as err:
-				if 'token' in request.session:
-					del request.session['token']
-				return JsonResponse(err.json, status=401)
-		else:
+		if 'username' not in data:
 			return JsonResponse({'error': 'Unknown account', 'code': 1}, status=404)
+
+		try:
+			user = ft_register(token, data['username']).user
+			dlogin(request, user)
+			return HttpResponse(status=200)
+		except IntegrityError:
+			return JsonResponse({'error': 'Username already taken', 'code': 2}, status=400)
+		except ValidationError or TypeError as err:
+			return JsonResponse({'error': err.messages, 'code': 2}, status=400)
+		except RequestError as err:
+			request.session.pop('token', None)
+			return JsonResponse(err.json, status=401)
 	except RequestError as err:
-		if 'token' in request.session:
-			del request.session['token']
+		request.session.pop('token', None)
 		return JsonResponse(err.json, status=401)
