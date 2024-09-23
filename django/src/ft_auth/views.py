@@ -83,7 +83,7 @@ def authorize(request: HttpRequest):
 			return HttpResponse(status=200)
 		except IntegrityError:
 			return JsonResponse({'error': 'Username already taken', 'code': 2}, status=400)
-		except ValidationError or TypeError as err:
+		except (ValidationError, TypeError) as err:
 			return JsonResponse({'error': err.messages, 'code': 2}, status=400)
 		except RequestError as err:
 			request.session.pop('token', None)
