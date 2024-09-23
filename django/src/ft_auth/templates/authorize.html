@@ -12,10 +12,8 @@
 		document.getElementById('username-error').textContent = '';
 		submitForm('username-form', () => route('/'), (json) => {
 			if (!json.code) route('/login') ;
-			if (json.code == 2) {
+			if (json.code == 2)
 				document.getElementById('username-error').textContent = json.error;
-				return ;
-			}
 		});
 	}
 
