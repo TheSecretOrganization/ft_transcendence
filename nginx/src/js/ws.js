@@ -1,13 +1,13 @@
-function wsCreateUrl(url, args={}) {
+function wsCreateUrl(url, args = {}) {
 	const queryParams = new URLSearchParams(args).toString();
 	return `wss://${window.location.host}/ws/${url}?${queryParams}`;
 }
 
-function wsConnect(url, onMessageCallBack) {
+function wsConnect(url, onMessageCallBack, onErrorCallBack) {
 	let socket = new WebSocket(url);
 
 	socket.onerror = (e) => {
-		throw new Error(`Fail to connect to ${url}`)
+        onErrorCallBack();
 	}
 
 	socket.onmessage = (e) => {
