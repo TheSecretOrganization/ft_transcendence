@@ -47,6 +47,7 @@
 	let run;
 	let ready;
 	let gameState;
+
 	function resetGame(showMain = true) {
 		if (socket) {
 			sendToWebSocket("game_stop");
@@ -72,11 +73,11 @@
 				btn.disabled = menu.id !== menuId;
 			});
 		});
-		backBtn = document.getElementById("back-btn");
+		const backBtn = document.getElementById("back-btn");
 		backBtn.style.display = menuId === "main" ? "none" : "block";
-		backBtn.disabled = menuId === "main" ? true : false;
+		backBtn.disabled = menuId === "main";
 		readyBtn.style.display = menuId === "game" ? "block" : "none";
-		readyBtn.disabled = menuId === "game" ? false : true;
+		readyBtn.disabled = menuId !== "game";
 	}
 
 	function joinRoom(mode) {

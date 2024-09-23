@@ -58,10 +58,10 @@ class Consumer(AsyncWebsocketConsumer):
                 self.game_task.cancel()
             await self.delete_redis_key(self.group_name)
             await self.delete_redis_key(self.room_id)
-            if not hasattr(self, "winner"):
+            if self.mode == "online" and not hasattr(self, "winner"):
                 self.info.score[1] = self.info.score[0] + 1
                 await self.save_pong_to_db(self.info.players[1])
-            else:
+            elif self.mode == "online":
                 await self.save_pong_to_db(self.winner)
         await self.send_to_group("game_stop", {"user": self.scope["user"].id})
         await self.channel_layer.group_discard(
@@ -198,7 +198,7 @@ class Consumer(AsyncWebsocketConsumer):
             new_args = args
         try:
             await self.send(text_data=json.dumps(new_args))
-        except Exception as e:
+        except Exception:
             await self.close()
 
     async def send_to_group(self, msg_type: str = "", args={}):
