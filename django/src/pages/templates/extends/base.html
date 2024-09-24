@@ -1,19 +1,4 @@
 <div id="wrapper">
-	<nav class="navbar navbar-light" style="background-color: #663399;">
-		<a class="navbar-brand" data-route href="/">Brand</a>
-		<ul id="sidebar-list" class="list-group list-group-flush"></ul>
-			{% if user.is_authenticated %}
-				<li><a class="topbar" onclick="logout()">Profile</a></li>
-			{% else %}
-				<li><a class="topbar" data-route href="/login">Login</a></li>
-				<li><a class="topbar" data-route href="/register">Register</a></li>
-			{% endif %}
-		</ul>
-		
-	</nav>
-</div>
-
-<div id="wrapper">
 	<nav class="navbar">
 		<a class="navbar-brand nav navbar-nav navbar-left" data-route href="/">Brand<span class="glyphicon glyphicon-log-in"></span></a>
 		<!-- <div class="div-navbar-profile column d-flex justify-content-center"> -->
