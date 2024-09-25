@@ -1,7 +1,6 @@
 import asyncio
 import json
 import random
-from uu import Error
 import uuid
 import redis.asyncio as redis
 from typing import List
@@ -14,28 +13,23 @@ class Consumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.initialize_game()
         if self.host:
-            await self.set_to_redis(self.group_name, 1)
-        elif not await self.get_from_redis(
-            self.group_name
-        ) or await self.get_from_redis(self.room_id):
+            await self.redis.set(self.group_name, 1)
+        elif not await self.redis.get(self.group_name) or await self.redis.get(self.room_id):
             await self.close()
             return
         self.valid_consumer = True
         await self.accept()
         await self.channel_layer.group_add(self.group_name, self.channel_name)
-        await self.send_to_group("game_join", {"user": self.scope["user"].id})
-        await self.send_to_client(
-            "game_pad",
-            {"game_pad": self.pad_n},
-        )
+        await self.send_message("group", "game_join", {"user": self.scope["user"].id})
+        await self.send_message("client", "game_pad", {"game_pad": self.pad_n})
 
     def initialize_game(self):
+        self.redis = redis.Redis(host="redis")
         query_params = parse_qs(self.scope["query_string"].decode())
-        room_id = query_params.get("room_id", [None])[0]
-        player_needed = query_params.get("player_needed", ["1"])[0]
         self.mode = query_params.get("mode", ["local"])[0]
-        self.host = room_id == None
-        self.room_id = room_id if room_id else str(uuid.uuid4())
+        room_id = query_params.get("room_id", [None])[0]
+        self.host = room_id is None
+        self.room_id = room_id or str(uuid.uuid4())
         self.group_name = f"pong_{self.room_id}"
         self.pad_n = "pad_1" if self.host else "pad_2"
         self.valid_consumer = False
@@ -43,7 +37,7 @@ class Consumer(AsyncWebsocketConsumer):
             self.info = self.Info(
                 creator=self.scope["user"].id,
                 room_id=self.room_id,
-                player_needed=int(player_needed),
+                player_needed=int(query_params.get("player_needed", ["1"])[0]),
             )
             self.ball = self.Ball()
             self.pad_1 = self.Pad(True)
@@ -51,22 +45,19 @@ class Consumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         self.offline = True
-        if not self.valid_consumer:
-            return
         if self.host:
             if hasattr(self, "game_task"):
                 self.game_task.cancel()
-            await self.delete_redis_key(self.group_name)
-            await self.delete_redis_key(self.room_id)
-            if self.mode == "online" and not hasattr(self, "winner"):
-                self.info.score[1] = self.info.score[0] + 1
-                await self.save_pong_to_db(self.info.players[1])
-            elif self.mode == "online":
+            await self.redis.delete(self.group_name)
+            await self.redis.delete(self.room_id)
+            if self.mode == "online":
+                if not hasattr(self, "winner"):
+                    self.punish_coward(self.info.creator)
                 await self.save_pong_to_db(self.winner)
-        await self.send_to_group("game_stop", {"user": self.scope["user"].id})
-        await self.channel_layer.group_discard(
-            self.group_name, self.channel_name
-        )
+        if self.valid_consumer:
+            await self.send_message("group", "game_stop", {"user": self.scope["user"].id})
+            await self.channel_layer.group_discard(self.group_name, self.channel_name)
+        await self.redis.aclose()
 
     async def receive(self, text_data):
         try:
@@ -77,111 +68,111 @@ class Consumer(AsyncWebsocketConsumer):
             if msg_type == "game_stop":
                 await self.close()
             elif msg_type in ["game_ready", "game_move"]:
-                await self.send_to_group(args=data)
+                await self.send_message("group", args=data)
+        except ValueError as e:
+            print(f"Value error: {e}")
+            await self.send_error(str(e))
         except Exception as e:
-            print(f"Error in receive: {e}")
-            await self.send_error("Invalid message format")
+            print(f"Unexpected error in receive: {e}")
+            await self.send_error("An unexpected error occurred")
 
     async def game_join(self, event):
         if self.host:
             self.info.players.append(event["content"]["user"])
             if len(self.info.players) == self.info.player_needed:
-                await self.set_to_redis(self.room_id, 1)
-            await self.send_to_group("game_info", self.info.__dict__)
+                await self.redis.set(self.room_id, 1)
+            await self.send_message("group", "game_info", self.info.__dict__)
 
     async def game_info(self, event):
-        await self.send_to_client(args=event)
+        await self.send_message("client", args=event)
 
     async def game_ready(self, event):
         if self.host:
             self.info.player_ready += 1
             if self.info.player_ready == self.info.player_needed:
-                await self.send_to_group("game_start")
+                await self.send_message("group", "game_start")
 
     async def game_start(self, event):
-        await self.send_to_client(args=event)
+        await self.send_message("client", args=event)
         if self.host:
             self.game_task = asyncio.create_task(self.loop())
 
     async def game_state(self, event):
-        await self.send_to_client(args=event)
+        await self.send_message("client", args=event)
 
     async def game_move(self, event):
         if self.host:
-            try:
-                await self.move_pad(
-                    event["content"]["pad_n"], event["content"]["direction"]
-                )
-            except Exception as e:
-                print(f"Error: {e}")
+            await self.move_pad(event["content"]["pad_n"], event["content"]["direction"])
 
     async def game_stop(self, event):
         if hasattr(self, "offline"):
             return
-        if self.host and self.mode == "online" and not hasattr(self, "winner"):
-            if event["content"].get("user") == self.info.players[1]:
-                self.winner = self.info.players[0]
-                self.info.score[0] = self.info.score[1] + 1
-            else:
-                self.winner = self.info.players[1]
-                self.info.score[1] = self.info.score[0] + 1
-        await self.send_to_client(args=event)
+        if self.host:
+            self.winner = event["content"].get("winner")
+            if not self.winner:
+                self.punish_coward(event["content"].get("user"))
+        await self.send_message("client", args=event)
         await self.close()
+
+    def punish_coward(self, coward):
+        if not coward:
+            return
+        if coward is self.info.players[0]:
+            self.info.score[1] = self.info.score[0] + 1
+        else:
+            self.info.score[0] = self.info.score[1] + 1
+        self.winner = self.get_winner()
 
     async def loop(self):
         win = 5
+        fps = 0.033
         while True:
             try:
-                self.ball.x += self.ball.velocity[0]
-                self.ball.y += self.ball.velocity[1]
+                self.ball.move()
                 self.handle_collisions()
                 if self.info.score[0] == win or self.info.score[1] == win:
-                    self.winner = (
-                        self.info.players[0]
-                        if self.info.score[0] > self.info.score[1]
-                        else self.info.players[1]
-                    )
-                    await self.send_to_group(
-                        "game_stop", {"winner": self.winner}
-                    )
+                    await self.send_message("group", "game_stop", {"winner": self.get_winner()})
                     break
                 await self.send_game_state()
-                await asyncio.sleep(0.033)
+                await asyncio.sleep(fps)
             except Exception as e:
-                print(f"Error: {e}")
+                print(f"Unexpected error in the loop from game {self.room_id}: {e}")
                 break
+
+    def get_winner(self):
+        if self.mode == "online":
+            return self.info.players[0] if self.info.score[0] > self.info.score[1] else self.info.players[1]
+        else:
+            return "Pad 1" if self.info.score[0] > self.info.score[1] else "Pad 2"
 
     async def move_pad(self, pad_number, direction):
         pad = self.pad_1 if pad_number == "pad_1" else self.pad_2
-        down_lim = 1 - pad.height
-        pad.move = pad.step if direction == "down" else -pad.step
-        if direction == "up" and pad.y > 0:
-            pad.y -= pad.step if pad.y >= pad.step else pad.y
-        elif direction == "down" and pad.y < down_lim:
-            pad.y += (
-                pad.step if down_lim - pad.y >= pad.step else down_lim - pad.y
-            )
+        step = pad.step if direction == "down" else -pad.step
+        pad.y = min(max(pad.y + step, 0), 1 - pad.height)
         await self.send_game_state()
 
     def handle_collisions(self):
-        move_factor = 0.05
-        if (
-            self.ball.y - self.ball.radius / 2 <= 0
-            or self.ball.y + self.ball.radius / 2 >= 1
-        ):
-            self.ball.velocity[1] = -self.ball.velocity[1]
-        if self.ball.x - self.ball.radius <= self.pad_1.x + self.pad_1.width:
+        if self.ball.y - self.ball.radius / 2 <= 0 or self.ball.y + self.ball.radius / 2 >= 1:
+            self.ball.revertVelocity(1)
+        elif self.check_pad_collision():
+            self.ball.revertVelocity(0)
+            if self.ball.x < 0.5:
+                self.ball.x = self.pad_1.width + self.ball.radius / 2
+            else:
+                self.ball.x = 1 - self.pad_2.width - self.ball.radius / 2
+        elif self.ball.x + self.ball.radius / 2 <= self.pad_1.width:
+            self.score_point(1)
+        elif self.ball.x - self.ball.radius / 2 >= 1 - self.pad_2.width:
+            self.score_point(0)
+
+    def check_pad_collision(self):
+        if self.ball.x - self.ball.radius <= self.pad_1.width:
             if self.pad_1.y <= self.ball.y <= self.pad_1.y + self.pad_1.height:
-                self.ball.velocity[0] = -self.ball.velocity[0]
-                self.ball.velocity[1] += self.pad_1.move * move_factor
-            elif self.ball.x <= 0:
-                self.score_point(1)
-        if self.ball.x + self.ball.radius >= self.pad_2.x:
+                return True
+        if self.ball.x + self.ball.radius >= 1 - self.pad_2.width:
             if self.pad_2.y <= self.ball.y <= self.pad_2.y + self.pad_2.height:
-                self.ball.velocity[0] = -self.ball.velocity[0]
-                self.ball.velocity[1] += self.pad_2.move * move_factor
-            elif self.ball.x >= 1:
-                self.score_point(0)
+                return True
+        return False
 
     def score_point(self, winner: int):
         self.info.score[winner] += 1
@@ -189,37 +180,19 @@ class Consumer(AsyncWebsocketConsumer):
         self.pad_1.reset()
         self.pad_2.reset()
 
-    async def send_to_client(self, msg_type: str = "", args={}):
-        new_args = {}
-        if msg_type:
-            new_args["type"] = msg_type
-            new_args["content"] = args
-        else:
-            new_args = args
-        try:
-            await self.send(text_data=json.dumps(new_args))
-        except Exception:
-            await self.close()
-
-    async def send_to_group(self, msg_type: str = "", args={}):
-        new_args = {}
-        if msg_type:
-            new_args["type"] = msg_type
-            new_args["content"] = args
-        else:
-            new_args = args
-        await self.channel_layer.group_send(self.group_name, new_args)
+    async def send_message(self, destination="client", msg_type="", args={}):
+        message = {"type": msg_type, "content": args} if msg_type else args
+        if destination == "group":
+            await self.channel_layer.group_send(self.group_name, message)
+        elif destination == "client":
+            await self.send(text_data=json.dumps(message))
 
     async def send_error(self, error: str):
-        await self.send_to_client(
-            "game_error",
-            {
-                "error": error,
-            },
-        )
+        await self.send_message("client", "game_error", {"error": error})
 
     async def send_game_state(self):
-        await self.send_to_group(
+        await self.send_message(
+            "group",
             "game_state",
             {
                 "score": self.info.score,
@@ -229,43 +202,18 @@ class Consumer(AsyncWebsocketConsumer):
             },
         )
 
-    async def get_from_redis(self, key):
-        client = redis.Redis(host="redis")
-        value = await client.get(key)
-        await client.aclose()
-        return value
-
-    async def set_to_redis(self, key, value):
-        client = redis.Redis(host="redis")
-        await client.set(key, value)
-        await client.aclose()
-
-    async def delete_redis_key(self, key):
-        client = redis.Redis(host="redis")
-        await client.delete(key)
-        await client.aclose()
-
     async def save_pong_to_db(self, winner):
         from .models import Pong
         from ft_auth.models import User
 
         try:
-            user1 = await sync_to_async(User.objects.get)(
-                id=self.info.players[0]
-            )
-            user2 = await sync_to_async(User.objects.get)(
-                id=self.info.players[1]
-            )
-            score1 = self.info.score[0]
-            score2 = self.info.score[1]
-            if winner == user1 and score1 < score2:
-                score2 = 0
-            elif winner == user2 and score1 > score2:
-                score1 = 0
             await sync_to_async(Pong.objects.create)(
-                user1=user1, user2=user2, score1=score1, score2=score2
+                user1=await sync_to_async(User.objects.get)(id=self.info.players[0]),
+                user2=await sync_to_async(User.objects.get)(id=self.info.players[1]),
+                score1=self.info.score[0],
+                score2=self.info.score[1]
             )
-        except Error as e:
+        except Exception as e:
             print(f"Error when saving game {self.room_id} to db: {e}")
 
     class Info:
@@ -288,10 +236,11 @@ class Consumer(AsyncWebsocketConsumer):
 
         def reset(self, radius=0.015, color="white"):
             self.x = 0.5
-            self.y = 0.5
+            self.y = random.uniform(0.2, 0.8)
             self.radius = radius
             self.velocity = self.randomize_velocity()
             self.color = color
+            self.step = 0.05
 
         def randomize_velocity(self) -> List[float]:
             velocity = [0.01, 0.01]
@@ -300,6 +249,13 @@ class Consumer(AsyncWebsocketConsumer):
             if random.randint(0, 1):
                 velocity[1] *= -1
             return velocity
+
+        def revertVelocity(self, index):
+            self.velocity[index] = -self.velocity[index]
+
+        def move(self):
+            self.x += self.velocity[0]
+            self.y += self.velocity[1]
 
     class Pad:
         def __init__(self, left, width=0.02, height=0.2, color="white"):
