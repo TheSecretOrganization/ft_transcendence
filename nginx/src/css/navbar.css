@@ -6,13 +6,11 @@
 
 .navbar-brand {
 	color: white;
-	/* justify-content: left; */
 	padding-left: 5rem;
 }
 
 .div-navbar-profile {
-	/* justify-content: right; */
-	display:inline;
+	display: inline;
 	padding-right: 75px;
 }
 
@@ -20,20 +18,8 @@
 	list-style-type: none;
 	justify-content: center;
 	padding-right: 25px;
-	/* display:inline; */
 }
 
 .navbar-profile-button {
 	padding: 0.5rem 0.75rem;
 }
-
-/* .topbar {
-	padding: 10px;
-	cursor: pointer;
-	text-align: center;
-}
-
-.topbar.active {
-	background-color: #4B0082;
-	color: white;
-} */
