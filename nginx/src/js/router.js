@@ -54,6 +54,9 @@ async function handleLocation() {
 function resetEvents() {
 	window.onresize = null;
 	document.onkeydown = null;
+	document.onmousemove = null;
+	document.onpointerlockchange = null;
+	document.exitPointerLock();
 }
 
 document.addEventListener("DOMContentLoaded", () => {

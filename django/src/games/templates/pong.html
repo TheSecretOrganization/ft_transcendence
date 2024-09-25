@@ -39,7 +39,10 @@
 	const url = "pong"
 	const canvas = document.getElementById('pong-canvas');
 	const ctx = canvas.getContext('2d');
+	const backBtn = document.getElementById("back-btn");
 	const readyBtn = document.getElementById('ready-btn');
+	let upKey = "w";
+	let downKey = "s";
 	let socket;
 	let padN;
 	let secondPlayer;
@@ -47,6 +50,9 @@
 	let run;
 	let ready;
 	let gameState;
+	let keyInterval;
+	let pointerLock;
+	const mouseSensitivity = 1;
 
 	function resetGame(showMain = true) {
 		if (socket) {
@@ -60,8 +66,11 @@
 		run = false;
 		ready = false;
 		gameState = undefined;
+		keyInterval = null;
 		document.getElementById("room-id").innerText = "";
 		document.getElementById('join-id').value = "";
+		pointerLock = false;
+		document.exitPointerLock();
 		if (showMain)
 			showMenu("main");
 	}
@@ -73,11 +82,13 @@
 				btn.disabled = menu.id !== menuId;
 			});
 		});
-		const backBtn = document.getElementById("back-btn");
-		backBtn.style.display = menuId === "main" ? "none" : "block";
-		backBtn.disabled = menuId === "main";
-		readyBtn.style.display = menuId === "game" ? "block" : "none";
-		readyBtn.disabled = menuId !== "game";
+		toggleBtn(backBtn, menuId === "main");
+		toggleBtn(readyBtn, menuId !== "game");
+	}
+
+	function toggleBtn(btn, condition) {
+		condition ? btn.classList.add("hidden") : btn.classList.remove("hidden");
+		btn.disabled = condition;
 	}
 
 	function joinRoom(mode) {
@@ -90,58 +101,54 @@
 		socket = wsConnect(wsCreateUrl(url, args), onMessage, resetGame);
 	}
 
+	function sendToWebSocket(type, args = {}) {
+		socket.send(JSON.stringify({ type, content: args }));
+	}
+
 	function onMessage(data) {
 		switch (data.type) {
-			case 'game_pad':
-				padN = data.content.game_pad;
-				break;
-			case 'game_info':
-				roomId = data.content.room_id;
-				document.getElementById("room-id").innerText = `Room Id: ${roomId}`;
-				canvasResize(canvas);
-				showMenu("game");
-				if (data.content.players.length !== data.content.player_needed)
-					drawCenteredText("Waiting for second player");
-				break;
-			case 'game_start':
-				run = true;
-				canvas.focus();
-				break;
-			case 'game_stop':
-				resetGame(false);
-				ctx.clearRect(0, 0, canvas.width, canvas.height);
-				if (data?.content?.winner)
-					drawCenteredText(`Winner: ${data.content.winner}`)
-				else
-					drawCenteredText("Sorry, your mate left :'(");
-				break;
-			case 'game_state':
-				gameState = data.content;
-				renderGame();
-				break;
-			case 'game_error':
-				console.error(data.content.error);
-				resetGame();
-				break;
+			case 'game_pad': padN = data.content.game_pad; break;
+			case 'game_info': handleGameInfo(data); break;
+			case 'game_start': handleGameStart(); break;
+			case 'game_state': handleGameState(data); break;
+			case 'game_stop': handleGameStop(data); break;
+			case 'game_error': handleGameError(data); break;
 		}
 	}
 
-	function sendToWebSocket(type = "", args = {}) {
-		let newArgs = {}
-		if (type) {
-			newArgs["type"] = type
-			newArgs["content"] = args
-		} else {
-			newArgs = args
-		}
-		socket.send(JSON.stringify(newArgs));
+	function handleGameInfo(data) {
+		roomId = data.content.room_id;
+		document.getElementById("room-id").innerText = `Room Id: ${roomId}`;
+		canvasResize(canvas);
+		showMenu("game");
+		if (data.content.players.length !== data.content.player_needed)
+			drawCenteredText("Waiting for second player");
 	}
 
-	function sendMovePad(pad, direction) {
-		sendToWebSocket("game_move", {
-			"pad_n": pad,
-			'direction': direction
-		});
+	function handleGameStart() {
+		run = true;
+		if (secondPlayer) {
+			canvas.click()
+		}
+	}
+
+	function handleGameState(data) {
+		gameState = data.content;
+		renderGame();
+	}
+
+	function handleGameStop(data) {
+		resetGame(false);
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		if (data?.content?.winner)
+			drawCenteredText(`Winner: ${data.content.winner}`)
+		else
+			drawCenteredText("Sorry, your mate left :'(");
+	}
+
+	function handleGameError(data) {
+		console.error(data.content.error);
+		resetGame();
 	}
 
 	function canvasResize(canvas) {
@@ -187,62 +194,85 @@
 		drawText(text, x, y, color, font);
 	}
 
-	document.querySelectorAll('[menu-id]').forEach(element => {
-		element.addEventListener("click", (e) => {
-			e.preventDefault();
-			showMenu(element.getAttribute("menu-id"));
-			if (element.id && element.id === "back-btn")
-				resetGame();
+	function initializeEvents() {
+		document.querySelectorAll('[menu-id]').forEach(element => {
+			element.addEventListener("click", (e) => {
+				e.preventDefault();
+				showMenu(element.getAttribute("menu-id"));
+				if (element.id && element.id === "back-btn")
+					resetGame();
+			});
 		});
-	});
 
-	document.querySelectorAll("[join-mode]").forEach(element => {
-		element.addEventListener("click", (e) => {
-			e.preventDefault();
-			joinRoom(element.getAttribute("join-mode"));
+		document.querySelectorAll("[join-mode]").forEach(element => {
+			element.addEventListener("click", (e) => {
+				e.preventDefault();
+				joinRoom(element.getAttribute("join-mode"));
+			});
 		});
-	});
 
-	document.getElementById("join-form").addEventListener("submit", e => {
-		e.preventDefault();
-		roomId = document.getElementById('join-id').value.trim();
-		document.getElementById('join-id').value = "";
-		if (roomId !== "")
-			joinRoom("online");
-		else
-			console.error('Room ID cannot be empty.');
-	});
-
-	readyBtn.addEventListener("click", e => {
-		readyBtn.style.display = "none";
-		readyBtn.disabled = true;
-		sendToWebSocket("game_ready", {
-			"pad_n": padN,
-		});
-	});
-
-	window.onresize = () => {
-		canvasResize(canvas);
-		if (run)
-			renderGame();
-	};
-
-	document.onkeydown = e => {
-		if (run) {
+		document.getElementById("join-form").addEventListener("submit", e => {
 			e.preventDefault();
-			if (e.key === 'w')
-				sendMovePad(padN, 'up');
-			else if (e.key === 's')
-				sendMovePad(padN, 'down');
-			if (secondPlayer) {
-				if (e.key === 'ArrowUp')
-					sendMovePad("pad2", 'up');
-				else if (e.key === 'ArrowDown')
-					sendMovePad("pad2", 'down');
-			}
+			roomId = document.getElementById('join-id').value.trim();
+			document.getElementById('join-id').value = "";
+			if (roomId !== "")
+				joinRoom("online");
+			else
+				console.error('Room ID cannot be empty.');
+		});
+
+		readyBtn.addEventListener("click", e => {
+			toggleBtn(readyBtn, true);
+			sendToWebSocket("game_ready", {
+				"pad_n": padN,
+			});
+		});
+
+		canvas.onclick = () => {
+			if (run && !pointerLock)
+				canvas.requestPointerLock()
 		}
-	};
 
+		window.onresize = () => {
+			canvasResize(canvas);
+			if (run)
+				renderGame();
+		};
+
+		document.onkeydown = e => {
+			if (run && (e.key === upKey || e.key === downKey)) {
+				e.preventDefault();
+				if (!keyInterval) {
+					let direction = e.key === upKey ? "up" : "down";
+					sendToWebSocket("game_move", { "pad_n": padN, "direction": direction });
+					keyInterval = setInterval(() => {
+						sendToWebSocket("game_move", { "pad_n": padN, "direction": direction });
+					}, 30);
+				}
+			}
+		};
+
+		document.onkeyup = e => {
+			if (e.key === upKey || e.key === downKey) {
+				clearInterval(keyInterval);
+				keyInterval = null;
+			}
+		};
+
+		document.onmousemove = e => {
+			if (secondPlayer && run && pointerLock) {
+				let direction = e.movementY < 0 ? "up" : "down";
+				if (Math.abs(e.movementY) * mouseSensitivity >= 1)
+					sendToWebSocket("game_move", { "pad_n": "pad_2", "direction": direction });
+			}
+		};
+
+		document.onpointerlockchange = () => {
+			pointerLock = document.pointerLockElement === canvas
+		};
+	}
+
+	initializeEvents();
 	resetGame();
 </script>
 {% endblock %}
