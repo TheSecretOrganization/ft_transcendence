@@ -10,6 +10,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 
 class Consumer(AsyncWebsocketConsumer):
+    win_goal = 5
+
     async def connect(self):
         self.initialize_game()
         if self.host:
@@ -118,19 +120,18 @@ class Consumer(AsyncWebsocketConsumer):
         if not coward:
             return
         if coward is self.info.players[0]:
-            self.info.score[1] = self.info.score[0] + 1
+            self.info.score[1] = self.win_goal
         else:
-            self.info.score[0] = self.info.score[1] + 1
+            self.info.score[0] = self.win_goal
         self.winner = self.get_winner()
 
     async def loop(self):
-        win = 5
         fps = 0.033
         while True:
             try:
                 self.ball.move()
                 self.handle_collisions()
-                if self.info.score[0] == win or self.info.score[1] == win:
+                if self.info.score[0] == self.win_goal or self.info.score[1] == self.win_goal:
                     await self.send_message("group", "game_stop", {"winner": self.get_winner()})
                     break
                 await self.send_game_state()
