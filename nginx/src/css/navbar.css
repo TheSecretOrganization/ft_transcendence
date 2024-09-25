@@ -2,6 +2,9 @@
 	background-color: #424242;
 	color: #fecaca;
 	height: 4.2rem;
+	min-height: 60px;
+	display: flex;
+	flex-direction: row;
 }
 
 .navbar-brand {
@@ -22,4 +25,20 @@
 
 .navbar-profile-button {
 	padding: 0.5rem 0.75rem;
+}
+
+.container-dropdown {
+}
+
+.dropdown {
+	z-index: 1000;
+	right: 2.5rem;
+}
+
+.dropdown-item {
+	margin: 0;
+}
+
+.dropdown-toggle::after {
+	display: none;
 }

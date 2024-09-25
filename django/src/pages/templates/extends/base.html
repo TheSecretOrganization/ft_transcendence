@@ -1,14 +1,26 @@
 <div id="wrapper">
 	<nav class="navbar">
 		<b class="navbar-brand nav navbar-nav navbar-left">Johnny Depp</b>
-			<ul id="navbar-list" class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
-				{% if user.is_authenticated %}
-					<li><a class="list-group-item" onclick="logout()">Profile</a></li>
-				{% else %}
-					<li class="m-2"><a class="btn btn-sm btn-success rounded-pill rounded-5" data-route href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-					<li class="m-2"><a class="btn btn-sm btn-outline-success rounded-pill rounded-5" data-route href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
-				{% endif %}
-			</ul>
+		{% if user.is_authenticated %}
+		<div class="container-dropdown">
+			<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+							{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+							<li><a class="dropdown-item" data-route href="#">Profile</a></li>
+							<li><a class="dropdown-item" data-route href="#">Settings</a></li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item fw-bold" onclick="logout()" href="/logout">Log out <span class="glyphicon glyphicon-log-out"></span></a></li>
+						</ul>
+					</div>
+				</div>
+		{% else %}
+		<ul id="navbar-list" class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
+			<li class="m-2"><a class="btn btn-sm btn-success rounded-pill rounded-5" data-route href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+			<li class="m-2"><a class="btn btn-sm btn-outline-success rounded-pill rounded-5" data-route href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+		</ul>
+		{% endif %}
 	</nav>
 </div>
 
