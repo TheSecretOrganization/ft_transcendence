@@ -2,7 +2,7 @@
 	background-color: #424242;
 	color: #fecaca;
 	height: 4.2rem;
-	min-height: 60px;
+	min-height: 3.75rem;
 	display: flex;
 	flex-direction: row;
 }
@@ -14,13 +14,13 @@
 
 .div-navbar-profile {
 	display: inline;
-	padding-right: 75px;
+	padding-right: 4.5;
 }
 
 #navbar-list {
 	list-style-type: none;
 	justify-content: center;
-	padding-right: 25px;
+	padding-right: 1.5rem;
 }
 
 .navbar-profile-button {
