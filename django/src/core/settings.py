@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tools',
-	'ft_auth',
+    'friends',
+    'ft_auth',
     'pages',
 ]
 
