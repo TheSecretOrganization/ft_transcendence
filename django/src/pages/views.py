@@ -24,8 +24,8 @@ def index(request):
 	return create_response(request, 'index.html', title="Home")
 
 @require_GET
-def games(request):
-	return create_response(request, 'games.html', title='Games')
+def pong(request):
+	return create_response(request, 'pong.html', title="Pong", need_authentication=True)
 
 @require_GET
 def login(request: HttpRequest):

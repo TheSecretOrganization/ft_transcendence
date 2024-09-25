@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tools',
 	'ft_auth',
+    'games',
     'pages',
 ]
 
