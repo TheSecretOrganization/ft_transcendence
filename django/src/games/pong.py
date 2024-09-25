@@ -153,9 +153,9 @@ class Consumer(AsyncWebsocketConsumer):
 
     def handle_collisions(self):
         if self.ball.y - self.ball.radius / 2 <= 0 or self.ball.y + self.ball.radius / 2 >= 1:
-            self.ball.revertVelocity(1)
+            self.ball.revert_velocity(1)
         elif self.check_pad_collision():
-            self.ball.revertVelocity(0)
+            self.ball.revert_velocity(0)
             if self.ball.x < 0.5:
                 self.ball.x = self.pad_1.width + self.ball.radius / 2
             else:
@@ -250,7 +250,7 @@ class Consumer(AsyncWebsocketConsumer):
                 velocity[1] *= -1
             return velocity
 
-        def revertVelocity(self, index):
+        def revert_velocity(self, index):
             self.velocity[index] = -self.velocity[index]
 
         def move(self):
