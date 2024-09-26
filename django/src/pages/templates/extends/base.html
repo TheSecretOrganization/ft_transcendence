@@ -5,38 +5,56 @@
 			{% if user.is_authenticated %}
 			<div class="container-dropdown">
 				<div class="dropdown">
-					<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-								{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
-							</button>
-							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-								<li><a class="dropdown-item" data-route href="#">Profile</a></li>
-								<li><a class="dropdown-item" data-route href="#">Settings</a></li>
-								<li><hr class="dropdown-divider"></li>
-								<li><button id="logout-button-navbar" class="dropdown-item fw-bold">Log out <span class="glyphicon glyphicon-log-out"></span></button></li>
-							</ul>
-						</div>
-					</div>
+					<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+						data-bs-toggle="dropdown" aria-expanded="false">
+						{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
+					</button>
+					<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+						<li><a class="dropdown-item" data-route href="#">Profile</a></li>
+						<li><a class="dropdown-item" data-route href="#">Settings</a></li>
+						<li>
+							<hr class="dropdown-divider">
+						</li>
+						<li><button id="logout-button-navbar" class="dropdown-item fw-bold">Log out <span
+									class="glyphicon glyphicon-log-out"></span></button></li>
+					</ul>
+				</div>
+			</div>
 			{% else %}
-			<ul id="navbar-list" class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
-				<li class="m-2"><a class="btn btn-sm btn-success rounded-pill rounded-5" data-route href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-				<li class="m-2"><a class="btn btn-sm btn-outline-success rounded-pill rounded-5" data-route href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+			<ul id="navbar-list"
+				class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
+				<li class="m-2"><a class="btn btn-sm btn-success rounded-pill rounded-5" data-route href="/login"><span
+							class="glyphicon glyphicon-log-in"></span> Login</a></li>
+				<li class="m-2"><a class="btn btn-sm btn-outline-success rounded-pill rounded-5" data-route
+						href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
 			</ul>
 			{% endif %}
 		</nav>
 	</div>
 
-	<div id="sidebar-wrapper" class="bg-light border toggled">
+	<div id="sidebar-wrapper" class="bg-light border toggled d-flex flex-column">
 		<div class="sidebar-heading">ft_transcendence</div>
 		<ul id="sidebar-list" class="list-group list-group-flush">
-			<li><a class="list-group-item list-group-item-action" data-route href="/">Home</a></li>
+			<li><a class="list-group-item list-group-item-action" data-route href="/"><i class="fas
+				fa-house me-2"></i>HOME</a></li>
 			{% if user.is_authenticated %}
-				<li><a class="list-group-item list-group-item-action" data-route href="/pong">Pong</a></li>
-				<li><a class="list-group-item list-group-item-action" onclick="logout()">Logout</a></li>
+			<li><a class="list-group-item list-group-item-action" data-route href="/pong"><i class="fas
+						fa-gamepad me-2"></i>GAMES</a></li>
+			<li><a class="list-group-item list-group-item-action" onclick="logout()">Logout</a></li>
 			{% else %}
-				<li><a class="list-group-item list-group-item-action" data-route href="/login">Login</a></li>
-				<li><a class="list-group-item list-group-item-action" data-route href="/register">Register</a></li>
+			<li><a class="list-group-item list-group-item-action" data-route href="/dummylink"><i class="fas
+				fa-ice-cream me-2"></i>Free Ice Cream</a></li>
+			<li><a class="list-group-item list-group-item-action" data-route href="/dummylink"><i class="fas
+				fa-money-bill-wave me-2"></i>Tax Fraud</a></li>
+			<li><a class="list-group-item list-group-item-action" data-route href="/dummylink"><i
+						class="fas fa-palette me-2"></i>Shark Customizer</a></li>
 			{% endif %}
 		</ul>
+		<div class="text-center mt-auto">
+			<a class="list-group-item list-group-item-action" id="theme-toggle">
+				<i id="theme-icon" class="fas fa-sun me-2"></i> Toggle Dark Mode
+			</a>
+		</div>
 	</div>
 
 	<div id="page-container-wrapper">
@@ -62,4 +80,24 @@
 	document.getElementById("logout-button-navbar").addEventListener("click", function (e) {
 		logout();
 	})
+
+	// document.getElementById('theme-toggle').addEventListener('click', () => {
+	// 	console.log("Toggle button clicked!");
+	// 	document.body.classList.toggle('dark-mode');
+
+	// 	if (document.body.classList.contains('dark-mode')) {
+	// 		document.getElementById('theme-icon').remove('fa-sun');
+	// 		document.getElementById('theme-icon').add('fa-moon');
+	// 	} else {
+	// 		document.getElementById('theme-icon').remove('fa-moon');
+	// 		document.getElementById('theme-icon').add('fa-sun');
+	// 	}
+	// });
 </script>
+
+<!-- <style>
+	body.dark-mode {
+		background-color: #121212;
+		color: #ffffff;
+	}
+</style> -->
