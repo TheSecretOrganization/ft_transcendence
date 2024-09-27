@@ -18,6 +18,7 @@ class Consumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         self.initialize_game()
+        self.user = self.scope["user"]
         if self.host:
             await self.redis.set(self.group_name, 1)
         elif not await self.redis.get(self.group_name) or await self.redis.get(self.room_id):
@@ -26,7 +27,7 @@ class Consumer(AsyncWebsocketConsumer):
         self.valid_consumer = True
         await self.accept()
         await self.channel_layer.group_add(self.group_name, self.channel_name)
-        await self.send_message("group", "game_join", {"user": self.scope["user"].id})
+        await self.send_message("group", "game_join", {"user": self.user.id})
         await self.send_message("client", "game_pad", {"game_pad": self.pad_n})
 
     def initialize_game(self):
@@ -41,7 +42,7 @@ class Consumer(AsyncWebsocketConsumer):
         self.valid_consumer = False
         if self.host:
             self.info = self.Info(
-                creator=self.scope["user"].id,
+                creator=self.user.id,
                 room_id=self.room_id,
                 player_needed=int(query_params.get("player_needed", ["1"])[0]),
             )
@@ -61,7 +62,7 @@ class Consumer(AsyncWebsocketConsumer):
                     self.punish_coward(self.info.creator)
                 await self.save_pong_to_db(self.winner)
         if self.valid_consumer:
-            await self.send_message("group", "game_stop", {"user": self.scope["user"].id})
+            await self.send_message("group", "game_stop", {"user": self.user.id})
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
         await self.redis.aclose()
 
@@ -70,7 +71,7 @@ class Consumer(AsyncWebsocketConsumer):
             data = json.loads(text_data)
             msg_type = data["type"]
             if not msg_type:
-                raise ValueError(f"Missing 'type' in received data from {self.scope["user"].id}")
+                raise ValueError(f"Missing 'type' in received data from {self.user.id}")
             if msg_type == "game_stop":
                 await self.close()
             elif msg_type in ["game_ready", "game_move"]:
