@@ -227,7 +227,7 @@ class Consumer(AsyncWebsocketConsumer):
             )
             logger.debug(f"Game {self.room_id} saved to db.")
         except Exception as e:
-            logger.error(f"Cannot save game {self.room_id} to db: {e}")
+            logger.error(f"Could not save game {self.room_id} to db: {e}")
 
     class Info:
         def __init__(
