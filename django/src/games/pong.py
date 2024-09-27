@@ -3,6 +3,7 @@ import json
 import random
 import uuid
 import redis.asyncio as redis
+import logging
 from typing import List
 from urllib.parse import parse_qs
 from asgiref.sync import sync_to_async
@@ -10,6 +11,7 @@ from django.contrib.auth import get_user_model
 from django.apps import apps
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+logger = logging.getLogger(__name__)
 
 class Consumer(AsyncWebsocketConsumer):
     win_goal = 5
@@ -68,16 +70,16 @@ class Consumer(AsyncWebsocketConsumer):
             data = json.loads(text_data)
             msg_type = data["type"]
             if not msg_type:
-                raise ValueError("Missing 'type' in received data")
+                raise ValueError(f"Missing 'type' in received data from {self.scope["user"].id}")
             if msg_type == "game_stop":
                 await self.close()
             elif msg_type in ["game_ready", "game_move"]:
                 await self.send_message("group", args=data)
         except ValueError as e:
-            print(f"Value error: {e}")
+            logger.warning(e)
             await self.send_error(str(e))
         except Exception as e:
-            print(f"Unexpected error in receive: {e}")
+            logger.error(f"Unexpected error from receive: {e}")
             await self.send_error("An unexpected error occurred")
 
     async def game_join(self, event):
@@ -139,7 +141,7 @@ class Consumer(AsyncWebsocketConsumer):
                 await self.send_game_state()
                 await asyncio.sleep(fps)
             except Exception as e:
-                print(f"Unexpected error in the loop from game {self.room_id}: {e}")
+                logger.error(f"Unexpected error in the loop from game {self.room_id}: {e}")
                 break
 
     def get_winner(self):
@@ -215,7 +217,7 @@ class Consumer(AsyncWebsocketConsumer):
                 score2=self.info.score[1]
             )
         except Exception as e:
-            print(f"Error when saving game {self.room_id} to db: {e}")
+            logger.error("Cannot save game {self.room_id} to db: {e}")
 
     class Info:
         def __init__(
