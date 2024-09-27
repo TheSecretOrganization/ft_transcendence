@@ -17,9 +17,11 @@ class Consumer(AsyncWebsocketConsumer):
     win_goal = 5
 
     async def connect(self):
-        self.initialize_game()
         self.user = self.scope["user"]
+        logger.info(f"User {self.user.id} is attempting to connect.")
+        self.initialize_game()
         if self.host:
+            logger.info(f"User {self.user.id} is the host for room {self.room_id}.")
             await self.redis.set(self.group_name, 1)
         elif not await self.redis.get(self.group_name) or await self.redis.get(self.room_id):
             await self.close()
@@ -27,8 +29,10 @@ class Consumer(AsyncWebsocketConsumer):
         self.valid_consumer = True
         await self.accept()
         await self.channel_layer.group_add(self.group_name, self.channel_name)
+        logger.info(f"User {self.user.id} successfully connected to room {self.room_id}.")
         await self.send_message("group", "game_join", {"user": self.user.id})
         await self.send_message("client", "game_pad", {"game_pad": self.pad_n})
+
 
     def initialize_game(self):
         self.redis = redis.Redis(host="redis")
@@ -57,6 +61,7 @@ class Consumer(AsyncWebsocketConsumer):
                 self.game_task.cancel()
             await self.redis.delete(self.group_name)
             await self.redis.delete(self.room_id)
+            logger.info(f"Room {self.room_id} has been closed by the host.")
             if self.mode == "online":
                 if not hasattr(self, "winner"):
                     self.punish_coward(self.info.creator)
@@ -65,24 +70,27 @@ class Consumer(AsyncWebsocketConsumer):
             await self.send_message("group", "game_stop", {"user": self.user.id})
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
         await self.redis.aclose()
+        logger.info(f"User {self.scope['user'].id} has disconnected.")
 
     async def receive(self, text_data):
         try:
             data = json.loads(text_data)
             msg_type = data["type"]
             if not msg_type:
-                raise ValueError(f"Missing 'type' in received data from {self.user.id}")
+                raise ValueError(f"Missing 'type' in data")
+            logger.debug(f"Received '{msg_type}' message from user {self.scope['user'].id}.")
             if msg_type == "game_stop":
                 await self.close()
             elif msg_type in ["game_ready", "game_move"]:
                 await self.send_message("group", args=data)
+            else:
+                raise ValueError(f"Unknown 'type' in data")
         except ValueError as e:
-            logger.warning(e)
+            logger.warning(f"Invalid message received from user {self.scope['user'].id}: {e}")
             await self.send_error(str(e))
         except Exception as e:
-            logger.error(f"Unexpected error from receive: {e}")
+            logger.error(f"Unexpected error from receive method: {e}")
             await self.send_error("An unexpected error occurred")
-
     async def game_join(self, event):
         if self.host:
             self.info.players.append(event["content"]["user"])
@@ -217,8 +225,9 @@ class Consumer(AsyncWebsocketConsumer):
                 score1=self.info.score[0],
                 score2=self.info.score[1]
             )
+            logger.debug(f"Game {self.room_id} saved to db.")
         except Exception as e:
-            logger.error("Cannot save game {self.room_id} to db: {e}")
+            logger.error(f"Cannot save game {self.room_id} to db: {e}")
 
     class Info:
         def __init__(
