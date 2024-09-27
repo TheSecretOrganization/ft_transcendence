@@ -7,6 +7,7 @@ from typing import List
 from urllib.parse import parse_qs
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
+from django.apps import apps
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 
@@ -205,7 +206,7 @@ class Consumer(AsyncWebsocketConsumer):
         )
 
     async def save_pong_to_db(self, winner):
-        from .models import Pong
+        Pong = apps.get_model('games', 'Pong')
         try:
             await sync_to_async(Pong.objects.create)(
                 user1=await sync_to_async(get_user_model().objects.get)(id=self.info.players[0]),
