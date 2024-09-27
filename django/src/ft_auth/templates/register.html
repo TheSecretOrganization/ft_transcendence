@@ -1,25 +1,55 @@
 {% extends "./extends/base.html" %}
 
 {% block content %}
-<h1>Register</h1>
+<!-- <div id="register-page-div" class="container-fluid d-flex">
+	<div id="register-side-div" class="column">
+		<h1>Register</h1>
+		<form id="register-form" data-url="/api/auth/register/">
+			<div id="register-error"></div>
+			{% csrf_token %}
+			<div>
+				<label for="username">Username</label>
+				<input id="username" type="text" autocomplete="username" />
+			</div>
+			<div>
+				<label for="password">Password</label>
+				<input id="password" type="password" />
+			</div>
+			<div>
+				<label for="password-confirm">Confirm password</label>
+				<input id="password-confirm" type="password" data-ignore="true" />
+			</div>
+			<button id="register-btn">Register</button>
+		</form>
+	</div>
+	<div id="slider-side-div" class="column">
 
-<form id="register-form" data-url="/api/auth/register/">
-	<div id="register-error"></div>
-	{% csrf_token %}
-	<div>
-		<label for="username">Username</label>
-		<input id="username" type="text" autocomplete="username" />
 	</div>
-	<div>
-		<label for="password">Password</label>
-		<input id="password" type="password" />
-	</div>
-	<div></div>
-		<label for="password-confirm">Confirm password</label>
-		<input id="password-confirm" type="password" data-ignore="true" />
-	</div>
-	<button id="register-btn">Register</button>
-</form>
+</div> -->
+
+<div id="register-side">
+	<h1>Register</h1>
+	<form id="register-form" data-url="/api/auth/register/">
+		<div id="register-error"></div>
+		{% csrf_token %}
+		<div>
+			<label for="username">Username</label>
+			<input id="username" type="text" autocomplete="username" />
+		</div>
+		<div>
+			<label for="password">Password</label>
+			<input id="password" type="password" />
+		</div>
+		<div>
+			<label for="password-confirm">Confirm password</label>
+			<input id="password-confirm" type="password" data-ignore="true" />
+		</div>
+		<button id="register-btn">Register</button>
+	</form>
+</div>
+<div id="login-side">
+	<h1>Right Side</h1>
+</div>
 
 <script>
 	function validate() {
