@@ -3,18 +3,25 @@ import json
 import random
 import uuid
 import redis.asyncio as redis
+import logging
 from typing import List
 from urllib.parse import parse_qs
 from asgiref.sync import sync_to_async
+from django.contrib.auth import get_user_model
+from django.apps import apps
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+logger = logging.getLogger(__name__)
 
 class Consumer(AsyncWebsocketConsumer):
     win_goal = 5
 
     async def connect(self):
+        self.user = self.scope["user"]
+        logger.info(f"User {self.user.id} is attempting to connect.")
         self.initialize_game()
         if self.host:
+            logger.info(f"User {self.user.id} is the host for room {self.room_id}.")
             await self.redis.set(self.group_name, 1)
         elif not await self.redis.get(self.group_name) or await self.redis.get(self.room_id):
             await self.close()
@@ -22,8 +29,10 @@ class Consumer(AsyncWebsocketConsumer):
         self.valid_consumer = True
         await self.accept()
         await self.channel_layer.group_add(self.group_name, self.channel_name)
-        await self.send_message("group", "game_join", {"user": self.scope["user"].id})
+        logger.info(f"User {self.user.id} successfully connected to room {self.room_id}.")
+        await self.send_message("group", "game_join", {"user": self.user.id})
         await self.send_message("client", "game_pad", {"game_pad": self.pad_n})
+
 
     def initialize_game(self):
         self.redis = redis.Redis(host="redis")
@@ -37,7 +46,7 @@ class Consumer(AsyncWebsocketConsumer):
         self.valid_consumer = False
         if self.host:
             self.info = self.Info(
-                creator=self.scope["user"].id,
+                creator=self.user.id,
                 room_id=self.room_id,
                 player_needed=int(query_params.get("player_needed", ["1"])[0]),
             )
@@ -52,32 +61,36 @@ class Consumer(AsyncWebsocketConsumer):
                 self.game_task.cancel()
             await self.redis.delete(self.group_name)
             await self.redis.delete(self.room_id)
+            logger.info(f"Room {self.room_id} has been closed by the host.")
             if self.mode == "online":
                 if not hasattr(self, "winner"):
                     self.punish_coward(self.info.creator)
                 await self.save_pong_to_db(self.winner)
         if self.valid_consumer:
-            await self.send_message("group", "game_stop", {"user": self.scope["user"].id})
+            await self.send_message("group", "game_stop", {"user": self.user.id})
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
         await self.redis.aclose()
+        logger.info(f"User {self.scope['user'].id} has disconnected.")
 
     async def receive(self, text_data):
         try:
             data = json.loads(text_data)
             msg_type = data["type"]
             if not msg_type:
-                raise ValueError("Missing 'type' in received data")
+                raise ValueError("Missing 'type' in data")
+            logger.debug(f"Received '{msg_type}' message from user {self.scope['user'].id}.")
             if msg_type == "game_stop":
                 await self.close()
             elif msg_type in ["game_ready", "game_move"]:
                 await self.send_message("group", args=data)
+            else:
+                raise ValueError("Unknown 'type' in data")
         except ValueError as e:
-            print(f"Value error: {e}")
+            logger.warning(f"Invalid message received from user {self.scope['user'].id}: {e}")
             await self.send_error(str(e))
         except Exception as e:
-            print(f"Unexpected error in receive: {e}")
+            logger.error(f"Unexpected error from receive method: {e}")
             await self.send_error("An unexpected error occurred")
-
     async def game_join(self, event):
         if self.host:
             self.info.players.append(event["content"]["user"])
@@ -137,7 +150,7 @@ class Consumer(AsyncWebsocketConsumer):
                 await self.send_game_state()
                 await asyncio.sleep(fps)
             except Exception as e:
-                print(f"Unexpected error in the loop from game {self.room_id}: {e}")
+                logger.error(f"Unexpected error in the loop from game {self.room_id}: {e}")
                 break
 
     def get_winner(self):
@@ -204,18 +217,17 @@ class Consumer(AsyncWebsocketConsumer):
         )
 
     async def save_pong_to_db(self, winner):
-        from .models import Pong
-        from ft_auth.models import User
-
+        Pong = apps.get_model('games', 'Pong')
         try:
             await sync_to_async(Pong.objects.create)(
-                user1=await sync_to_async(User.objects.get)(id=self.info.players[0]),
-                user2=await sync_to_async(User.objects.get)(id=self.info.players[1]),
+                user1=await sync_to_async(get_user_model().objects.get)(id=self.info.players[0]),
+                user2=await sync_to_async(get_user_model().objects.get)(id=self.info.players[1]),
                 score1=self.info.score[0],
                 score2=self.info.score[1]
             )
+            logger.debug(f"Game {self.room_id} saved to db.")
         except Exception as e:
-            print(f"Error when saving game {self.room_id} to db: {e}")
+            logger.error(f"Could not save game {self.room_id} to db: {e}")
 
     class Info:
         def __init__(
