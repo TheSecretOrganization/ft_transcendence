@@ -28,6 +28,11 @@ def pong(request):
 	return create_response(request, 'pong.html', title="Pong", need_authentication=True)
 
 @require_GET
+def chat_room(request):
+	return create_response(request, 'chat.html', title="Chat_room", need_authentication=True)
+
+
+@require_GET
 def login(request: HttpRequest):
 	if (request.user.is_authenticated):
 		return JsonResponse({'redirect': '/'}, status=403)

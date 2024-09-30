@@ -1,0 +1,55 @@
+{% extends "./extends/base.html" %}
+
+{% block content %}
+<h1>Chat Room</h1>
+<label for="room-name">Nom de la salle :</label>
+<input id="room-name-input" type="text" value="salon1">
+<button id="join-btn">Rejoindre la salle</button>
+
+<h2 id="room-name">Salle: Aucun</h2>
+
+<div id="chat-log"></div>
+
+<input id="message-input" type="text" size="100">
+<button id="send-btn">Envoyer</button>
+
+<script>
+	let roomName;
+	let chatSocket;
+
+	document.getElementById('join-btn').onclick = function () {
+		roomName = document.getElementById('room-name-input').value;
+		document.getElementById('room-name').textContent = `Salle : ${roomName}`;
+
+		// Créer une connexion WebSocket
+		chatSocket = new WebSocket(
+			'ws://' + window.location.host + '/ws/chat/' + roomName + '/'
+		);
+
+		// Lorsque le serveur envoie un message, l'afficher dans le chat
+		chatSocket.onmessage = function (e) {
+			const data = JSON.parse(e.data);
+			document.getElementById('chat-log').innerHTML += '<br/>' + data.message;
+		};
+
+		// Gestion des erreurs de connexion
+		chatSocket.onerror = function (e) {
+			console.error('WebSocket Error:', e);
+		};
+
+		// Fermeture de la connexion
+		chatSocket.onclose = function (e) {
+			console.log('WebSocket fermé');
+		};
+	};
+
+	document.getElementById('send-btn').onclick = function () {
+		const messageInput = document.getElementById('message-input');
+		const message = messageInput.value;
+		chatSocket.send(JSON.stringify({
+			'message': message
+		}));
+		messageInput.value = '';
+	};
+</script>
+{% endblock %}
