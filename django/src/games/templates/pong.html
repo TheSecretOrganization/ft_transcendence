@@ -48,7 +48,7 @@
 
 	document.getElementById("join-form").addEventListener("submit", e => {
 		e.preventDefault();
-		roomId = document.getElementById('join-id').value.trim();
+		const roomId = document.getElementById('join-id').value.trim();
 		document.getElementById('join-id').value = "";
 		if (roomId !== "")
 			route(`/pong/online/${roomId}`);
