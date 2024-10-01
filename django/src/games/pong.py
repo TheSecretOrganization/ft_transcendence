@@ -43,8 +43,8 @@ class Consumer(AsyncWebsocketConsumer):
         query_params = parse_qs(self.scope["query_string"].decode())
         self.mode = self.check_missing_param(query_params, "mode")
         player_needed = self.check_missing_param(query_params, "player_needed")
-        self.room_id = query_params.get("room_id", [None])[0]
-        self.host = query_params.get("host", [None])[0] == "True"
+        self.room_id = self.check_missing_param(query_params, "room_id")
+        self.host = self.check_missing_param(query_params, "host") == "True"
         self.group_name = f"pong_{self.room_id}"
         self.pad_n = "pad_1" if self.host else "pad_2"
 
