@@ -1,278 +1,61 @@
 {% extends "./extends/base.html" %}
 
 {% block content %}
-<div class="h-100 d-flex flex-column justify-content-center align-items-center">
+<div class="container">
 	<div id="main" game-menu>
-		<button menu-id="local">Local Play</button>
-		<button menu-id="online">Online Play</button>
+		<button class="btn btn-primary" menu-id="local">Local Play</button>
+		<button class="btn btn-danger" menu-id="online">Online Play</button>
 	</div>
 
 	<div id="local" game-menu>
-		<button join-mode="local">Play with a Friend</button>
-		<button join-mode="ai">Play with AI</button>
+		<a class="btn btn-primary text-decoration-none" data-route href="/pong/local">Play with a Friend</a>
+		<a class="btn btn-danger text-decoration-none" data-route href="/pong/ai">Play with an AI</a>
 	</div>
 
 	<div id="online" game-menu>
-		<button join-mode="online">Create a Room</button>
-		<button menu-id="join">Join a Room</button>
-		<button>Join a Tournament</button>
+		<a class="btn btn-primary text-decoration-none" data-route href="/pong/online">Create a Room</a>
+		<button class="btn btn-danger text-decoration-none" menu-id="join">Join a Room</button>
+		<a class="btn btn-warning text-decoration-none" data-route href="/tounament/pong">Join a Tournament</a>
 	</div>
 
 	<div id="join" game-menu>
-		<form id="join-form">
-			<input type="text" id="join-id" placeholder="Room Id">
-			<button id="join-form-btn">Join</button>
+		<form class="form-group" id="join-form">
+			<input class="form-control" type="text" id="join-id" placeholder="Room Id">
+			<button type="submit" class="btn btn-primary">Join</button>
 		</form>
 	</div>
 
-	<div id="game" game-menu>
-		<div id="room-id">
-		</div>
-		<canvas id="pong-canvas" class="game-canvas"></canvas>
-	</div>
-
-	<button id="ready-btn">Ready</button>
-	<button id="back-btn" menu-id="main">Back to Main Menu</button>
+	<button class="btn btn-success" id="back-btn" menu-id="main">Back</button>
 </div>
 
 <script>
 	const url = "pong"
-	const canvas = document.getElementById('pong-canvas');
-	const ctx = canvas.getContext('2d');
 	const backBtn = document.getElementById("back-btn");
-	const readyBtn = document.getElementById('ready-btn');
-	let upKey = "w";
-	let downKey = "s";
-	let socket;
-	let padN;
-	let secondPlayer;
-	let roomId;
-	let run;
-	let ready;
-	let gameState;
-	let keyInterval;
-	let pointerLock;
-	const mouseSensitivity = 1;
-
-	function resetGame(showMain = true) {
-		if (socket) {
-			sendToWebSocket("game_stop");
-			socket.close();
-		}
-		socket = undefined;
-		padN = "";
-		secondPlayer = false;
-		roomId = "";
-		run = false;
-		ready = false;
-		gameState = undefined;
-		keyInterval = null;
-		document.getElementById("room-id").innerText = "";
-		document.getElementById('join-id').value = "";
-		pointerLock = false;
-		document.exitPointerLock();
-		if (showMain)
-			showMenu("main");
-	}
 
 	function showMenu(menuId) {
 		document.querySelectorAll("[game-menu]").forEach(menu => {
 			menu.style.display = menu.id === menuId ? "block" : "none";
-			menu.querySelectorAll("[menu-id]").forEach(btn => {
-				btn.disabled = menu.id !== menuId;
-			});
 		});
-		toggleBtn(backBtn, menuId === "main");
-		toggleBtn(readyBtn, menuId !== "game");
+		menuId === "main" ? backBtn.classList.add("hidden") : backBtn.classList.remove("hidden");
 	}
 
-	function toggleBtn(btn, condition) {
-		condition ? btn.classList.add("hidden") : btn.classList.remove("hidden");
-		btn.disabled = condition;
-	}
-
-	function joinRoom(mode) {
-		let args = {
-			"mode": mode,
-			"room_id": roomId,
-			"player_needed": mode === "online" ? 2 : 1,
-		};
-		secondPlayer = mode === "local";
-		socket = wsConnect(wsCreateUrl(url, args), onMessage, resetGame);
-	}
-
-	function sendToWebSocket(type, args = {}) {
-		socket.send(JSON.stringify({ type, content: args }));
-	}
-
-	function onMessage(data) {
-		switch (data.type) {
-			case 'game_pad': padN = data.content.game_pad; break;
-			case 'game_info': handleGameInfo(data); break;
-			case 'game_start': handleGameStart(); break;
-			case 'game_state': handleGameState(data); break;
-			case 'game_stop': handleGameStop(data); break;
-			case 'game_error': handleGameError(data); break;
-		}
-	}
-
-	function handleGameInfo(data) {
-		roomId = data.content.room_id;
-		document.getElementById("room-id").innerText = `Room Id: ${roomId}`;
-		canvasResize(canvas);
-		showMenu("game");
-		if (data.content.players.length !== data.content.player_needed)
-			drawCenteredText("Waiting for second player");
-	}
-
-	function handleGameStart() {
-		run = true;
-		if (secondPlayer) {
-			canvas.click()
-		}
-	}
-
-	function handleGameState(data) {
-		gameState = data.content;
-		renderGame();
-	}
-
-	function handleGameStop(data) {
-		resetGame(false);
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		if (data?.content?.winner)
-			drawCenteredText(`Winner: ${data.content.winner}`)
-		else
-			drawCenteredText("Sorry, your mate left :'(");
-	}
-
-	function handleGameError(data) {
-		console.error(data.content.error);
-		resetGame();
-	}
-
-	function canvasResize(canvas) {
-		const style = getComputedStyle(canvas);
-		canvas.width = parseInt(style.width);
-		canvas.height = parseInt(style.height);
-	}
-
-	function renderGame() {
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		drawBall(gameState.ball);
-		drawPad(gameState.pad_1);
-		drawPad(gameState.pad_2);
-		drawText(`P1: ${gameState.score[0]}`, 20, 20);
-		drawText(`P2: ${gameState.score[1]}`, canvas.width - 80, 20);
-	}
-
-	function drawBall(ball) {
-		const radius = ball.radius * Math.min(canvas.width, canvas.height);
-		ctx.beginPath();
-		ctx.arc(ball.x * canvas.width, ball.y * canvas.height, radius, 0, Math.PI * 2);
-		ctx.fillStyle = ball.color;
-		ctx.fill();
-		ctx.closePath();
-	}
-
-	function drawPad(pad) {
-		ctx.fillStyle = pad.color;
-		ctx.fillRect(pad.x * canvas.width, pad.y * canvas.height, pad.width * canvas.width, pad.height * canvas.height);
-	}
-
-	function drawText(text, x, y, color = "white", font = "20px Arial") {
-		ctx.fillStyle = color;
-		ctx.font = font;
-		ctx.fillText(text, x, y);
-	}
-
-	function drawCenteredText(text, color = "white", font = "20px Arial") {
-		ctx.font = font;
-		const textWidth = ctx.measureText(text).width;
-		const x = (canvas.width - textWidth) / 2;
-		const y = canvas.height / 2;
-		drawText(text, x, y, color, font);
-	}
-
-	function initializeEvents() {
-		document.querySelectorAll('[menu-id]').forEach(element => {
-			element.addEventListener("click", (e) => {
-				e.preventDefault();
-				showMenu(element.getAttribute("menu-id"));
-				if (element.id && element.id === "back-btn")
-					resetGame();
-			});
-		});
-
-		document.querySelectorAll("[join-mode]").forEach(element => {
-			element.addEventListener("click", (e) => {
-				e.preventDefault();
-				joinRoom(element.getAttribute("join-mode"));
-			});
-		});
-
-		document.getElementById("join-form").addEventListener("submit", e => {
+	document.querySelectorAll('[menu-id]').forEach(element => {
+		element.addEventListener("click", (e) => {
 			e.preventDefault();
-			roomId = document.getElementById('join-id').value.trim();
-			document.getElementById('join-id').value = "";
-			if (roomId !== "")
-				joinRoom("online");
-			else
-				console.error('Room ID cannot be empty.');
+			showMenu(element.getAttribute("menu-id"));
 		});
+	});
 
-		readyBtn.addEventListener("click", e => {
-			toggleBtn(readyBtn, true);
-			sendToWebSocket("game_ready", {
-				"pad_n": padN,
-			});
-		});
+	document.getElementById("join-form").addEventListener("submit", e => {
+		e.preventDefault();
+		roomId = document.getElementById('join-id').value.trim();
+		document.getElementById('join-id').value = "";
+		if (roomId !== "")
+			route(`/pong/online/${roomId}`);
+		else
+			console.error('Room ID cannot be empty.');
+	});
 
-		canvas.onclick = () => {
-			if (run && !pointerLock)
-				canvas.requestPointerLock()
-		}
-
-		window.onresize = () => {
-			canvasResize(canvas);
-			if (run)
-				renderGame();
-		};
-
-		document.onkeydown = e => {
-			if (run && (e.key === upKey || e.key === downKey)) {
-				e.preventDefault();
-				if (!keyInterval) {
-					let direction = e.key === upKey ? "up" : "down";
-					sendToWebSocket("game_move", { "pad_n": padN, "direction": direction });
-					keyInterval = setInterval(() => {
-						sendToWebSocket("game_move", { "pad_n": padN, "direction": direction });
-					}, 30);
-				}
-			}
-		};
-
-		document.onkeyup = e => {
-			if (e.key === upKey || e.key === downKey) {
-				clearInterval(keyInterval);
-				keyInterval = null;
-			}
-		};
-
-		document.onmousemove = e => {
-			if (secondPlayer && run && pointerLock) {
-				let direction = e.movementY < 0 ? "up" : "down";
-				if (Math.abs(e.movementY) * mouseSensitivity >= 1)
-					sendToWebSocket("game_move", { "pad_n": "pad_2", "direction": direction });
-			}
-		};
-
-		document.onpointerlockchange = () => {
-			pointerLock = document.pointerLockElement === canvas
-		};
-	}
-
-	initializeEvents();
-	resetGame();
+	showMenu("main");
 </script>
 {% endblock %}
