@@ -1,25 +1,44 @@
 {% extends "./extends/base.html" %}
 
 {% block content %}
-<h1>Register</h1>
 
-<form id="register-form" data-url="/api/auth/register/">
-	<div id="register-error"></div>
-	{% csrf_token %}
-	<div>
-		<label for="username">Username</label>
-		<input id="username" type="text" autocomplete="username" />
+<div id="register-side" class="container">
+	<div class="column">
+		<form id="register-form" data-url="/api/auth/register/">
+			<div class="row">
+				<h1 class="text-center">Register</h1>
+			</div>
+			<div id="register-error"></div>
+			{% csrf_token %}
+			<div class="form-floating mb-3 row">
+				<input type="text" class="form-control" id="username" placeholder="Username" autocomplete="username">
+				<label for="username">Username</label>
+			</div>
+
+			<div class="form-floating mb-3 row">
+				<input type="password" class="form-control" id="password" placeholder="Password">
+				<label for="password">Password</label>
+			</div>
+
+			<div class="form-floating  mb-3 row">
+				<input type="password" class="form-control" id="password-confirm" placeholder="Password"
+					data-ignore="true">
+				<label for="password-confirm">Confirm Password</label>
+			</div>
+
+			<button id="register-btn" type="submit" class="btn btn-success row w-100 m-0">Create account</button>
+		</form>
+		<hr class="row border-bottom border-1 border-dark my-2">
+		</hr>
+		<div class="row">
+			<p class="fw-light">Already have an account ? Try <a data-route href="/login"
+					class="text-decoration-none text-success">logging in</a></p>
+		</div>
 	</div>
-	<div>
-		<label for="password">Password</label>
-		<input id="password" type="password" />
-	</div>
-	<div></div>
-		<label for="password-confirm">Confirm password</label>
-		<input id="password-confirm" type="password" data-ignore="true" />
-	</div>
-	<button id="register-btn">Register</button>
-</form>
+</div>
+<div id="login-side">
+	<h1>Right Side</h1>
+</div>
 
 <script>
 	function validate() {
@@ -29,13 +48,13 @@
 		return password == passwordcfrm;
 	}
 
-	document.getElementById('register-btn').onclick = function(e) {
+	document.getElementById('register-btn').onclick = function (e) {
 		document.getElementById('register-error').textContent = '';
 		e.preventDefault();
 
 		if (!validate()) {
 			document.getElementById('register-error').textContent = 'Passwords doesn\'t match';
-			return ;
+			return;
 		}
 
 		submitForm('register-form', () => route('/login'), (json) => {
