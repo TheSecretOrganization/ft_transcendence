@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.db.utils import IntegrityError
 from django.test import TestCase
 from .models import Friend
@@ -35,3 +36,60 @@ class FriendTest(TestCase):
 	def test_invite_self(self):
 		with self.assertRaises(IntegrityError):
 			Friend.objects.create(origin=self.user, target=self.user)
+
+class AddFriendTest(TestCase):
+	def setUp(self):
+		username = 'bob'
+		password = 'pBrp#fg4LKDeg8$X'
+		self.route = '/friends/invite/'
+		self.user = get_user_model().objects.create_user(username=username, password=password)
+		self.target = get_user_model().objects.create_user(username='mich', password=password)
+		self.client.login(username=username, password=password)
+
+	def test_add_friend(self):
+		request = post(self.client, self.route, {'target': self.target.id})
+		self.assertEqual(request.status_code, 200, 'Invite failed')
+		invite = Friend.objects.get(origin=self.user.id, target=self.target.id)
+		self.assertIsNotNone(invite, 'Invite has not been found in database')
+		self.assertEqual(invite.status, Friend.Status.PENDING, 'Default status is not PENDING')
+		self.assertEqual(invite.origin, self.user, 'Origin is not the user')
+		self.assertEqual(invite.target, self.target, 'Target is not the right target')
+
+	def test_add_friend_already_send(self):
+		with transaction.atomic():
+			request = post(self.client, self.route, {'target': self.target.id})
+			self.assertEqual(request.status_code, 200, 'Badic invite failed')
+		with transaction.atomic():
+			request = post(self.client, self.route, {'target': self.target.id})
+			self.assertEqual(request.status_code, 400, 'Server accepted duplicated invite')
+		count = Friend.objects.filter(origin=self.user, target=self.target).count()
+		self.assertEqual(count, 1, 'There is more than 1 entry for friend invite')
+
+	def test_add_friend_without_param(self):
+		request = post(self.client, self.route, None)
+		self.assertEqual(request.status_code, 400, "None argument didn't result in a 400")
+		request = post(self.client, self.route, {})
+		self.assertEqual(request.status_code, 400, "Empty argument didn't result in a 400")
+		request = post(self.client, self.route, {'traget': self.target.id})
+		self.assertEqual(request.status_code, 400, "Wront argument didn't result in a 400")
+
+	def test_add_friend_not_logged(self):
+		self.client.logout()
+		request = post(self.client, self.route, {'target': self.target.id})
+		self.assertEqual(request.status_code, 401, "Not logged user didn't result in a 401")
+		self.assertFalse(Friend.objects.filter(origin=self.user, target=self.target).exists(),
+				   "Not logged user created an entry in database")
+	
+	def test_add_friend_self(self):
+		with transaction.atomic():
+			request = post(self.client, self.route, {'target': self.user.id})
+			self.assertEqual(request.status_code, 400, "Self invite didn't result in a 400")
+		self.assertFalse(Friend.objects.filter(origin=self.user, target=self.user).exists(),
+				   "Self invite created an entry in database")
+
+	def test_add_unknown_friend(self):
+		rid = 404
+		request = post(self.client, self.route, {'target': rid})
+		self.assertEqual(request.status_code, 400, "Unknown target didn't result in a 400")
+		self.assertFalse(Friend.objects.filter(origin=self.user, target=404).exists(),
+				   "Self invite created an entry in database")
