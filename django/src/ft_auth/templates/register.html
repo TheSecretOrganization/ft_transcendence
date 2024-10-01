@@ -45,6 +45,10 @@
 <div id="login-side">
 	<h1>Right Side</h1>
 </div>
+<div id="slider-div" class="slider-div-default">
+	<h1>Right Side</h1>
+	<button id="toggle-slider" class="btn btn-primary mt-3">toggle slider</button>
+</div>
 
 <script>
 	function validate() {
@@ -67,6 +71,14 @@
 			document.getElementById('register-error').textContent = json.error;
 		});
 	};
+
+	document.getElementById('toggle-slider').addEventListener('click', function() {
+        let element = document.getElementById('slider-div');
+        element.classList.toggle('slider-div-default');
+        element.classList.toggle('slider-div-animation');
+        let btn = document.getElementById('toggle-slider');
+        btn.classList.toggle('active');
+    });
 </script>
 
 <style>
@@ -91,7 +103,7 @@
 	}
 
 	#login-side {
-		background-color: #e0e0e0;
+		background-color: #f5f5f5;
 	}
 
 	.image-text {
@@ -106,5 +118,36 @@
 		padding-left: 4px;
 		padding-right: 4px;
 	}
+
+	.slider-div-default {
+		z-index: 9000;
+		width: 50%;
+		height: calc(100vh - 67.5px);
+		background-color: #e0e0e0;
+		position: absolute;
+		top: 67.5px;
+		left: 50%;
+	}
+
+	.slider-div-animation {
+		z-index: 9000;
+		width: 50%;
+		height: calc(100vh - 67.5px);
+		background-color: #e0e0e0;
+		position: absolute;
+		top: 67.5px;
+		left: 0;
+		animation: moveRight 4s;
+		animation-fill-mode: forwards;
+    }
+
+    @keyframes moveRight {
+      0% {
+        left: 0;
+      }
+      100% {
+        left: 50%;
+      }
+    }
 </style>
 {% endblock %}
