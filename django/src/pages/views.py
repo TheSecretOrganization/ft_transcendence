@@ -28,6 +28,10 @@ def pong(request):
 	return create_response(request, 'pong.html', title="Pong", need_authentication=True)
 
 @require_GET
+def tournament(request):
+	return create_response(request, 'tournament.html', title="Tournament", need_authentication=True)
+
+@require_GET
 def login(request: HttpRequest):
 	if (request.user.is_authenticated):
 		return JsonResponse({'redirect': '/'}, status=403)
