@@ -4,10 +4,13 @@
 	left: 0;
 	height: 100vh;
 	width: 250px;
+	background-color: #fdecfa;
 	border-radius: 0 5px 5px 0;
 	transition: all 0.3s ease;
 	z-index: 1000;
 	text-align: center;
+	display: flex;
+	flex-direction: column;
 }
 
 #sidebar-wrapper.toggled {
@@ -17,10 +20,49 @@
 #sidebar-wrapper .sidebar-heading {
 	padding: 1rem;
 	font-size: 1.5rem;
+	color: #333;
+	font-weight: bold;
+	border-bottom: 1px solid #ddd;
 }
 
 #sidebar-wrapper .list-group-item {
-	padding: 1rem 1.5rem;
+	display: flex;
+	align-items: center;
+	padding: 0.75rem 1rem;
+	color: #333;
+	background-color: #fdecfa;
+	border: none;
+	transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+#sidebar-wrapper .list-group-item:hover {
+	background-color: #dfbac8;
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+}
+
+/* Icon */
+#sidebar-wrapper .list-group-item i {
+	font-size: 1.5rem;
+	width: 40px;
+	text-align: center;
+}
+
+#sidebar-wrapper .list-group-item span {
+	flex-grow: 1;
+	text-align: left;
+	padding-left: 10px;
+	font-size: 1rem;
+}
+
+#sidebar-wrapper .list-group-item.active {
+	background-color: #e0e0e0;
+	font-weight: bold;
+}
+
+#sidebar-wrapper .sidebar-divider {
+	margin: 0.75rem 0;
+	border-top: 2px solid #ddd;
 }
 
 #sidebar-toggle {
@@ -34,4 +76,21 @@
 
 #sidebar-toggle.toggled {
 	margin-left: 250px;
+}
+
+.text-center {
+	padding: 1rem;
+}
+
+#theme-toggle {
+	margin-top: auto;
+	background-color: #f0f0f0;
+	text-align: center;
+	padding: 1rem;
+	border: none;
+	cursor: pointer;
+}
+
+#theme-toggle:hover {
+	background-color: #e0e0e0;
 }
