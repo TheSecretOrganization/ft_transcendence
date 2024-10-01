@@ -10,7 +10,7 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         """
         communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1")
 
-        connected, subprotocol = await communicator.connect()
+        connected, _ = await communicator.connect()
         self.assertFalse(connected)
 
     async def test_wrong_user(self):
@@ -20,7 +20,7 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1")
         communicator.scope['user'] = "wrong_user"
 
-        connected, subprotocol = await communicator.connect()
+        connected, _ = await communicator.connect()
         self.assertFalse(connected)
 
     async def test_missing_parameters(self):
@@ -31,7 +31,7 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/")
         communicator.scope['user'] = user
 
-        connected, subprotocol = await communicator.connect()
+        connected, _ = await communicator.connect()
         self.assertFalse(connected)
 
     async def test_websocket_connect(self):
@@ -42,7 +42,7 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1")
         communicator.scope['user'] = user
 
-        connected, subprotocol = await communicator.connect()
+        connected, _ = await communicator.connect()
         self.assertTrue(connected)
         response = await communicator.receive_json_from()
         self.assertEqual(response["type"], "game_pad")
@@ -59,7 +59,7 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1")
         communicator.scope['user'] = user
 
-        connected, subprotocol = await communicator.connect()
+        connected, _ = await communicator.connect()
         self.assertTrue(connected)
         response = await communicator.receive_json_from()
         self.assertEqual(response["type"], "game_pad")
@@ -91,7 +91,7 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1")
         communicator.scope['user'] = user
 
-        connected, subprotocol = await communicator.connect()
+        connected, _ = await communicator.connect()
         self.assertTrue(connected)
         response = await communicator.receive_json_from()
         self.assertEqual(response["type"], "game_pad")

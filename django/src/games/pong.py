@@ -14,7 +14,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 logger = logging.getLogger(__name__)
 
 class Consumer(AsyncWebsocketConsumer):
-    win_goal = 1
+    win_goal = 5
 
     async def connect(self):
         self.connected = True
@@ -97,7 +97,7 @@ class Consumer(AsyncWebsocketConsumer):
             msg_type = data.get("type")
             if not msg_type:
                 raise AttributeError("Missing 'type'")
-            if not "content" in data:
+            if "content" not in data:
                 raise AttributeError("Missing 'content'")
 
             logger.debug(f"Received '{msg_type}' message from user {self.scope['user'].id}.")
