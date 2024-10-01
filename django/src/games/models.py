@@ -1,13 +1,12 @@
 from django.db import models
-from ft_auth.models import User
-
+from django.contrib.auth import get_user_model
 
 class Pong(models.Model):
     user1 = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="user1"
+        get_user_model(), on_delete=models.SET_NULL, null=True, related_name="user1"
     )
     user2 = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, related_name="user2"
+        get_user_model(), on_delete=models.SET_NULL, null=True, related_name="user2"
     )
     score1 = models.PositiveSmallIntegerField()
     score2 = models.PositiveSmallIntegerField()
