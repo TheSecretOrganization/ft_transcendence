@@ -2,23 +2,23 @@
 
 {% block content %}
 <div class="container">
-	<div id="main" game-menu>
+	<div game-menu="main">
 		<button class="btn btn-primary" menu-id="local">Local Play</button>
 		<button class="btn btn-danger" menu-id="online">Online Play</button>
 	</div>
 
-	<div id="local" game-menu>
+	<div game-menu="local">
 		<a class="btn btn-primary text-decoration-none" data-route href="/pong/local">Play with a Friend</a>
 		<a class="btn btn-danger text-decoration-none" data-route href="/pong/ai">Play with an AI</a>
 	</div>
 
-	<div id="online" game-menu>
+	<div game-menu="online">
 		<a class="btn btn-primary text-decoration-none" data-route href="/pong/online">Create a Room</a>
 		<button class="btn btn-danger text-decoration-none" menu-id="join">Join a Room</button>
 		<a class="btn btn-warning text-decoration-none" data-route href="/tounament/pong">Join a Tournament</a>
 	</div>
 
-	<div id="join" game-menu>
+	<div game-menu="join">
 		<form class="form-group" id="join-form">
 			<input class="form-control" type="text" id="join-id" placeholder="Room Id">
 			<button type="submit" class="btn btn-primary">Join</button>
@@ -34,7 +34,7 @@
 
 	function showMenu(menuId) {
 		document.querySelectorAll("[game-menu]").forEach(menu => {
-			menu.style.display = menu.id === menuId ? "block" : "none";
+			menu.style.display = menu.getAttribute("game-menu") === menuId ? "block" : "none";
 		});
 		menuId === "main" ? backBtn.classList.add("hidden") : backBtn.classList.remove("hidden");
 	}
