@@ -2,7 +2,6 @@
 	<div id="navbar-wrapper">
 		<nav class="navbar">
 			<b class="navbar-brand nav navbar-nav navbar-left">Johnny Depp</b>
-			<button id="sidebar-toggle" class="btn btn-primary">☰</button>
 			{% if user.is_authenticated %}
 			<div class="container-dropdown">
 				<div class="dropdown">
@@ -34,13 +33,16 @@
 	</div>
 
 	<div id="sidebar-wrapper" class="border">
-		<div class="sidebar-heading">Johnny Depp</div>
+		<div class="sidebar-heading">
+			<button id="sidebar-toggle" class="btn btn-primary">☰</button>
+			<span class="hidden">Johnny Depp</span>
+		</div>
 		<ul id="sidebar-list" class="list-group list-group-flush">
 			<li><a class="list-group-item list-group-item-action" data-route href="/"><i
-						class="fas fa-house me-2"></i>HOME</a></li>
+						class="fas fa-house me-2"></i><span class="hidden"> HOME</span></a></li>
 			{% if user.is_authenticated %}
 			<li><a class="list-group-item list-group-item-action" data-route href="/pong"><i
-						class="fas fa-gamepad me-2"></i>GAMES</a></li>
+						class="fas fa-gamepad me-2"></i><span class="hidden"> GAMES</span></a></li>
 			{% endif %}
 		</ul>
 
@@ -49,11 +51,11 @@
 		<ul id="sidebar-list" class="list-group list-group-flush">
 			{% if not user.is_authenticated %}
 			<li><a class="list-group-item list-group-item-action" data-route href="/dummylink"><i
-						class="fas fa-ice-cream me-2"></i> Free Ice Cream</a></li>
+						class="fas fa-ice-cream me-2"></i><span class="hidden"> Free Ice Cream</span></a></li>
 			<li><a class="list-group-item list-group-item-action" data-route href="/dummylink"><i
-						class="fas fa-money-bill-wave me-2"></i> Tax Fraud</a></li>
+						class="fas fa-money-bill-wave me-2"></i><span class="hidden"> Tax Fraud</span></a></li>
 			<li><a class="list-group-item list-group-item-action" data-route href="/dummylink"><i
-						class="fas fa-palette me-2"></i> Shark Customizer</a></li>
+						class="fas fa-palette me-2"></i><span class="hidden"> Shark Customizer</span></a></li>
 			{% endif %}
 		</ul>
 
@@ -61,7 +63,7 @@
 
 		<div class="mt-auto">
 			<a class="list-group-item list-group-item-action theme-toggle">
-				<i class="fas fa-sun me-2"></i> Toggle Dark Mode
+				<i class="fas fa-sun me-2"></i><span class="hidden"> Toggle dark mode</span>
 			</a>
 		</div>
 	</div>
@@ -75,7 +77,19 @@
 <script>
 	document.getElementById("sidebar-toggle").addEventListener("click", function (e) {
 		const sidebar = document.getElementById("sidebar-wrapper");
+		const spans = sidebar.querySelectorAll('span'); // Select all spans in the sidebar
+
 		sidebar.classList.toggle("toggled"); // Toggle the sidebar's class
+
+		// Check if sidebar is toggled and update hidden class accordingly
+		spans.forEach(span => {
+			if (sidebar.classList.contains("toggled")) {
+				span.classList.remove("hidden"); // Show spans
+			} else {
+				span.classList.add("hidden"); // Hide spans
+			}
+		});
+
 
 		// Optional: If you want to adjust the body background when toggling
 		if (sidebar.classList.contains("toggled")) {

@@ -3,7 +3,7 @@
 	top: 0;
 	left: 0;
 	height: 100vh;
-	width: 250px;
+	width: 60px;
 	background-color: #f3e2f0;
 	border-radius: 0 5px 5px 0;
 	transition: all 0.3s ease;
@@ -14,7 +14,8 @@
 }
 
 #sidebar-wrapper.toggled {
-	margin-left: -250px;
+	margin-left: 0px;
+	width: 250px;
 }
 
 #sidebar-wrapper .sidebar-heading {
@@ -26,8 +27,7 @@
 }
 
 #sidebar-wrapper .list-group-item {
-	display: flex;
-	align-items: center;
+	justify-content: center;
 	padding: 0.75rem 1rem;
 	color: #333;
 	background-color: #f3e2f0;
@@ -49,7 +49,7 @@
 }
 
 #sidebar-wrapper .list-group-item span {
-	flex-grow: 1;
+	/* flex-grow: 1; */
 	text-align: left;
 	padding-left: 10px;
 	font-size: 1rem;
@@ -66,40 +66,24 @@
 
 #sidebar-wrapper .sidebar-divider {
 	margin: 0.75rem 0;
-	border-top: 2px solid #ddd;
+	border-top: 2px solid #b21313;
 }
-
-/* #sidebar-toggle {
-	position: fixed;
-	top: 1rem;
-	left: 1rem;
-	font-size: 20px;
-	z-index: 1050;
-	transition: all 0.3s ease;
-} */
 
 #sidebar-toggle {
-	position: absolute;
+	background-color: transparent;
+	border: none;
+	color: #000000;
+	font-size: 40px;
+	cursor: pointer;
+	transition: color 0.3s ease;
 	top: 1rem;
 	left: 1rem;
-	font-size: 20px;
-	z-index: 1050;
-	transition: all 0.3s ease;
 }
+
 
 .darken-body {
 	background-color: rgba(0, 0, 0, 0.5);
-	/* Adjust the opacity as needed */
 	transition: background-color 0.3s ease;
-	/* Smooth transition */
-}
-
-#sidebar-toggle.toggled {
-	margin-left: 250px;
-}
-
-.text-center {
-	padding: 1rem;
 }
 
 #theme-toggle {
