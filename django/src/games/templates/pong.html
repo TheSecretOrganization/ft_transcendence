@@ -29,22 +29,8 @@
 </div>
 
 <script>
-	const url = "pong"
+	const menuClass = "game-menu";
 	const backBtn = document.getElementById("back-btn");
-
-	function showMenu(menuId) {
-		document.querySelectorAll("[game-menu]").forEach(menu => {
-			menu.style.display = menu.getAttribute("game-menu") === menuId ? "block" : "none";
-		});
-		menuId === "main" ? backBtn.classList.add("hidden") : backBtn.classList.remove("hidden");
-	}
-
-	document.querySelectorAll('[menu-id]').forEach(element => {
-		element.addEventListener("click", (e) => {
-			e.preventDefault();
-			showMenu(element.getAttribute("menu-id"));
-		});
-	});
 
 	document.getElementById("join-form").addEventListener("submit", e => {
 		e.preventDefault();
@@ -56,6 +42,7 @@
 			console.error('Room ID cannot be empty.');
 	});
 
-	showMenu("main");
+	showMenu("main", menuClass, backBtn);
+	addBtnToMenusEvents(menuClass, backBtn);
 </script>
 {% endblock %}
