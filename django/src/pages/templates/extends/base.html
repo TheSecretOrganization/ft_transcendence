@@ -77,25 +77,21 @@
 <script>
 	document.getElementById("sidebar-toggle").addEventListener("click", function (e) {
 		const sidebar = document.getElementById("sidebar-wrapper");
-		const spans = sidebar.querySelectorAll('span'); // Select all spans in the sidebar
+		const spans = sidebar.querySelectorAll('span');
+		sidebar.classList.toggle("toggled");
 
-		sidebar.classList.toggle("toggled"); // Toggle the sidebar's class
-
-		// Check if sidebar is toggled and update hidden class accordingly
 		spans.forEach(span => {
 			if (sidebar.classList.contains("toggled")) {
-				span.classList.remove("hidden"); // Show spans
+				span.classList.remove("hidden");
 			} else {
-				span.classList.add("hidden"); // Hide spans
+				span.classList.add("hidden");
 			}
 		});
 
-
-		// Optional: If you want to adjust the body background when toggling
 		if (sidebar.classList.contains("toggled")) {
-			document.body.classList.remove("darken-body");
-		} else {
 			document.body.classList.add("darken-body");
+		} else {
+			document.body.classList.remove("darken-body");
 		}
 	});
 
