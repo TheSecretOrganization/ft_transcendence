@@ -4,6 +4,9 @@ from . import views
 urlpatterns = [
 	path('index/', views.index),
 	path('pong/', views.pong),
+	path('pong/local/', views.pong_local),
+    path('pong/online/', views.pong_online),
+    path('pong/online/<uuid:id>/', views.pong_online),
 	path('tournament/', views.tournament),
 	path('login/', views.login),
 	path('register/', views.register),
