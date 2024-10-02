@@ -1,0 +1,58 @@
+{% extends "./extends/base.html" %}
+
+{% block content %}
+<div class="container">
+	<div tournament-menu="main">
+		<button class="btn btn-primary" menu-id="create">Create Tournament</button>
+		<button class="btn btn-danger" menu-id="join">Join Tournament</button>
+	</div>
+
+	<div tournament-menu="create">
+		<form class="form-group" tournament-form>
+			<select class="form-control" game-select required>
+				<option value="" disabled selected>Select a game</option>
+				{% for game in games %}
+					<option value="{{ game.value }}">{{ game.label }}</option>
+				{% endfor %}			</select>
+			<button type="submit" class="btn btn-primary">Create</button>
+		</form>
+	</div>
+
+	<div tournament-menu="join">
+		<form class="form-group" tournament-form>
+			<select class="form-control" game-select required>
+				<option value="" disabled selected>Select a game</option>
+				{% for game in games %}
+					<option value="{{ game.value }}">{{ game.label }}</option>
+				{% endfor %}
+			</select>
+			<input class="form-control" type="text" tournament-id placeholder="Tournament Id" required>
+			<button type="submit" class="btn btn-primary">Join</button>
+		</form>
+	</div>
+
+	<button class="btn btn-success" id="back-btn" menu-id="main">Back</button>
+</div>
+
+<script>
+	const menuClass = "tournament-menu";
+	const backBtn = document.getElementById("back-btn");
+
+	document.querySelectorAll('[tournament-form]').forEach(form => {
+		form.addEventListener("submit", event => {
+			event.preventDefault();
+			const selectedGame = event.target.querySelector('[game-select]').value;
+			const tournamentId = event.target.querySelector('[tournament-id]')?.value;
+
+			if (tournamentId !== undefined) {
+				route(`/tournament/${selectedGame}/${tournamentId}`);
+			} else {
+				route(`/tournament/${selectedGame}`);
+			}
+		});
+	});
+
+	showMenu("main", menuClass, backBtn);
+	addBtnToMenusEvents(menuClass, backBtn);
+</script>
+{% endblock %}
