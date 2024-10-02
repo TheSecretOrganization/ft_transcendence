@@ -80,3 +80,12 @@ def authorize(request: HttpRequest):
 @require_GET
 def error_404(request):
 	return create_response(request, '404.html', title="Page not found")
+
+@require_GET
+def authentification(request: HttpRequest):
+	if (request.user.is_authenticated):
+		return JsonResponse({'redirect': '/'}, status=403)
+	return create_response(request, 'authentification.html', {
+		'oauth_url': (f"https://api.intra.42.fr/oauth/authorize?client_id={os.getenv('OAUTH_UID')}"
+		  f"&redirect_uri={quote(os.getenv('OAUTH_FALLBACK'))}&response_type=code")
+	}, title='Authentification')
