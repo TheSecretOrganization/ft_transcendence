@@ -15,12 +15,12 @@
 	<div game-menu="online">
 		<a class="btn btn-primary text-decoration-none" data-route href="/pong/online">Create a Room</a>
 		<button class="btn btn-danger text-decoration-none" menu-id="join">Join a Room</button>
-		<a class="btn btn-warning text-decoration-none" data-route href="/tounament/pong">Join a Tournament</a>
+		<a class="btn btn-warning text-decoration-none" data-route href="/tournament">Join a Tournament</a>
 	</div>
 
 	<div game-menu="join">
 		<form class="form-group" id="join-form">
-			<input class="form-control" type="text" id="join-id" placeholder="Room Id">
+			<input class="form-control" type="text" id="join-id" placeholder="Room Id" required>
 			<button type="submit" class="btn btn-primary">Join</button>
 		</form>
 	</div>
