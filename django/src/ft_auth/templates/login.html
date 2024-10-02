@@ -1,30 +1,47 @@
 {% extends "./extends/base.html" %}
 
 {% block content %}
-<h1>Login</h1>
 
-<form id="login-form" data-url="/api/auth/login/">
-	<div id="login-error"></div>
-	{% csrf_token %}
-	<div>
-		<label for="username">Username</label>
-		<input id="username" type="text" autocomplete="username" />
+<div id="register-side">
+	<h1>Bottom text</h1>
+</div>
+<div id="login-side" class="container">
+	<div class="column">
+		<form id="login-form" data-url="/api/auth/login/">
+			<div class="row">
+				<h1 class="text-center">Login</h1>
+			</div>
+			<div id="login-error"></div>
+			{% csrf_token %}
+			<div class="form-floating mb-3 row">
+				<input type="text" class="form-control" id="username" placeholder="Username" autocomplete="username">
+				<label for="username">Username</label>
+			</div>
+
+			<div class="form-floating mb-3 row">
+				<input type="password" class="form-control" id="password" placeholder="Password">
+				<label for="password">Password</label>
+			</div>
+
+			<button id="login-btn" type="submit" class="btn btn-success row w-100 m-0">Login</button>
+		</form>
+		<hr class="row border-bottom border-1 border-dark my-2">
+		</hr>
+		<div class="row">
+			<p class="fw-light" style="margin-bottom: 0px;">Don't have an account yet ? Try <a data-route
+					href="/register" class="text-decoration-none text-success">registering</a></p>
+		</div>
+		<div class="row">
+			<p class="fw-light text-center">or
+				<a id="login-42-btn" class="btn btn-sm rounded-pill rounded-5 text-decoration-none"
+					href="{{ oauth_url }}">Login with <img class="image-text" src="/assets/42.svg" alt="42 logo"></a>
+			</p>
+		</div>
 	</div>
-	<div>
-		<label for="password">Password</label>
-		<input id="password" type="password" />
-	</div>
-	<button id="form-btn">Login</button>
-</form>
-
-<h2>Or</h2>
-
-<div>
-	<a href="{{ oauth_url }}">Login with 42</a>
 </div>
 
 <script>
-	document.getElementById('form-btn').onclick = function(e) {
+	document.getElementById('login-btn').onclick = function (e) {
 		document.getElementById('login-error').textContent = '';
 		e.preventDefault();
 		submitForm('login-form', () => route('/'), (json) => {
@@ -32,4 +49,43 @@
 		});
 	};
 </script>
+
+<style>
+	#page-container-wrapper {
+		display: flex;
+		height: calc(100vh - 67.5px);
+	}
+
+	#register-side,
+	#login-side {
+		flex: 1;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	#register-side {
+		background-color: #e0e0e0;
+	}
+
+	#login-side {
+		background-color: #f5f5f5;
+		display: flex;
+		flex-direction: column;
+		padding: 0;
+	}
+
+	.image-text {
+		height: 1rem;
+		width: 1rem;
+	}
+
+	#login-42-btn {
+		background-color: #dfbac8;
+		padding-top: 2px;
+		padding-bottom: 2px;
+		padding-left: 4px;
+		padding-right: 4px;
+	}
+</style>
 {% endblock %}
