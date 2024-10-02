@@ -39,15 +39,13 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         Test if the websocket consumer connects successfully.
         """
         user = await sync_to_async(get_user_model().objects.create_user)(username='testuser', password='password123')
-        communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1")
+        communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1&host=True&room_id=1")
         communicator.scope['user'] = user
 
         connected, _ = await communicator.connect()
         self.assertTrue(connected)
         response = await communicator.receive_json_from()
         self.assertEqual(response["type"], "game_pad")
-        response = await communicator.receive_json_from()
-        self.assertEqual(response["type"], "game_info")
 
         await communicator.disconnect()
 
@@ -56,15 +54,13 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         Test if the consumer handles invalid messages properly.
         """
         user = await sync_to_async(get_user_model().objects.create_user)(username='testuser', password='password123')
-        communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1")
+        communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1&host=True&room_id=1")
         communicator.scope['user'] = user
 
         connected, _ = await communicator.connect()
         self.assertTrue(connected)
         response = await communicator.receive_json_from()
         self.assertEqual(response["type"], "game_pad")
-        response = await communicator.receive_json_from()
-        self.assertEqual(response["type"], "game_info")
 
         await communicator.send_json_to({})
         response = await communicator.receive_json_from()
@@ -88,15 +84,13 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         Test if the consumer can send and receive messages, such as 'game_ready'.
         """
         user = await sync_to_async(get_user_model().objects.create_user)(username='testuser', password='password123')
-        communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1")
+        communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1&host=True&room_id=1")
         communicator.scope['user'] = user
 
         connected, _ = await communicator.connect()
         self.assertTrue(connected)
         response = await communicator.receive_json_from()
         self.assertEqual(response["type"], "game_pad")
-        response = await communicator.receive_json_from()
-        self.assertEqual(response["type"], "game_info")
 
         await communicator.send_json_to({"type": "game_ready", "content": {}})
         response = await communicator.receive_json_from()

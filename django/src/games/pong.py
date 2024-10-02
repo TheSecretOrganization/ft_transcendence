@@ -1,7 +1,6 @@
 import asyncio
 import json
 import random
-import uuid
 import redis.asyncio as redis
 import logging
 from typing import Any, List
@@ -44,9 +43,8 @@ class Consumer(AsyncWebsocketConsumer):
         query_params = parse_qs(self.scope["query_string"].decode())
         self.mode = self.check_missing_param(query_params, "mode")
         player_needed = self.check_missing_param(query_params, "player_needed")
-        room_id = query_params.get("room_id", [None])[0]
-        self.host = room_id is None
-        self.room_id = room_id or str(uuid.uuid4())
+        self.room_id = self.check_missing_param(query_params, "room_id")
+        self.host = self.check_missing_param(query_params, "host") == "True"
         self.group_name = f"pong_{self.room_id}"
         self.pad_n = "pad_1" if self.host else "pad_2"
 
@@ -116,10 +114,6 @@ class Consumer(AsyncWebsocketConsumer):
             self.info.players.append(event["content"]["user"])
             if len(self.info.players) == self.info.player_needed:
                 await self.redis.set(self.room_id, 1)
-            await self.send_message("group", "game_info", self.info.__dict__)
-
-    async def game_info(self, event):
-        await self.send_message("client", args=event)
 
     async def game_ready(self, event):
         if self.host:
