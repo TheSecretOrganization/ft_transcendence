@@ -4,4 +4,6 @@ from . import views
 
 urlpatterns = [
 	path('invite/', views.invite),
+	path('accept/', views.accept),
+	path('deny/', views.deny),
 ]
