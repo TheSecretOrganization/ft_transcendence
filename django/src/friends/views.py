@@ -34,7 +34,7 @@ def update_invite_status(request: HttpRequest, status: str):
 
 	try:
 		invite = Friend.objects.get(id=data['invite_id'], target=request.user)
-		if not invite.status == Friend.Status.PENDING:
+		if invite.status != Friend.Status.PENDING:
 			return JsonResponse({'error': f'Invite already {'denied' if invite.status is Friend.Status.DENIED else 'accepted'}'}, status=400)
 		invite.status = status
 		invite.save()
