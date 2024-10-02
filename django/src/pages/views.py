@@ -58,7 +58,19 @@ def pong_online(request, id=None):
 
 @require_GET
 def tournament(request):
-	return create_response(request, 'tournament.html', title="Tournament", need_authentication=True)
+    games = [
+        {"value": "pong", "label": "Pong"},
+    ]
+
+    return create_response(
+        request=request,
+        template_name='tournament.html',
+        title="Tournament",
+        context={
+            "games": games,
+        },
+        need_authentication=True,
+    )
 
 @require_GET
 def login(request: HttpRequest):
