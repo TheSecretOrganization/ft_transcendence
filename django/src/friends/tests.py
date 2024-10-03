@@ -33,6 +33,29 @@ class FriendTest(TestCase):
 		with self.assertRaises(ValidationError):
 			Friend.objects.create(origin=self.target, target=self.user)
 
+	def test_invite_after_accepted(self):
+		invite = Friend.objects.create(origin=self.target, target=self.user, status=Friend.Status.ACCEPTED)
+		self.assertIsNotNone(invite)
+		self.assertEqual(invite.status, Friend.Status.ACCEPTED)
+		with self.assertRaises(IntegrityError):
+			Friend.objects.create(origin=self.target, target=self.user)
+
+	def test_invite_after_denied(self):
+		invite = Friend.objects.create(origin=self.target, target=self.user, status=Friend.Status.DENIED)
+		self.assertIsNotNone(invite)
+		self.assertEqual(invite.status, Friend.Status.DENIED)
+		invite2 = Friend.objects.create(origin=self.target, target=self.user)
+		self.assertIsNotNone(invite2)
+		self.assertEqual(invite2.status, Friend.Status.PENDING)
+
+	def test_invite_after_deleted(self):
+		invite = Friend.objects.create(origin=self.target, target=self.user, status=Friend.Status.DELETED)
+		self.assertIsNotNone(invite)
+		self.assertEqual(invite.status, Friend.Status.DELETED)
+		invite2 = Friend.objects.create(origin=self.target, target=self.user)
+		self.assertIsNotNone(invite2)
+		self.assertEqual(invite2.status, Friend.Status.PENDING)
+
 	def test_invite_self(self):
 		with self.assertRaises(IntegrityError):
 			Friend.objects.create(origin=self.user, target=self.user)

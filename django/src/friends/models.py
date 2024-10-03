@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q, F
 from django.core.exceptions import ValidationError
 from ft_auth.models import User
 
@@ -7,6 +8,7 @@ class Friend(models.Model):
 		PENDING = 1
 		ACCEPTED = 2
 		DENIED = 3
+		DELETED = 4
 
 	origin = models.ForeignKey(User, models.CASCADE, related_name='origin')
 	target = models.ForeignKey(User, models.CASCADE, related_name='target')
@@ -16,8 +18,8 @@ class Friend(models.Model):
 
 	class Meta:
 		constraints = [
-			models.UniqueConstraint(fields=['origin', 'target'], name='unique_friend_request'),
-			models.CheckConstraint(check=~models.Q(origin=models.F('target')), name='unique_origin_target')
+			models.UniqueConstraint(fields=['origin', 'target'], condition=Q(status=1) | Q(status=2), name='unique_friend_request'),
+			models.CheckConstraint(check=~Q(origin=F('target')), name='unique_origin_target')
 		]
 
 	def clean(self):
