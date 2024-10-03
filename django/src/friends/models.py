@@ -8,6 +8,7 @@ class Friend(models.Model):
 		PENDING = 1
 		ACCEPTED = 2
 		DENIED = 3
+		DELETED = 4
 
 	origin = models.ForeignKey(User, models.CASCADE, related_name='origin')
 	target = models.ForeignKey(User, models.CASCADE, related_name='target')
