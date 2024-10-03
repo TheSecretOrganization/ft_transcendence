@@ -57,21 +57,6 @@ def pong_online(request, id=None):
 	)
 
 @require_GET
-def login(request: HttpRequest):
-	if (request.user.is_authenticated):
-		return JsonResponse({'redirect': '/'}, status=403)
-	return create_response(request, 'login.html', {
-		'oauth_url': (f"https://api.intra.42.fr/oauth/authorize?client_id={os.getenv('OAUTH_UID')}"
-		  f"&redirect_uri={quote(os.getenv('OAUTH_FALLBACK'))}&response_type=code")
-	}, title='Login')
-
-@require_GET
-def register(request: HttpRequest):
-	if (request.user.is_authenticated):
-		return JsonResponse({'redirect': '/'}, status=403)
-	return create_response(request, 'register.html', title='Register')
-
-@require_GET
 def authorize(request: HttpRequest):
 	if (request.user.is_authenticated):
 		return JsonResponse({'redirect': '/'}, status=403)
@@ -87,5 +72,5 @@ def authentification(request: HttpRequest):
 		return JsonResponse({'redirect': '/'}, status=403)
 	return create_response(request, 'authentification.html', {
 		'oauth_url': (f"https://api.intra.42.fr/oauth/authorize?client_id={os.getenv('OAUTH_UID')}"
-		  f"&redirect_uri={quote(os.getenv('OAUTH_FALLBACK'))}&response_type=code")
+		  f"&redirect_uri={quote(os.getenv('OAUTH_FALLBACK'))}&response_type=code"),
 	}, title='Authentification')
