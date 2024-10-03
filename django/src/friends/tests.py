@@ -194,3 +194,50 @@ class DenyFriendTest(TestCase):
 		self.assertEqual(response.status_code, 400)
 		self.invite.refresh_from_db()
 		self.assertEqual(self.invite.status, Friend.Status.ACCEPTED)
+
+class DeleteFriendTest(TestCase):
+	def setUp(self):
+		self.route = '/friends/delete/'
+		self.user = get_user_model().objects.create_user(username='testuser', password='password')
+		self.user2 = get_user_model().objects.create_user(username='testuser2', password='password')
+		self.client.login(username='testuser', password='password')
+		self.invite = Friend.objects.create(origin=self.user2, target=self.user, status=Friend.Status.ACCEPTED)
+
+	def test_delete_invite_success(self):
+		response = post(self.client, self.route, {'invite_id': self.invite.id})
+		self.assertEqual(response.status_code, 200)
+		self.invite.refresh_from_db()
+		self.assertEqual(self.invite.status, Friend.Status.DELETED)
+
+	def test_delete_invite_not_authenticated(self):
+		self.client.logout()
+		response = post(self.client, self.route, {'invite_id': self.invite.id})
+		self.assertEqual(response.status_code, 401)
+		self.invite.refresh_from_db()
+		self.assertEqual(self.invite.status, Friend.Status.ACCEPTED)
+
+	def test_delete_invite_missing_arguments(self):
+		response = post(self.client, self.route, {})
+		self.assertEqual(response.status_code, 400)
+		response = post(self.client, self.route, {'id_invite': 1})
+		self.assertEqual(response.status_code, 400)
+
+	def test_delete_invite_does_not_exist(self):
+		response = post(self.client, self.route, {'invite_id': 999})
+		self.assertEqual(response.status_code, 400)
+
+	def test_delete_already_denied_invite(self):
+		self.invite.status = Friend.Status.DENIED
+		self.invite.save()
+		response = post(self.client, self.route, {'invite_id': self.invite.id})
+		self.assertEqual(response.status_code, 400)
+		self.invite.refresh_from_db()
+		self.assertEqual(self.invite.status, Friend.Status.DENIED)
+
+	def test_delete_pending_invite(self):
+		self.invite.status = Friend.Status.PENDING
+		self.invite.save()
+		response = post(self.client, self.route, {'invite_id': self.invite.id})
+		self.assertEqual(response.status_code, 400)
+		self.invite.refresh_from_db()
+		self.assertEqual(self.invite.status, Friend.Status.PENDING)

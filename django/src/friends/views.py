@@ -25,7 +25,10 @@ def invite(request: HttpRequest):
 		return JsonResponse({'error': f'{error}'}, status=400)
 	return HttpResponse(status=200)
 
-def update_invite_status(request: HttpRequest, status: str):
+def update_invite_status(request: HttpRequest, status: str, current_status = Friend.Status.PENDING):
+	"""
+	Update the status of the invite_id in the request if the current status is the current_status
+	"""
 	data = json.loads(request.body.decode())
 	if not request.user.is_authenticated:
 		return HttpResponse(status=401)
@@ -34,8 +37,8 @@ def update_invite_status(request: HttpRequest, status: str):
 
 	try:
 		invite = Friend.objects.get(id=data['invite_id'], target=request.user)
-		if invite.status != Friend.Status.PENDING:
-			return JsonResponse({'error': f'Invite already {'denied' if invite.status is Friend.Status.DENIED else 'accepted'}'}, status=400)
+		if invite.status != current_status:
+			return JsonResponse({'error': f'Invite should have status {status}'}, status=400)
 		invite.status = status
 		invite.save()
 	except Friend.DoesNotExist:
@@ -53,3 +56,7 @@ def accept(request: HttpRequest):
 @require_POST
 def deny(request: HttpRequest):
 	return update_invite_status(request, Friend.Status.DENIED)
+
+@require_POST
+def delete(request: HttpRequest):
+	return update_invite_status(request, Friend.Status.DELETED, Friend.Status.ACCEPTED)
