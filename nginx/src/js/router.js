@@ -1,5 +1,6 @@
 
 function route(url) {
+	window.last_route = window.location.pathname;
 	window.history.pushState({}, "", url);
 	handleLocation();
 }
