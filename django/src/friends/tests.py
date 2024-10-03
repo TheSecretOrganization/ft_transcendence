@@ -33,6 +33,13 @@ class FriendTest(TestCase):
 		with self.assertRaises(ValidationError):
 			Friend.objects.create(origin=self.target, target=self.user)
 
+	def test_invite_after_accepted(self):
+		invite = Friend.objects.create(origin=self.target, target=self.user, status=Friend.Status.ACCEPTED)
+		self.assertIsNotNone(invite)
+		self.assertEqual(invite.status, Friend.Status.ACCEPTED)
+		with self.assertRaises(IntegrityError):
+			Friend.objects.create(origin=self.target, target=self.user)
+
 	def test_invite_after_denied(self):
 		invite = Friend.objects.create(origin=self.target, target=self.user, status=Friend.Status.DENIED)
 		self.assertIsNotNone(invite)
