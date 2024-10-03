@@ -76,6 +76,10 @@
 		</div>
 	</div>
 </div>
+<div id="slider-div" class="slider-register-animation">
+	<h1>Right Side</h1>
+	<button id="toggle-slider" class="btn btn-primary mt-3">toggle slider</button>
+</div>
 
 <script>
 	document.getElementById('login-btn').onclick = function (e) {
@@ -109,8 +113,8 @@
 
 	document.getElementById('toggle-slider').addEventListener('click', function() {
         let element = document.getElementById('slider-div');
-        element.classList.toggle('slider-div-default');
-        element.classList.toggle('slider-div-animation');
+        element.classList.toggle('slider-login-animation');
+        element.classList.toggle('slider-register-animation');
         let btn = document.getElementById('toggle-slider');
         btn.classList.toggle('active');
     });
