@@ -4,19 +4,17 @@
 <div>
 	<h1>Chat Room</h1>
 	<div>
-		<label for="room-name">Nom de la salle :</label>
-		<form id="join-form">
-			<input id="room-name-input" type="text" value="salon1">
-			<button id="join-btn">Rejoindre la salle</button>
+		<h2 id="room-name">Salle: General</h2>
+		<textarea id="chat-log" readonly></textarea>
+		<form id="send-form">
+			<input id="message-input" type="text" size="100" placeholder="Tapez votre message...">
+			<button id="send-btn">Envoyer</button>
 		</form>
 	</div>
 	<div>
-		<h2 id="room-name">Salle: Aucun</h2>
-		<textarea id="chat-log"></textarea>
-		<form id="send-form">
-			<input id="message-input" type="text" size="100">
-			<button id="send-btn">Envoyer</button>
-		</form>
+		<h3>Liste des utilisateurs</h3>
+		<ul id="user-list">
+		</ul>
 	</div>
 </div>
 
@@ -42,46 +40,56 @@
 			console.log('WebSocket connection closed:', e);
 		};
 
-		socket.onmessage = onMessage; // Associe la fonction de gestion des messages
+		socket.onmessage = onMessage;
 		socket.onerror = onError;
 
 		return socket;
 	}
 
-	// Fonction qui gère les messages reçus
 	function handleOnMessage(e) {
-		// On reçoit les données JSON encodées, on les parse
 		const data = JSON.parse(e.data);
-		let message = data.message;
-		let username = data.username;
+		if (data.type === 'active_users') {
+			updateActiveUsers(data.users);
+		} else {
+			let message = data.message;
+			let username = data.username;
 
-		const formattedMessage = `${username}: ${message}\n`;
+			const formattedMessage = `${username}: ${message}\n`;
+			const chatLog = document.getElementById('chat-log');
+			chatLog.value += formattedMessage;
+		}
+	}
 
-		// Afficher le message dans la textarea
-		const chatLog = document.getElementById('chat-log');
-		chatLog.value += formattedMessage;  // Ajoute le message à la zone de texte
+	function updateActiveUsers(users) {
+		const userList = document.getElementById('user-list');
+		userList.innerHTML = '';
+
+		users.forEach(user => {
+			const userItem = document.createElement('li');
+			userItem.textContent = user;
+			userItem.onclick = () => startPrivateChat(user);
+			userList.appendChild(userItem);
+		});
 	}
 
 	function handleOnError(e) {
 		console.error('WebSocket Error:', e);
 	}
 
-	// Fonction pour rejoindre une salle
-	document.getElementById("join-form").addEventListener("submit", e => {
-		e.preventDefault();
-		roomId = document.getElementById('room-name-input').value.trim();
-		if (!roomId) {
-			roomId = "General";  // Par défaut, rejoindre la salle 'General'
-		}
+	function startPrivateChat(otherUser) {
 		if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
-			chatSocket.close();  // Fermer la connexion précédente
+			chatSocket.close();
 		}
-		const chatLog = document.getElementById('chat-log');
-		chatLog.value = '';  // Vider la textarea quand on change de salle
-		chatSocket = wsConnect(wsCreateUrl("chat/" + roomId), handleOnMessage, handleOnError); // Nouvelle connexion
-	});
+		clearChatLog();
+		roomId = `private chat with ${otherUser}`;
+		chatSocket = wsConnect(wsCreateUrl("chat/private/" + otherUser + "/"), handleOnMessage, handleOnError);
+	}
 
-	// Fonction pour envoyer un message
+	function clearChatLog() {
+		const chatLog = document.getElementById('chat-log');
+		chatLog.value = '';
+	}
+
 	document.getElementById("send-form").addEventListener("submit", e => {
 		e.preventDefault();
 		const messageInput = document.getElementById('message-input');
@@ -90,13 +98,13 @@
 		if (chatSocket && chatSocket.readyState === WebSocket.OPEN && message) {
 			chatSocket.send(JSON.stringify({
 				'message': message,
-				'username': 'Anonyme',  // Peut être changé en fonction de l'authentification
+				'username': 'Anonyme',
 			}));
 		} else {
 			console.error('WebSocket connection is not open or message is empty');
 		}
 
-		messageInput.value = '';  // Effacer l'input après l'envoi
+		messageInput.value = '';
 	});
 </script>
 
@@ -106,7 +114,6 @@
 		width: 100%;
 		margin-bottom: 10px;
 		white-space: pre-wrap;
-		/* Conserve les retours à la ligne */
 	}
 </style>
 
