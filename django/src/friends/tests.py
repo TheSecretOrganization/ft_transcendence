@@ -245,10 +245,28 @@ class DeleteFriendTest(TestCase):
 		self.invite.refresh_from_db()
 		self.assertEqual(self.invite.status, Friend.Status.DENIED)
 
-	def test_delete_pending_invite(self):
+	def test_origin_delete_pending_invite(self):
+		self.client.logout()
+		self.client.force_login(self.user2)
+		self.invite.status = Friend.Status.PENDING
+		self.invite.save()
+		response = post(self.client, self.route, {'invite_id': self.invite.id})
+		self.assertEqual(response.status_code, 200)
+		self.invite.refresh_from_db()
+		self.assertEqual(self.invite.status, Friend.Status.DELETED)
+
+	def test_target_delete_pending_invite(self):
 		self.invite.status = Friend.Status.PENDING
 		self.invite.save()
 		response = post(self.client, self.route, {'invite_id': self.invite.id})
 		self.assertEqual(response.status_code, 400)
 		self.invite.refresh_from_db()
 		self.assertEqual(self.invite.status, Friend.Status.PENDING)
+
+	def test_origin_delete_invite(self):
+		self.client.logout()
+		self.client.force_login(self.user2)
+		response = post(self.client, self.route, {'invite_id': self.invite.id})
+		self.assertEqual(response.status_code, 200)
+		self.invite.refresh_from_db()
+		self.assertEqual(self.invite.status, Friend.Status.DELETED)
