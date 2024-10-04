@@ -23,7 +23,7 @@ class Friend(models.Model):
 		]
 
 	def clean(self):
-		if Friend.objects.filter(origin=self.target, target=self.origin).exists():
+		if Friend.objects.filter(origin=self.target, target=self.origin, status__in=[1, 2]).exists():
 			raise ValidationError('This request already exist')
 
 	def save(self, *args, **kwargs):
