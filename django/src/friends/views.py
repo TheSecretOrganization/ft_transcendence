@@ -14,15 +14,15 @@ def invite(request: HttpRequest):
 	if not data or 'target' not in data:
 		return JsonResponse({'error': 'Missing arguments'}, status=400)
 
-	if not get_user_model().objects.filter(id=data['target']).exists():
-		return JsonResponse({'error': "Target doesn't exist"}, status=400)
-
 	try:
-		Friend.objects.create(origin=request.user, target_id=data['target'])
+		target = get_user_model().objects.get(username=data['target'])
+		Friend.objects.create(origin=request.user, target=target)
 	except ValidationError as error:
 		return JsonResponse({'error': error.messages}, status=400)
 	except IntegrityError as error:
 		return JsonResponse({'error': f'{error}'}, status=400)
+	except get_user_model().DoesNotExist:
+		return JsonResponse({'error': "Target doesn't exist"}, status=400)
 	return HttpResponse(status=200)
 
 def update_invite_status(request: HttpRequest, status: str, current_status = Friend.Status.PENDING):

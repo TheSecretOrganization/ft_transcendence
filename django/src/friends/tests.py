@@ -70,9 +70,9 @@ class AddFriendTest(TestCase):
 		self.client.login(username=username, password=password)
 
 	def test_add_friend(self):
-		request = post(self.client, self.route, {'target': self.target.id})
+		request = post(self.client, self.route, {'target': self.target.username})
 		self.assertEqual(request.status_code, 200, 'Invite failed')
-		invite = Friend.objects.get(origin=self.user.id, target=self.target.id)
+		invite = Friend.objects.get(origin=self.user, target=self.target)
 		self.assertIsNotNone(invite, 'Invite has not been found in database')
 		self.assertEqual(invite.status, Friend.Status.PENDING, 'Default status is not PENDING')
 		self.assertEqual(invite.origin, self.user, 'Origin is not the user')
@@ -80,10 +80,10 @@ class AddFriendTest(TestCase):
 
 	def test_add_friend_already_send(self):
 		with transaction.atomic():
-			request = post(self.client, self.route, {'target': self.target.id})
+			request = post(self.client, self.route, {'target': self.target.username})
 			self.assertEqual(request.status_code, 200, 'Badic invite failed')
 		with transaction.atomic():
-			request = post(self.client, self.route, {'target': self.target.id})
+			request = post(self.client, self.route, {'target': self.target.username})
 			self.assertEqual(request.status_code, 400, 'Server accepted duplicated invite')
 		count = Friend.objects.filter(origin=self.user, target=self.target).count()
 		self.assertEqual(count, 1, 'There is more than 1 entry for friend invite')
@@ -93,12 +93,12 @@ class AddFriendTest(TestCase):
 		self.assertEqual(request.status_code, 400, "None argument didn't result in a 400")
 		request = post(self.client, self.route, {})
 		self.assertEqual(request.status_code, 400, "Empty argument didn't result in a 400")
-		request = post(self.client, self.route, {'traget': self.target.id})
+		request = post(self.client, self.route, {'traget': self.target.username})
 		self.assertEqual(request.status_code, 400, "Wront argument didn't result in a 400")
 
 	def test_add_friend_not_logged(self):
 		self.client.logout()
-		request = post(self.client, self.route, {'target': self.target.id})
+		request = post(self.client, self.route, {'target': self.target.username})
 		self.assertEqual(request.status_code, 401, "Not logged user didn't result in a 401")
 		self.assertFalse(Friend.objects.filter(origin=self.user, target=self.target).exists(),
 				   "Not logged user created an entry in database")
