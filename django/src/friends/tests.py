@@ -88,6 +88,17 @@ class AddFriendTest(TestCase):
 		count = Friend.objects.filter(origin=self.user, target=self.target).count()
 		self.assertEqual(count, 1, 'There is more than 1 entry for friend invite')
 
+	def test_add_friend_from_target_after_denied(self):
+		request = post(self.client, self.route, {'target': self.target.username})
+		self.assertEqual(request.status_code, 200)
+		invite = Friend.objects.get(origin=self.user, target=self.target)
+		invite.status = Friend.Status.DENIED
+		invite.save()
+		self.client.logout()
+		self.client.force_login(self.target)
+		request = post(self.client, self.route, {'target': self.user.username})
+		self.assertEqual(request.status_code, 200)
+
 	def test_add_friend_without_param(self):
 		request = post(self.client, self.route, None)
 		self.assertEqual(request.status_code, 400, "None argument didn't result in a 400")
