@@ -1,99 +1,172 @@
-<div id="bars-wrapper">
-	<div id="navbar-wrapper">
-		<nav class="navbar">
-			<b class="navbar-brand nav navbar-nav navbar-left">Johnny Depp</b>
-			{% if user.is_authenticated %}
-			<div class="container-dropdown">
-				<div class="dropdown">
-					<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-						data-bs-toggle="dropdown" aria-expanded="false">
-						{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
-					</button>
-					<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-						<li><a class="dropdown-item" data-route href="#">Profile</a></li>
-						<li><a class="dropdown-item" data-route href="#">Settings</a></li>
-						<li>
-							<hr class="dropdown-divider">
-						</li>
-						<li><button id="logout-button-navbar" class="dropdown-item fw-bold">Log out <span
-									class="glyphicon glyphicon-log-out"></span></button></li>
-					</ul>
-				</div>
+<div id="navbar-wrapper">
+	<nav class="navbar">
+		<b class="navbar-brand nav navbar-nav navbar-left">Johnny Depp</b>
+		{% if user.is_authenticated %}
+		<div class="container-dropdown">
+			<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+					data-bs-toggle="dropdown" aria-expanded="false">
+					{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
+				</button>
+				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+					<li><a class="dropdown-item" data-route href="#">Profile</a></li>
+					<li><a class="dropdown-item" data-route href="#">Settings</a></li>
+					<li>
+						<hr class="dropdown-divider">
+					</li>
+					<li><button id="logout-button-navbar" class="dropdown-item fw-bold">Log out <span
+								class="glyphicon glyphicon-log-out"></span></button></li>
+				</ul>
 			</div>
-			{% else %}
-			<ul id="navbar-list"
-				class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
-				<li class="m-2"><a class="btn btn-sm btn-success rounded-pill rounded-5" data-route href="/login"><span
-							class="glyphicon glyphicon-log-in"></span> Login</a></li>
-				<li class="m-2"><a class="btn btn-sm btn-outline-success rounded-pill rounded-5" data-route
-						href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
-			</ul>
-			{% endif %}
-		</nav>
-	</div>
-
-	<div id="sidebar-wrapper" class="border">
-		<div class="sidebar-heading">
-			<button id="sidebar-toggle" class="btn btn-primary">☰</button>
-			<span class="heading-text hidden">Johnny Depp</span>
 		</div>
-		<ul id="sidebar-list" class="list-group list-group-flush">
-			<li><a class="list-group-item list-group-item-action" data-route href="/"><i
-						class="fas fa-house me-2"></i><span class="hidden"> HOME</span></a></li>
-			{% if user.is_authenticated %}
-			<li><a class="list-group-item list-group-item-action" data-route href="/pong"><i
-						class="fas fa-gamepad me-2"></i><span class="hidden"> GAMES</span></a></li>
-			{% endif %}
+		{% else %}
+		<ul id="navbar-list"
+			class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
+			<li class="m-2"><a class="btn btn-sm btn-success rounded-pill rounded-5" data-route href="/login"><span
+						class="glyphicon glyphicon-log-in"></span> Login</a></li>
+			<li class="m-2"><a class="btn btn-sm btn-outline-success rounded-pill rounded-5" data-route
+					href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
 		</ul>
+		{% endif %}
+	</nav>
+</div>
 
-		<hr class="sidebar-divider thin-divider">
-
-		<ul id="sidebar-list" class="list-group list-group-flush">
-			{% if not user.is_authenticated %}
-			<li><a class="list-group-item list-group-item-action" data-route href="/dummylink"><i
-						class="fas fa-ice-cream me-2"></i><span class="hidden"> Free Ice Cream</span></a></li>
-			<li><a class="list-group-item list-group-item-action" data-route href="/dummylink"><i
-						class="fas fa-money-bill-wave me-2"></i><span class="hidden"> Tax Fraud</span></a></li>
-			<li><a class="list-group-item list-group-item-action" data-route href="/dummylink"><i
-						class="fas fa-palette me-2"></i><span class="hidden"> Shark Customizer</span></a></li>
-			{% endif %}
-		</ul>
-
-		<hr class="sidebar-divider thin-divider">
-
-		<div class="mt-auto">
-			<a class="list-group-item list-group-item-action theme-toggle">
-				<i class="fas fa-sun me-2"></i><span class="hidden"> Toggle dark mode</span>
+<aside id="sidebar">
+	<ul>
+		<li>
+			<span class="logo">Johnny Depp</span>
+			<button id="toggle-btn">
+				<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px"
+					fill="#000000">
+					<path
+						d="m448.67-240.67-240-240 240-240L495.33-674l-193 193.33 193 193.34-46.66 46.66Zm256.66 0-240-240 240-240L752-674 559-480.67l193 193.34-46.67 46.66Z" />
+				</svg>
+			</button>
+		</li>
+		<li class="active">
+			<a href="/">
+				<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px"
+					fill="#000000">
+					<path
+						d="M226.67-186.67h140v-246.66h226.66v246.66h140v-380L480-756.67l-253.33 190v380ZM160-120v-480l320-240 320 240v480H526.67v-246.67h-93.34V-120H160Zm320-352Z" />
+				</svg>
+				<span>HOME</span>
 			</a>
-		</div>
-	</div>
-</div>
+		</li>
+		<li>
+			<button onclick=toggleSubMenu(this) class="dropdown-btn">
+				<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px"
+					xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+					fill="#000000">
+					<path
+						d="M182-200q-51 0-79-35.5T82-322l42-300q9-60 53.5-99T282-760h396q60 0 104.5 39t53.5 99l42 300q7 51-21 86.5T778-200q-21 0-39-7.5T706-230l-90-90H344l-90 90q-15 15-33 22.5t-39 7.5Zm16-86 114-114h336l114 114q2 2 16 6 11 0 17.5-6.5T800-304l-44-308q-4-29-26-48.5T678-680H282q-30 0-52 19.5T204-612l-44 308q-2 11 4.5 17.5T182-280q2 0 16-6Zm482-154q17 0 28.5-11.5T720-480q0-17-11.5-28.5T680-520q-17 0-28.5 11.5T640-480q0 17 11.5 28.5T680-440Zm-80-120q17 0 28.5-11.5T640-600q0-17-11.5-28.5T600-640q-17 0-28.5 11.5T560-600q0 17 11.5 28.5T600-560ZM310-440h60v-70h70v-60h-70v-70h-60v70h-70v60h70v70Zm170-40Z" />
+				</svg>
+				<span>GAMES</span>
+				<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px"
+					fill="#000000">
+					<path d="M480-344 240-584l47.33-47.33L480-438.67l192.67-192.66L720-584 480-344Z" />
+				</svg>
+			</button>
+			<ul class="sub-menu">
+				<div>
+					<li>
+						<a href="/pong">
+							<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px"
+								fill="#000000">
+								<path
+									d="M127.67-159.33 80-206.67l170.73-170.72q32.27-32.28 45.44-80.78 13.16-48.5 13.16-139.83 0-57.32 25.34-112.66Q360-766 410-816q89-89 195.72-101 106.73-12 175.61 57.67 69.34 69.33 57.34 176.66-12 107.34-100.67 196-50 50-105.34 74.67T520-387.33q-91.67 0-140.33 12.33-48.67 12.33-81.34 45L127.67-159.33Zm285-332.67q48.33 48 131 35.67 82.66-12.34 148.33-78 65.92-65.73 78.79-147.36 12.88-81.64-35.46-129.31-48.66-48.67-130.16-36.33Q523.67-835 457.33-769q-65.66 65.67-79.16 147.22-13.5 81.56 34.5 129.78Zm318 452q-62 0-105.67-43.67-43.67-43.66-43.67-105.66T625-295q43.67-43.67 105.67-43.67T836.33-295Q880-251.33 880-189.33T836.33-83.67Q792.67-40 730.67-40Zm0-66.67q35 0 58.83-23.83t23.83-58.83q0-35-23.83-58.84Q765.67-272 730.67-272t-58.84 23.83Q648-224.33 648-189.33t23.83 58.83q23.84 23.83 58.84 23.83Zm0-82.66Z" />
+							</svg>
+							<span>PONG</span>
+						</a>
+					</li>
+					<li>
+						<a href="/tictactoe">
+							<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px"
+								fill="#000000">
+								<path
+									d="M186.67-120q-27 0-46.84-19.83Q120-159.67 120-186.67v-586.66q0-27 19.83-46.84Q159.67-840 186.67-840h586.66q27 0 46.84 19.83Q840-800.33 840-773.33v586.66q0 27-19.83 46.84Q800.33-120 773.33-120H186.67Zm0-66.67h151v-151h-151v151Zm217.66 0h151.34v-151H404.33v151Zm218 0h151v-151h-151v151ZM186.67-404.33h151v-151.34h-151v151.34Zm217.66 0h151.34v-151.34H404.33v151.34Zm218 0h151v-151.34h-151v151.34Zm-435.66-218h151v-151h-151v151Zm217.66 0h151.34v-151H404.33v151Zm218 0h151v-151h-151v151Z" />
+							</svg>
+							<span>TIC-TAC-TOE</span>
+						</a>
+					</li>
+					<li>
+						<a href="/tournaments">
+							<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px"
+								fill="#000000">
+								<path
+									d="M292-120v-66.67h154.67v-140q-52.34-11-93.17-44.83T296-456q-74.33-8.33-125.17-61.83Q120-571.33 120-645.33V-688q0-27.67 19.5-47.17t47.17-19.5h96V-840h394.66v85.33h96q27.67 0 47.17 19.5T840-688v42.67q0 74-50.83 127.5Q738.33-464.33 664-456q-16.67 50.67-57.5 84.5t-93.17 44.83v140H668V-120H292Zm-9.33-406.67V-688h-96v42.67q0 42.66 27 75.16t69 43.5ZM480-390q54.67 0 92.67-38.33 38-38.34 38-93v-252H349.33v252q0 54.66 38 93Q425.33-390 480-390Zm197.33-136.67q42-11 69-43.5t27-75.16V-688h-96v161.33ZM480-582Z" />
+							</svg>
+							<span>TOURNAMENTS</span>
+						</a>
+					</li>
+				</div>
+			</ul>
+		</li>
+		<li>
+			<button onclick=toggleSubMenu(this) class="dropdown-btn">
+				<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px"
+					fill="#000000">
+					<path
+						d="M358.67-319.33q31.62 0 54.14-22.33 22.52-22.32 22.52-53.67t-22.52-53.68q-22.52-22.32-54.14-22.32-31.08 0-53.21 22.32-22.13 22.33-22.13 53.68t22.13 53.67q22.13 22.33 53.21 22.33Zm242.66 0q31.35 0 53.68-22.33 22.32-22.32 22.32-53.67t-22.32-53.68q-22.33-22.32-53.68-22.32t-53.67 22.32q-22.33 22.33-22.33 53.68t22.33 53.67q22.32 22.33 53.67 22.33ZM479.97-528.67q31.64 0 54.17-22.53t22.53-54.16q0-31.64-22.52-53.47-22.53-21.84-54.15-21.84-31.07 0-53.2 22.13-22.13 22.13-22.13 53.21 0 31.62 21.83 54.14t53.47 22.52ZM480.18-80q-82.83 0-155.67-31.5-72.84-31.5-127.18-85.83Q143-251.67 111.5-324.56T80-480.33q0-82.88 31.5-155.78Q143-709 197.33-763q54.34-54 127.23-85.5T480.33-880q82.88 0 155.78 31.5Q709-817 763-763t85.5 127Q880-563 880-480.18q0 82.83-31.5 155.67Q817-251.67 763-197.46q-54 54.21-127 85.84Q563-80 480.18-80Zm.15-66.67q139 0 236-97.33t97-236.33q0-139-96.87-236-96.88-97-236.46-97-138.67 0-236 96.87-97.33 96.88-97.33 236.46 0 138.67 97.33 236 97.33 97.33 236.33 97.33ZM480-480Z" />
+				</svg>
+				<span>COMMUNITY</span>
+				<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px"
+					fill="#000000">
+					<path d="M480-344 240-584l47.33-47.33L480-438.67l192.67-192.66L720-584 480-344Z" />
+				</svg>
+			</button>
+			<ul class="sub-menu">
+				<div>
+					<li>
+						<a href="/chat">
+							<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px"
+								fill="#000000">
+								<path
+									d="M240-399.33h315.33V-466H240v66.67ZM240-526h480v-66.67H240V-526Zm0-126.67h480v-66.66H240v66.66ZM80-80v-733.33q0-27 19.83-46.84Q119.67-880 146.67-880h666.66q27 0 46.84 19.83Q880-840.33 880-813.33v506.66q0 27-19.83 46.84Q840.33-240 813.33-240H240L80-80Zm131.33-226.67h602v-506.66H146.67v575l64.66-68.34Zm-64.66 0v-506.66 506.66Z" />
+							</svg>
+							<span>CHAT</span>
+						</a>
+					</li>
+					<li>
+						<a href="/friends">
+							<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px"
+								fill="#000000">
+								<path
+									d="M38.67-160v-100q0-34.67 17.83-63.17T105.33-366q69.34-31.67 129.67-46.17 60.33-14.5 123.67-14.5 63.33 0 123.33 14.5T611.33-366q31 14.33 49.17 42.83T678.67-260v100h-640Zm706.66 0v-102.67q0-56.66-29.5-97.16t-79.16-66.84q63 7.34 118.66 22.5 55.67 15.17 94 35.5 34 19.34 53 46.17 19 26.83 19 59.83V-160h-176ZM358.67-480.67q-66 0-109.67-43.66Q205.33-568 205.33-634T249-743.67q43.67-43.66 109.67-43.66t109.66 43.66Q512-700 512-634t-43.67 109.67q-43.66 43.66-109.66 43.66ZM732-634q0 66-43.67 109.67-43.66 43.66-109.66 43.66-11 0-25.67-1.83-14.67-1.83-25.67-5.5 25-27.33 38.17-64.67Q578.67-590 578.67-634t-13.17-80q-13.17-36-38.17-66 12-3.67 25.67-5.5 13.67-1.83 25.67-1.83 66 0 109.66 43.66Q732-700 732-634ZM105.33-226.67H612V-260q0-14.33-8.17-27.33-8.16-13-20.5-18.67-66-30.33-117-42.17-51-11.83-107.66-11.83-56.67 0-108 11.83-51.34 11.84-117.34 42.17-12.33 5.67-20.16 18.67-7.84 13-7.84 27.33v33.33Zm253.34-320.66q37 0 61.83-24.84Q445.33-597 445.33-634t-24.83-61.83q-24.83-24.84-61.83-24.84t-61.84 24.84Q272-671 272-634t24.83 61.83q24.84 24.84 61.84 24.84Zm0 320.66Zm0-407.33Z" />
+							</svg>
+							<span>FRIENDS</span>
+						</a>
+					</li>
+				</div>
+			</ul>
+		</li>
 
-<div id="page-container-wrapper">
+	</ul>
+</aside>
+
+
+<div>
 	{% block content %}{% endblock %}
-</div>
 </div>
 
 <script>
-	document.getElementById("sidebar-toggle").addEventListener("click", function (e) {
-		const sidebar = document.getElementById("sidebar-wrapper");
-		const spans = sidebar.querySelectorAll('span');
-		sidebar.classList.toggle("toggled");
 
-		spans.forEach(span => {
-			if (sidebar.classList.contains("toggled")) {
-				span.classList.remove("hidden");
-			} else {
-				span.classList.add("hidden");
-			}
-		});
+	document.getElementById("toggle-btn").onclick = function (e) {
+		toggleSidebar();
+	}
 
-		if (sidebar.classList.contains("toggled")) {
-			document.body.classList.add("darken-body");
-		} else {
-			document.body.classList.remove("darken-body");
-		}
-	});
+	const toggleButton = document.getElementById('toggle-btn')
+	const sidebar = document.getElementById('sidebar')
+
+	function toggleSidebar() {
+		sidebar.classList.toggle('close')
+		toggleButton.classList.toggle('rotate')
+
+		Array.from(sidebar.getElementsByClassName('show')).forEach(ul => {
+			ul.classList.remove('show')
+			ul.previousElementSibling.classList.remove('rotate')
+		})
+	}
 
 	document.querySelectorAll('[data-route]').forEach((element) => {
 		element.addEventListener("click", (event) => {
