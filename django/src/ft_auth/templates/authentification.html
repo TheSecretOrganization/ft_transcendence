@@ -8,7 +8,7 @@
 			<div class="row">
 				<h1 class="text-center">Register</h1>
 			</div>
-			<div id="register-error"></div>
+			<div class="row text-center text-wrap"><p id="register-error"></p></div>
 			{% csrf_token %}
 			<div class="form-floating mb-3 row">
 				<input register-input type="text" class="form-control" id="username" placeholder="Username" autocomplete="username">
@@ -48,7 +48,7 @@
 			<div class="row">
 				<h1 class="text-center">Login</h1>
 			</div>
-			<div id="login-error"></div>
+			<div class="row text-center text-wrap"><p id="login-error"></p></div>
 			{% csrf_token %}
 			<div class="form-floating mb-3 row">
 				<input login-input type="text" class="form-control" id="username" placeholder="Username" autocomplete="username">
