@@ -31,12 +31,12 @@
 		<hr class="row border-bottom border-1 border-dark my-2">
 		</hr>
 		<div class="row">
-			<p class="fw-light" style="margin-bottom: 0px;">Already have an account ? Try <a data-route href="/login"
+			<p class="fw-light" style="margin-bottom: 0px;">Already have an account ? Try <a register-anchor data-route href="/login"
 					class="text-decoration-none text-success">logging in</a></p>
 		</div>
 		<div class="row">
 			<p class="fw-light text-center">or
-				<a id="login-42-btn" class="btn btn-sm rounded-pill rounded-5 text-decoration-none"
+				<a register-anchor id="login-42-btn" class="btn btn-sm rounded-pill rounded-5 text-decoration-none"
 					href="{{ oauth_url }}">Login with <img class="image-text" src="/assets/42.svg" alt="42 logo"></a>
 			</p>
 		</div>
@@ -65,22 +65,22 @@
 		<hr class="row border-bottom border-1 border-dark my-2">
 		</hr>
 		<div class="row">
-			<p class="fw-light" style="margin-bottom: 0px;">Don't have an account yet ? Try <a data-route
+			<p class="fw-light" style="margin-bottom: 0px;">Don't have an account yet ? Try <a login-anchor data-route
 					href="/register" class="text-decoration-none text-success">registering</a></p>
 		</div>
 		<div class="row">
 			<p class="fw-light text-center">or
-				<a id="login-42-btn" class="btn btn-sm rounded-pill rounded-5 text-decoration-none"
+				<a login-anchor id="login-42-btn" class="btn btn-sm rounded-pill rounded-5 text-decoration-none"
 					href="{{ oauth_url }}">Login with <img class="image-text" src="/assets/42.svg" alt="42 logo"></a>
 			</p>
 		</div>
 	</div>
 </div>
-<!-- <div id="slider-div" class="slider-register-animation">
+<div id="slider-div" class="slider-register-animation">
 	<div class="column">
 		<h1 class="row">Johnny depp</h1>
 	</div>
-</div> -->
+</div>
 
 <script>
 	document.getElementById('login-btn').onclick = function (e) {
@@ -113,8 +113,15 @@
 	};
 
 	function disableForm(formSelector) {
-		otherForm = document.querySelectorAll(`[${formSelector}]`)?.forEach(element => {
-			element.disabled = true;
+		document.querySelectorAll(`[${formSelector}-input]`).forEach(inputElement => {
+			inputElement.disabled = true;
+		});
+		document.querySelectorAll(`[${formSelector}-anchor]`).forEach(anchorElement => {
+			anchorElement.removeAttribute("href");
+			anchorElement.addEventListener('click', function(event) {
+           		event.preventDefault();
+        	});
+			anchorElement.style.pointerEvents = "none";
 		});
 	}
 
@@ -124,10 +131,10 @@
 		slider.classList.toggle('container');
 		if (window.last_route === "/login") {
 			slider.classList.toggle('slider-register-animation');
-			disableForm("login-input");
+			disableForm("login");
 		} else if (window.last_route === "/register") {
 			slider.classList.toggle('slider-login-animation');
-			disableForm("register-input");
+			disableForm("register");
 		}
 	}
 
@@ -137,10 +144,10 @@
 		slider.classList.toggle('container');
 		if (window.location.pathname === "/login") {
 			slider.classList.toggle('slider-login-page');
-			disableForm("register-input");
+			disableForm("register");
 		} else if (window.location.pathname === "/register") {
 			slider.classList.toggle('slider-register-page');
-			disableForm("login-input");
+			disableForm("login");
 		}
 	}
 </script>
