@@ -29,3 +29,6 @@ class Friend(models.Model):
 	def save(self, *args, **kwargs):
 		self.clean()
 		super().save(*args, **kwargs)
+
+	def other(self, user):
+		return self.target if self.origin == user else self.origin
