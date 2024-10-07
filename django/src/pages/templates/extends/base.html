@@ -52,7 +52,16 @@
 		{% block content %}{% endblock %}
 	</div>
 </div>
-
+<div id="current-user" value="{{ user }}"></div>
+<button class=" chat-button" id="chat-button">💬</button>
+<div class="chat-container" id="chat-container">
+	<div class="chat-title" id="room-name">Room: General</div>
+	<div id="chat-log" class="chat-log"></div>
+	<form id="send-form" class="chat-form">
+		<input id="message-input" type="text" class="chat-input" placeholder="Tapez votre message..." />
+		<button type="submit" class="chat-send-btn">SEND</button>
+	</form>
+</div>
 <script>
 	document.getElementById("sidebar-toggle").addEventListener("click", function (e) {
 		e.preventDefault();

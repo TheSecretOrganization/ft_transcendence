@@ -1,212 +1,46 @@
 {% extends "./extends/base.html" %}
 
 {% block content %}
-<div>
-	<h1>Chat Room</h1>
-	<div>
+<div class="chat-app-container">
+	<h1 class="chat-title">Chat Room</h1>
+
+	<div class="chat-bubbles-container">
 		<h2 id="room-name">Salle: General</h2>
-		<textarea id="chat-log" readonly></textarea>
-		<form id="send-form">
-			<input id="message-input" type="text" size="100" placeholder="Tapez votre message...">
-			<button id="send-btn">Envoyer</button>
+
+		<!-- Zone d'affichage des messages -->
+		<div id="chat-log" class="chat-log" readonly></div> <!-- Utiliser div au lieu de textarea -->
+
+		<form id="send-form" class="chat-form">
+			<input id="message-input" type="text" class="chat-input" placeholder="Tapez votre message...">
+			<button id="send-btn" class="chat-send-btn">Envoyer</button>
 		</form>
 	</div>
-	<div>
+
+	<div class="chat-users-container">
 		<h3>Liste des utilisateurs</h3>
-		<ul id="user-list">
-		</ul>
+		<ul id="user-list" class="chat-user-list"></ul>
 	</div>
 </div>
 
-<script>
-	let roomId = "General";
-	let chatSocket = wsConnect(wsCreateUrl("chat/" + roomId), handleOnMessage, handleOnError);
 
-	function wsCreateUrl(path) {
-		const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-		const url = protocol + window.location.host + '/ws/' + path + '/';
-		return url;
-	}
-
-	function wsConnect(url, onMessage, onError) {
-		const socket = new WebSocket(url);
-
-		socket.onopen = function () {
-			console.log('WebSocket connection opened to ' + url);
-			document.getElementById('room-name').innerText = 'Salle: ' + roomId;
-		};
-
-		socket.onclose = function (e) {
-			console.log('WebSocket connection closed:', e);
-		};
-
-		socket.onmessage = onMessage;
-		socket.onerror = onError;
-
-		return socket;
-	}
-
-	function handleOnMessage(e) {
-		const data = JSON.parse(e.data);
-		if (data.type === 'active_users') {
-			updateActiveUsers(data.users);
-		} else {
-			let message = data.message;
-			let username = data.username;
-
-			const formattedMessage = `${username}: ${message}\n`;
-			const chatLog = document.getElementById('chat-log');
-			chatLog.value += formattedMessage;
-		}
-	}
-
-	function updateActiveUsers(users) {
-		const userList = document.getElementById('user-list');
-		userList.innerHTML = '';
-
-		users.forEach(user => {
-			const userItem = document.createElement('li');
-			userItem.textContent = user;
-			userItem.onclick = () => startPrivateChat(user);
-			userList.appendChild(userItem);
-		});
-	}
-
-	function handleOnError(e) {
-		console.error('WebSocket Error:', e);
-	}
-
-	function startPrivateChat(otherUser) {
-		if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
-			chatSocket.close();
-		}
-		clearChatLog();
-		roomId = `private chat with ${otherUser}`;
-		chatSocket = wsConnect(wsCreateUrl("chat/private/" + otherUser + "/"), handleOnMessage, handleOnError);
-	}
-
-	function clearChatLog() {
-		const chatLog = document.getElementById('chat-log');
-		chatLog.value = '';
-	}
-
-	document.getElementById("send-form").addEventListener("submit", e => {
-		e.preventDefault();
-		const messageInput = document.getElementById('message-input');
-		const message = messageInput.value.trim();
-
-		if (chatSocket && chatSocket.readyState === WebSocket.OPEN && message) {
-			chatSocket.send(JSON.stringify({
-				'message': message,
-				'username': 'Anonyme',
-			}));
-		} else {
-			console.error('WebSocket connection is not open or message is empty');
-		}
-
-		messageInput.value = '';
-	});
-</script>
-
-<style>
+<!-- <style>
 	#chat-log {
 		height: 16rem;
 		width: 100%;
 		margin-bottom: 10px;
+		overflow-y: auto;
+		border: 1px solid #ccc;
+		padding: 10px;
 		white-space: pre-wrap;
-	}
-</style>
-
-<!-- <script>
-	let roomId = "General";
-	let chatSocket = wsConnect(wsCreateUrl("chat/" + roomId), handleOnMessage, handleOnError);
-	// let roomMessages = {}
-
-
-	function wsCreateUrl(path) {
-		const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-		const url = protocol + window.location.host + '/ws/' + path + '/';
-		return url;
+		background-color: #f9f9f9;
 	}
 
-	function wsConnect(url, onMessage, onError) {
-		const socket = new WebSocket(url);
-
-		socket.onopen = function () {
-			console.log('WebSocket connection opened to ' + url);
-			document.getElementById('room-name').innerText = 'Salle: ' + roomId;
-		};
-
-		socket.onclose = function (e) {
-			console.log('WebSocket connection closed:', e);
-		};
-
-		socket.onmessage = onMessage;
-		socket.onerror = onError;
-
-		return socket;
+	.message {
+		margin-bottom: 5px;
 	}
 
-	function handleOnMessage(e) {
-		const data = JSON.parse(e.data);
-		let message = data.message;
-		let username = data.username;
-
-		message = message.replace(/<\/?b>/g, '').replace(/<\/?strong>/g, '');
-
-		const formattedMessage = `${username}: ${message}\n`;
-
-		// if (!roomMessages[roomId]) {
-		// 	roomMessages[roomId] = '';
-		// }
-		// roomMessages[roomId] += formattedMessage;
-		const chatLog = document.getElementById('chat-log');
-		chatLog.value += formattedMessage;
-	}
-
-	function handleOnError(e) {
-		console.error('WebSocket Error:', e);
-	}
-
-	document.getElementById("join-form").addEventListener("submit", e => {
-		e.preventDefault();
-		roomId = document.getElementById('room-name-input').value.trim();
-		if (!roomId) {
-			roomId = "General";
-		}
-
-		if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
-			chatSocket.close();
-		}
-		const chatlog = document.getElementById('chat-log');
-		chatlog.valut = '';
-		// chatlog.value = roomMessages[roomId] || '';
-		// console.log(wsCreateUrl("chat/" + roomId));
-		chatSocket = wsConnect(wsCreateUrl("chat/" + roomId), handleOnMessage, handleOnError);
-	});
-
-	document.getElementById("send-form").addEventListener("submit", e => {
-		e.preventDefault();
-		const messageInput = document.getElementById('message-input');
-		const usernameInput = document.getElementById('username-input');
-		const message = messageInput.value;
-
-		if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
-			chatSocket.send(JSON.stringify({
-				'message': message,
-				'username': usernameInput,
-			}));
-		} else {
-			console.error('WebSocket connection is not open');
-		}
-
-		messageInput.value = '';
-	});
-</script>
-
-<style>
-	#chat-log {
-		height: 16rem;
+	.message.self {
+		text-align: right;
 	}
 </style> -->
 {% endblock %}
