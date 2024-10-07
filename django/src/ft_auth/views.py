@@ -57,7 +57,7 @@ def password_update(request: HttpRequest):
 	if not request.user.is_authenticated:
 		return JsonResponse({'error': 'You must be authenticated to update password'}, status=401)
 	if not request.user.check_password(data['current_password']):
-		logger.info(f"Tried to update password of user {data['username']}.")
+		logger.info(f"Tried to update password of user {request.user.username}.")
 		return JsonResponse({'error': 'Invalid current password'}, status=400)
 	try:
 		validate_password(data['new_password'])
