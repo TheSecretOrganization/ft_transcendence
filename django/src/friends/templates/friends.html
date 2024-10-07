@@ -17,7 +17,7 @@
 {% for friend in friends %}
 <div>
 	<h4>{{ friend.other_user.username }}</h4>
-	<p>Status: {{ friend.status }}</p>
+	<p>Status: {{ friend.get_status_display }}</p>
 	<div>
 		{% if friend.status == 1 and friend.target == user %}
 		<button id="accept-btn" data-invite="{{ friend.id }}">Accept</button>
