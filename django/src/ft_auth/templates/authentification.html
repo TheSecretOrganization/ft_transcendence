@@ -1,0 +1,272 @@
+{% extends "./extends/base.html" %}
+
+{% block content %}
+
+<div id="register-side" class="container">
+	<div class="column">
+		<form id="register-form" data-url="/api/auth/register/">
+			<div class="row">
+				<h1 class="text-center">Register</h1>
+			</div>
+			<div class="row text-center text-wrap">
+				<p id="register-error"></p>
+			</div>
+			{% csrf_token %}
+			<div class="form-floating mb-3 row">
+				<input register-input type="text" class="form-control" id="username" placeholder="Username"
+					autocomplete="username">
+				<label for="username">Username</label>
+			</div>
+
+			<div class="form-floating mb-3 row">
+				<input register-input type="password" class="form-control" id="password" placeholder="Password">
+				<label for="password">Password</label>
+			</div>
+
+			<div class="form-floating  mb-3 row">
+				<input register-input type="password" class="form-control" id="password-confirm" placeholder="Password"
+					data-ignore="true">
+				<label for="password-confirm">Confirm Password</label>
+			</div>
+
+			<button register-input id="register-btn" type="submit" class="btn btn-success row w-100 m-0">Create
+				account</button>
+		</form>
+		<hr class="row border-bottom border-1 border-dark my-2">
+		</hr>
+		<div class="row">
+			<p class="fw-light" style="margin-bottom: 0px;">Already have an account ? Try <a register-anchor data-route
+					href="/login" class="text-decoration-none text-success">logging in</a></p>
+		</div>
+		<div class="row">
+			<p class="fw-light text-center">or
+				<a register-anchor id="login-42-btn" class="btn btn-sm rounded-pill rounded-5 text-decoration-none"
+					href="{{ oauth_url }}">Login with <img class="image-text" src="/assets/42.svg" alt="42 logo"></a>
+			</p>
+		</div>
+	</div>
+</div>
+<div id="login-side" class="container">
+	<div class="column">
+		<form id="login-form" data-url="/api/auth/login/">
+			<div class="row">
+				<h1 class="text-center">Login</h1>
+			</div>
+			<div class="row text-center text-wrap">
+				<p id="login-error"></p>
+			</div>
+			{% csrf_token %}
+			<div class="form-floating mb-3 row">
+				<input login-input type="text" class="form-control" id="username" placeholder="Username"
+					autocomplete="username">
+				<label for="username">Username</label>
+			</div>
+
+			<div class="form-floating mb-3 row">
+				<input login-input type="password" class="form-control" id="password" placeholder="Password">
+				<label for="password">Password</label>
+			</div>
+
+			<button login-input id="login-btn" type="submit" class="btn btn-success row w-100 m-0">Login</button>
+		</form>
+		<hr class="row border-bottom border-1 border-dark my-2">
+		</hr>
+		<div class="row">
+			<p class="fw-light" style="margin-bottom: 0px;">Don't have an account yet ? Try <a login-anchor data-route
+					href="/register" class="text-decoration-none text-success">registering</a></p>
+		</div>
+		<div class="row">
+			<p class="fw-light text-center">or
+				<a login-anchor id="login-42-btn" class="btn btn-sm rounded-pill rounded-5 text-decoration-none"
+					href="{{ oauth_url }}">Login with <img class="image-text" src="/assets/42.svg" alt="42 logo"></a>
+			</p>
+		</div>
+	</div>
+</div>
+<div id="slider-div" class="slider-register-animation">
+	<div class="column">
+		<h1 class="row">Johnny depp</h1>
+	</div>
+</div>
+
+<script>
+	document.getElementById('login-btn').onclick = function (e) {
+		document.getElementById('login-error').textContent = '';
+		e.preventDefault();
+		submitForm('login-form', () => route('/'), (json) => {
+			document.getElementById('login-error').textContent = json.error;
+		});
+	};
+
+	function validate() {
+		let password = document.getElementById('password').value;
+		let passwordcfrm = document.getElementById('password-confirm').value;
+
+		return password == passwordcfrm;
+	}
+
+	document.getElementById('register-btn').onclick = function (e) {
+		document.getElementById('register-error').textContent = '';
+		e.preventDefault();
+
+		if (!validate()) {
+			document.getElementById('register-error').textContent = 'Passwords don\'t match';
+			return;
+		}
+
+		submitForm('register-form', () => route('/login'), (json) => {
+			document.getElementById('register-error').textContent = json.error;
+		});
+	};
+
+	function disableForm(formSelector) {
+		document.querySelectorAll(`[${formSelector}-input]`).forEach(inputElement => {
+			inputElement.disabled = true;
+		});
+		document.querySelectorAll(`[${formSelector}-anchor]`).forEach(anchorElement => {
+			anchorElement.removeAttribute("href");
+			anchorElement.addEventListener('click', function (event) {
+				event.preventDefault();
+			});
+			anchorElement.style.pointerEvents = "none";
+		});
+	}
+
+	if ((window.last_route === "/login" || window.last_route === "/register") && window.last_route != window.location.pathname) {
+		const slider = document.getElementById('slider-div');
+		slider.removeAttribute("class");
+		slider.classList.toggle('container');
+		if (window.last_route === "/login") {
+			slider.classList.toggle('slider-register-animation');
+			disableForm("login");
+		} else if (window.last_route === "/register") {
+			slider.classList.toggle('slider-login-animation');
+			disableForm("register");
+		}
+	}
+
+	if ((window.last_route != "/login" && window.last_route != "/register") || window.last_route === window.location.pathname) {
+		const slider = document.getElementById('slider-div');
+		slider.removeAttribute("class");
+		slider.classList.toggle('container');
+		if (window.location.pathname === "/login") {
+			slider.classList.toggle('slider-login-page');
+			disableForm("register");
+		} else if (window.location.pathname === "/register") {
+			slider.classList.toggle('slider-register-page');
+			disableForm("login");
+		}
+	}
+</script>
+
+<style>
+	#page-container-wrapper {
+		display: flex;
+		height: calc(100vh - 67.5px);
+	}
+
+	#register-side,
+	#login-side {
+		flex: 1;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		padding: 0;
+		background-color: #f5f5f5;
+	}
+
+	.image-text {
+		height: 1rem;
+		width: 1rem;
+	}
+
+	#login-42-btn {
+		background-color: #dfbac8;
+		padding-top: 2px;
+		padding-bottom: 2px;
+		padding-left: 4px;
+		padding-right: 4px;
+	}
+
+	.slider-register-page {
+		z-index: 9000;
+		width: 50%;
+		height: calc(100vh - 67.5px);
+		background-color: #e0e0e0;
+		position: absolute;
+		top: 67.5px;
+		left: 50%;
+	}
+
+	.slider-login-page {
+		z-index: 9000;
+		width: 50%;
+		height: calc(100vh - 67.5px);
+		background-color: #e0e0e0;
+		position: absolute;
+		top: 67.5px;
+		left: 0%;
+	}
+
+	.slider-register-animation {
+		z-index: 9000;
+		width: 50%;
+		height: calc(100vh - 67.5px);
+		background-color: #e0e0e0;
+		position: absolute;
+		top: 67.5px;
+		left: 0%;
+		animation: moveRight 2s;
+		animation-fill-mode: forwards;
+	}
+
+	.slider-login-animation {
+		z-index: 9000;
+		width: 50%;
+		height: calc(100vh - 67.5px);
+		background-color: #e0e0e0;
+		position: absolute;
+		top: 67.5px;
+		left: 50%;
+		animation: moveLeft 2s;
+		animation-fill-mode: forwards;
+	}
+
+	#slider-div {
+		display: flex;
+		padding: 0;
+		justify-content: center;
+		align-items: center;
+	}
+
+	@keyframes moveRight {
+		0% {
+			left: 0;
+		}
+
+		100% {
+			left: 50%;
+		}
+	}
+
+	@keyframes moveLeft {
+		0% {
+			left: 50;
+		}
+
+		100% {
+			left: 0%;
+		}
+	}
+
+	#register-error,
+	#login-error {
+		width: 100%;
+		max-width: 300px;
+		white-space: normal;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
+	}
+</style>
+{% endblock %}
