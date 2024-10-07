@@ -5,21 +5,28 @@
 			{% if user.is_authenticated %}
 			<div class="container-dropdown">
 				<div class="dropdown">
-					<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-								{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
-							</button>
-							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-								<li><a class="dropdown-item" data-route href="#">Profile</a></li>
-								<li><a class="dropdown-item" data-route href="#">Settings</a></li>
-								<li><hr class="dropdown-divider"></li>
-								<li><button id="logout-button-navbar" class="dropdown-item fw-bold">Log out <span class="glyphicon glyphicon-log-out"></span></button></li>
-							</ul>
-						</div>
-					</div>
+					<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+						data-bs-toggle="dropdown" aria-expanded="false">
+						{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
+					</button>
+					<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+						<li><a class="dropdown-item" data-route href="#">Profile</a></li>
+						<li><a class="dropdown-item" data-route href="#">Settings</a></li>
+						<li>
+							<hr class="dropdown-divider">
+						</li>
+						<li><button id="logout-button-navbar" class="dropdown-item fw-bold">Log out <span
+									class="glyphicon glyphicon-log-out"></span></button></li>
+					</ul>
+				</div>
+			</div>
 			{% else %}
-			<ul id="navbar-list" class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
-				<li class="m-2"><a class="btn btn-sm btn-success rounded-pill rounded-5" data-route href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-				<li class="m-2"><a class="btn btn-sm btn-outline-success rounded-pill rounded-5" data-route href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+			<ul id="navbar-list"
+				class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
+				<li class="m-2"><a class="btn btn-sm btn-success rounded-pill rounded-5" data-route href="/login"><span
+							class="glyphicon glyphicon-log-in"></span> Login</a></li>
+				<li class="m-2"><a class="btn btn-sm btn-outline-success rounded-pill rounded-5" data-route
+						href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
 			</ul>
 			{% endif %}
 		</nav>
@@ -30,11 +37,11 @@
 		<ul id="sidebar-list" class="list-group list-group-flush">
 			<li><a class="list-group-item list-group-item-action" data-route href="/">Home</a></li>
 			{% if user.is_authenticated %}
-				<li><a class="list-group-item list-group-item-action" data-route href="/pong">Pong</a></li>
-				<li><a class="list-group-item list-group-item-action" onclick="logout()">Logout</a></li>
+			<li><a class="list-group-item list-group-item-action" data-route href="/pong">Pong</a></li>
+			<li><a class="list-group-item list-group-item-action" onclick="logout()">Logout</a></li>
 			{% else %}
-				<li><a class="list-group-item list-group-item-action" data-route href="/login">Login</a></li>
-				<li><a class="list-group-item list-group-item-action" data-route href="/register">Register</a></li>
+			<li><a class="list-group-item list-group-item-action" data-route href="/login">Login</a></li>
+			<li><a class="list-group-item list-group-item-action" data-route href="/register">Register</a></li>
 			{% endif %}
 		</ul>
 	</div>
@@ -43,6 +50,20 @@
 		<button id="sidebar-toggle" class="btn btn-primary">☰</button>
 		{% block content %}{% endblock %}
 	</div>
+
+	{% if user.is_authenticated %}
+	<div id="chat-wrapper">
+		<button id="chat-button">💬</button>
+		<div id="chat-container" class="toggled">
+			<div id="chat-title">Room: General</div>
+			<div id="chat-log"></div>
+			<form id="chat-form">
+				<input id="chat-input" type="text" placeholder="Type your message here..." />
+				<button type="submit" id="chat-send-btn">Send</button>
+			</form>
+		</div>
+	</div>
+	{% endif %}
 </div>
 
 <script>
@@ -63,3 +84,67 @@
 		logout();
 	})
 </script>
+
+{% if user.is_authenticated %}
+<script>
+	let chatSocket = undefined;
+
+	function connectToChatRoom(roomId) {
+		document.getElementById('chat-title').innerText = 'Room: ' + roomId;
+		chatSocket = wsConnect(wsCreateUrl(`chat/${roomId}/`), handleOnMessage, handleOnError);
+	}
+
+	function handleOnMessage(data) {
+		switch (data.type) {
+			case 'active_users': updateActiveUsers(data.users); break;
+			default: handleDefault(data); break;
+		}
+	}
+
+	function handleOnError(error) {
+		console.error('WebSocket Error:', error);
+	}
+
+	function updateActiveUsers(users) {
+		const userList = document.getElementById('user-list');
+		userList.innerHTML = '';
+
+		users.forEach(user => {
+			const userItem = document.createElement('li');
+			userItem.classList.add('user-item');
+			userItem.textContent = user;
+			userList.appendChild(userItem);
+		});
+	}
+
+	function handleDefault(data) {
+		const chatLog = document.getElementById('chat-log');
+		const newMessageDiv = document.createElement('div');
+		newMessageDiv.classList.add('message', data.username === "{{ user }}" ? 'self' : 'other');
+		newMessageDiv.innerHTML = `<strong>${data.username}:</strong> ${data.message}`;
+		chatLog.appendChild(newMessageDiv);
+		chatLog.scrollTop = chatLog.scrollHeight;
+	}
+
+	document.getElementById("chat-form").addEventListener("submit", e => {
+		e.preventDefault();
+		const messageInput = document.getElementById('chat-input');
+		const message = messageInput.value.trim();
+		if (chatSocket && chatSocket.readyState === WebSocket.OPEN && message) {
+			chatSocket.send(JSON.stringify({
+				'message': message,
+				'username': "{{ user }}",
+			}));
+		}
+		messageInput.value = '';
+	});
+
+	document.getElementById("chat-button").addEventListener("click", function (e) {
+		e.preventDefault();
+		document.getElementById("chat-container").classList.toggle("toggled");
+		this.classList.toggle("toggled");
+	});
+
+	connectToChatRoom('General');
+</script>
+{% endif %}
