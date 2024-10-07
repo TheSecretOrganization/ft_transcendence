@@ -57,6 +57,22 @@ def pong_online(request, id=None):
 	)
 
 @require_GET
+def tournament(request):
+    games = [
+        {"value": "pong", "label": "Pong"},
+    ]
+
+    return create_response(
+        request=request,
+        template_name='tournament.html',
+        title="Tournament",
+        context={
+            "games": games,
+        },
+        need_authentication=True,
+    )
+
+@require_GET
 def authorize(request: HttpRequest):
 	if (request.user.is_authenticated):
 		return JsonResponse({'redirect': '/'}, status=403)
