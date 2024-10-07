@@ -51,17 +51,22 @@
 		<button id="sidebar-toggle" class="btn btn-primary">☰</button>
 		{% block content %}{% endblock %}
 	</div>
+
+	{% if user.is_authenticated %}
+	<div id="chat-wrapper">
+		<button id="chat-button">💬</button>
+		<div id="chat-container" class="toggled">
+			<div id="chat-title">Room: General</div>
+			<div id="chat-log"></div>
+			<form id="chat-form">
+				<input id="chat-input" type="text" placeholder="Tapez votre message..." />
+				<button type="submit" id="chat-send-btn">Send</button>
+			</form>
+		</div>
+	</div>
+	{% endif %}
 </div>
-<div id="current-user" value="{{user}}"></div>
-<button class=" chat-button" id="chat-button">💬</button>
-<div class="chat-container" id="chat-container">
-	<div class="chat-title" id="room-name">Room: General</div>
-	<div id="chat-log" class="chat-log"></div>
-	<form id="send-form" class="chat-form">
-		<input id="message-input" type="text" class="chat-input" placeholder="Tapez votre message..." />
-		<button type="submit" class="chat-send-btn">SEND</button>
-	</form>
-</div>
+
 <script>
 	document.getElementById("sidebar-toggle").addEventListener("click", function (e) {
 		e.preventDefault();
@@ -80,84 +85,26 @@
 		logout();
 	})
 </script>
+
+{% if user.is_authenticated %}
 <script>
-	let currentUser = document.getElementById("current-user").getAttribute("value");
-	let roomId = "General";
-	let chatSocket = wsConnect(wsCreateUrl("chat/" + roomId), handleOnMessage, handleOnError);
+	let chatSocket = undefined;
 
-	document.getElementById("chat-button").addEventListener("click", function () {
-		const chatContainer = document.getElementById("chat-container");
-		if (chatContainer.style.display === "none" || chatContainer.style.display === "") {
-			chatContainer.style.display = "flex";
-		} else {
-			chatContainer.style.display = "none";
-		}
-	});
-
-	function wsCreateUrl(path) {
-		const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-		const url = protocol + window.location.host + '/ws/' + path + '/';
-		return url;
+	function connectToChatRoom(roomId) {
+		document.getElementById('chat-title').innerText = 'Salle: ' + roomId;
+		chatSocket = wsConnect(wsCreateUrl(`chat/${roomId}/`), handleOnMessage, handleOnError);
 	}
 
-
-	function wsConnect(url, onMessage, onError) {
-		const socket = new WebSocket(url);
-		socket.onopen = function () {
-			console.log('WebSocket connection opened to ' + url);
-
-			const roomNameElement = document.getElementById('room-name');
-			if (roomNameElement) {
-				roomNameElement.innerText = 'Salle: ' + roomId;
-			}
-		};
-
-		socket.onclose = function (e) {
-			console.log('WebSocket connection closed:', e);
-			setTimeout(function () {
-				chatSocket = wsConnect(url, onMessage, onError);
-			}, 5000);
-		};
-
-		socket.onmessage = onMessage;
-		socket.onerror = onError;
-		return socket;
-	}
-
-
-	function handleOnMessage(e) {
-		const data = JSON.parse(e.data);
-		if (data.type === 'active_users') {
-			updateActiveUsers(data.users);
-		} else {
-			let message = data.message;
-			let username = data.username;
-
-			const chatLog = document.getElementById('chat-log');
-			const newMessageDiv = document.createElement('div');
-			console.log("current :", currentUser);
-			console.log("username :", username);
-
-			if (username === currentUser) {
-				newMessageDiv.classList.add('message', 'self');
-			} else {
-				newMessageDiv.classList.add('message', 'other');
-			}
-
-
-			newMessageDiv.innerHTML = `<strong>${username}:</strong> ${message}`;
-			chatLog.appendChild(newMessageDiv);
-
-
-			chatLog.scrollTop = chatLog.scrollHeight;
+	function handleOnMessage(data) {
+		switch (data.type) {
+			case 'active_users': updateActiveUsers(data.users); break;
+			default: handleDefault(data); break;
 		}
 	}
-
 
 	function handleOnError(error) {
 		console.error('WebSocket Error:', error);
 	}
-
 
 	function updateActiveUsers(users) {
 		const userList = document.getElementById('user-list');
@@ -171,18 +118,34 @@
 		});
 	}
 
+	function handleDefault(data) {
+		const chatLog = document.getElementById('chat-log');
+		const newMessageDiv = document.createElement('div');
+		newMessageDiv.classList.add('message', data.username === "{{ user }}" ? 'self' : 'other');
+		newMessageDiv.innerHTML = `<strong>${data.username}:</strong> ${data.message}`;
+		chatLog.appendChild(newMessageDiv);
+		chatLog.scrollTop = chatLog.scrollHeight;
+	}
 
-	document.getElementById("send-form").addEventListener("submit", e => {
+	document.getElementById("chat-form").addEventListener("submit", e => {
 		e.preventDefault();
-		const messageInput = document.getElementById('message-input');
+		const messageInput = document.getElementById('chat-input');
 		const message = messageInput.value.trim();
 		if (chatSocket && chatSocket.readyState === WebSocket.OPEN && message) {
 			chatSocket.send(JSON.stringify({
 				'message': message,
-				'username': currentUser || 'Anonyme',
+				'username': "{{ user }}",
 			}));
 		}
 		messageInput.value = '';
 	});
 
+	document.getElementById("chat-button").addEventListener("click", function (e) {
+		e.preventDefault();
+		document.getElementById("chat-container").classList.toggle("toggled");
+		this.classList.toggle("toggled");
+	});
+
+	connectToChatRoom('General');
 </script>
+{% endif %}
