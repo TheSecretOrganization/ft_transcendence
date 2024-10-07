@@ -1,92 +1,119 @@
 import asyncio
 import json
 import random
-import uuid
 import redis.asyncio as redis
-from typing import List
+import logging
+from typing import Any, List
 from urllib.parse import parse_qs
 from asgiref.sync import sync_to_async
+from django.contrib.auth import get_user_model
+from django.apps import apps
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+logger = logging.getLogger(__name__)
 
 class Consumer(AsyncWebsocketConsumer):
     win_goal = 5
 
     async def connect(self):
-        self.initialize_game()
-        if self.host:
-            await self.redis.set(self.group_name, 1)
-        elif not await self.redis.get(self.group_name) or await self.redis.get(self.room_id):
+        self.connected = True
+
+        try:
+            self.user = self.scope.get("user")
+            if type(self.user) != get_user_model and self.user.is_anonymous:
+                raise ValueError("Invalid user")
+            else:
+                logger.info(f"User {self.user.id} is attempting to connect.")
+
+            self.redis = redis.Redis(host="redis")
+            await self.initialize_game()
+        except Exception as e:
+            logger.warning(f"Connection refused: {str(e)}")
             await self.close()
             return
-        self.valid_consumer = True
+
+        self.valid = True
         await self.accept()
         await self.channel_layer.group_add(self.group_name, self.channel_name)
-        await self.send_message("group", "game_join", {"user": self.scope["user"].id})
+        logger.info(f"User {self.user.id} successfully connected to room {self.room_id}.")
+        await self.send_message("group", "game_join", {"user": self.user.id})
         await self.send_message("client", "game_pad", {"game_pad": self.pad_n})
 
-    def initialize_game(self):
-        self.redis = redis.Redis(host="redis")
+    async def initialize_game(self):
         query_params = parse_qs(self.scope["query_string"].decode())
-        self.mode = query_params.get("mode", ["local"])[0]
-        room_id = query_params.get("room_id", [None])[0]
-        self.host = room_id is None
-        self.room_id = room_id or str(uuid.uuid4())
+        self.mode = self.check_missing_param(query_params, "mode")
+        player_needed = self.check_missing_param(query_params, "player_needed")
+        self.room_id = self.check_missing_param(query_params, "room_id")
+        self.host = self.check_missing_param(query_params, "host") == "True"
         self.group_name = f"pong_{self.room_id}"
         self.pad_n = "pad_1" if self.host else "pad_2"
-        self.valid_consumer = False
+
         if self.host:
             self.info = self.Info(
-                creator=self.scope["user"].id,
+                creator=self.user.id,
                 room_id=self.room_id,
-                player_needed=int(query_params.get("player_needed", ["1"])[0]),
+                player_needed=int(player_needed),
             )
             self.ball = self.Ball()
             self.pad_1 = self.Pad(True)
             self.pad_2 = self.Pad(False)
+            logger.info(f"User {self.user.id} is the host for room {self.room_id}.")
+            await self.redis.set(self.group_name, 1)
+        else:
+            if not await self.redis.get(self.group_name):
+                raise ConnectionRefusedError("Invalid room")
+            if await self.redis.get(self.room_id):
+                raise ConnectionRefusedError("Room is full")
 
     async def disconnect(self, close_code):
-        self.offline = True
+        self.connected = False
+
         if self.host:
             if hasattr(self, "game_task"):
                 self.game_task.cancel()
             await self.redis.delete(self.group_name)
             await self.redis.delete(self.room_id)
+            logger.info(f"Room {self.room_id} has been closed by the host.")
             if self.mode == "online":
                 if not hasattr(self, "winner"):
                     self.punish_coward(self.info.creator)
                 await self.save_pong_to_db(self.winner)
-        if self.valid_consumer:
-            await self.send_message("group", "game_stop", {"user": self.scope["user"].id})
+
+        if hasattr(self, "valid"):
+            await self.send_message("group", "game_stop", {"user": self.user.id})
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
-        await self.redis.aclose()
+
+        if hasattr(self, "redis"):
+            await self.redis.aclose()
+
+        logger.info(f"User {self.scope['user'].id} has disconnected.")
 
     async def receive(self, text_data):
+        data = json.loads(text_data)
+
         try:
-            data = json.loads(text_data)
-            msg_type = data["type"]
+            msg_type = data.get("type")
             if not msg_type:
-                raise ValueError("Missing 'type' in received data")
+                raise AttributeError("Missing 'type'")
+            if "content" not in data:
+                raise AttributeError("Missing 'content'")
+
+            logger.debug(f"Received '{msg_type}' message from user {self.scope['user'].id}.")
             if msg_type == "game_stop":
                 await self.close()
             elif msg_type in ["game_ready", "game_move"]:
                 await self.send_message("group", args=data)
-        except ValueError as e:
-            print(f"Value error: {e}")
-            await self.send_error(str(e))
+            else:
+                raise ValueError("Unknown 'type' in data")
         except Exception as e:
-            print(f"Unexpected error in receive: {e}")
-            await self.send_error("An unexpected error occurred")
+            logger.warning(f"Invalid message received from user {self.scope['user'].id}: {str(e)}")
+            await self.send_error("Invalid message")
 
     async def game_join(self, event):
         if self.host:
             self.info.players.append(event["content"]["user"])
             if len(self.info.players) == self.info.player_needed:
                 await self.redis.set(self.room_id, 1)
-            await self.send_message("group", "game_info", self.info.__dict__)
-
-    async def game_info(self, event):
-        await self.send_message("client", args=event)
 
     async def game_ready(self, event):
         if self.host:
@@ -104,10 +131,17 @@ class Consumer(AsyncWebsocketConsumer):
 
     async def game_move(self, event):
         if self.host:
-            await self.move_pad(event["content"]["pad_n"], event["content"]["direction"])
+            try:
+                if event["content"].get("pad_n") == None:
+                    raise AttributeError("Missing 'pad_n'")
+                if event["content"].get("direction") == None:
+                    raise AttributeError("Missing 'direction'")
+                await self.move_pad(event["content"]["pad_n"], event["content"]["direction"])
+            except AssertionError as e:
+                logger.warning(f"Invalid game_move received in {self.room_id}: {str(e)}")
 
     async def game_stop(self, event):
-        if hasattr(self, "offline"):
+        if not self.connected:
             return
         if self.host:
             self.winner = event["content"].get("winner")
@@ -127,6 +161,7 @@ class Consumer(AsyncWebsocketConsumer):
 
     async def loop(self):
         fps = 0.033
+        self.reset_game()
         while True:
             try:
                 self.ball.move()
@@ -137,7 +172,7 @@ class Consumer(AsyncWebsocketConsumer):
                 await self.send_game_state()
                 await asyncio.sleep(fps)
             except Exception as e:
-                print(f"Unexpected error in the loop from game {self.room_id}: {e}")
+                logger.error(f"Unexpected error in the loop from game {self.room_id}: {str(e)}")
                 break
 
     def get_winner(self):
@@ -177,6 +212,9 @@ class Consumer(AsyncWebsocketConsumer):
 
     def score_point(self, winner: int):
         self.info.score[winner] += 1
+        self.reset_game()
+
+    def reset_game(self):
         self.ball.reset()
         self.pad_1.reset()
         self.pad_2.reset()
@@ -204,18 +242,24 @@ class Consumer(AsyncWebsocketConsumer):
         )
 
     async def save_pong_to_db(self, winner):
-        from .models import Pong
-        from ft_auth.models import User
-
+        Pong = apps.get_model('games', 'Pong')
         try:
             await sync_to_async(Pong.objects.create)(
-                user1=await sync_to_async(User.objects.get)(id=self.info.players[0]),
-                user2=await sync_to_async(User.objects.get)(id=self.info.players[1]),
+                user1=await sync_to_async(get_user_model().objects.get)(id=self.info.players[0]),
+                user2=await sync_to_async(get_user_model().objects.get)(id=self.info.players[1]),
                 score1=self.info.score[0],
                 score2=self.info.score[1]
             )
+            logger.debug(f"Game {self.room_id} saved to db.")
         except Exception as e:
-            print(f"Error when saving game {self.room_id} to db: {e}")
+            logger.error(f"Could not save game {self.room_id} to db: {str(e)}")
+
+    def check_missing_param(self, query_params: dict[Any, List], param_name: str):
+        param = query_params.get(param_name, [None])[0]
+        if param == None:
+            raise AttributeError(f"Missing query parameter: {param_name}")
+        else:
+            return param
 
     class Info:
         def __init__(
