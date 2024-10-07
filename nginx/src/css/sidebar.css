@@ -120,3 +120,8 @@
 #toggle-btn:hover {
 	background-color: var(--hover-clr);
 }
+
+#toggle-btn {
+	padding: 8.5px;
+	width: 55px;
+}
