@@ -20,16 +20,37 @@
 					</ul>
 				</div>
 			</div>
-			{% else %}
-			<ul id="navbar-list"
-				class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
-				<li class="m-2"><a class="btn btn-sm btn-success rounded-pill rounded-5" data-route href="/login"><span
-							class="glyphicon glyphicon-log-in"></span> Login</a></li>
-				<li class="m-2"><a class="btn btn-sm btn-outline-success rounded-pill rounded-5" data-route
-						href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+				data-bs-toggle="dropdown" aria-expanded="false">
+				{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
+			</button>
+			<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+				<li><a class="dropdown-item" data-route href="#">Profile</a></li>
+				<li><a class="dropdown-item" data-route href="#">Settings</a></li>
+				<li>
+					<hr class="dropdown-divider">
+				</li>
+				<li><button id="logout-button-navbar" class="dropdown-item fw-bold">Log out <span
+							class="glyphicon glyphicon-log-out"></span></button></li>
 			</ul>
-			{% endif %}
-		</nav>
+	</div>
+</div>
+{% else %}
+<ul id="navbar-list"
+	class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
+	<li class="m-2"><a class="btn btn-sm btn-success rounded-pill rounded-5" data-route href="/login"><span
+				class="glyphicon glyphicon-log-in"></span> Login</a></li>
+	<li class="m-2"><a class="btn btn-sm btn-outline-success rounded-pill rounded-5" data-route href="/register"><span
+				class="glyphicon glyphicon-user"></span> Register</a></li>
+	<ul id="navbar-list"
+		class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
+		<li class="m-2"><a class="btn btn-sm btn-success rounded-pill rounded-5" data-route href="/login"><span
+					class="glyphicon glyphicon-log-in"></span> Login</a></li>
+		<li class="m-2"><a class="btn btn-sm btn-outline-success rounded-pill rounded-5" data-route
+				href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+	</ul>
+	{% endif %}
+	</nav>
 	</div>
 
 	<div id="sidebar-wrapper" class="bg-light border toggled">
@@ -39,34 +60,38 @@
 			{% if user.is_authenticated %}
 			<li><a class="list-group-item list-group-item-action" data-route href="/pong">Pong</a></li>
 			<li><a class="list-group-item list-group-item-action" onclick="logout()">Logout</a></li>
+			<li><a class="list-group-item list-group-item-action" data-route href="/pong">Pong</a></li>
+			<li><a class="list-group-item list-group-item-action" onclick="logout()">Logout</a></li>
 			{% else %}
+			<li><a class="list-group-item list-group-item-action" data-route href="/login">Login</a></li>
+			<li><a class="list-group-item list-group-item-action" data-route href="/register">Register</a></li>
 			<li><a class="list-group-item list-group-item-action" data-route href="/login">Login</a></li>
 			<li><a class="list-group-item list-group-item-action" data-route href="/register">Register</a></li>
 			{% endif %}
 		</ul>
 	</div>
-</div>
+	</div>
 
-<div id="page-container-wrapper">
-	<button id="sidebar-toggle" class="btn btn-primary">☰</button>
-	{% block content %}{% endblock %}
-</div>
+	<div id="page-container-wrapper">
+		<button id="sidebar-toggle" class="btn btn-primary">☰</button>
+		{% block content %}{% endblock %}
+	</div>
 
-<script>
-	document.getElementById("sidebar-toggle").addEventListener("click", function (e) {
-		e.preventDefault();
-		document.getElementById("sidebar-wrapper").classList.toggle("toggled");
-		this.classList.toggle("toggled");
-	});
-
-	document.querySelectorAll('[data-route]').forEach((element) => {
-		element.addEventListener("click", (event) => {
-			event.preventDefault();
-			route(event.target.getAttribute('href'));
+	<script>
+		document.getElementById("sidebar-toggle").addEventListener("click", function (e) {
+			e.preventDefault();
+			document.getElementById("sidebar-wrapper").classList.toggle("toggled");
+			this.classList.toggle("toggled");
 		});
-	});
 
-	document.getElementById("logout-button-navbar")?.addEventListener("click", function (e) {
-		logout();
-	})
-</script>
+		document.querySelectorAll('[data-route]').forEach((element) => {
+			element.addEventListener("click", (event) => {
+				event.preventDefault();
+				route(event.target.getAttribute('href'));
+			});
+		});
+
+		document.getElementById("logout-button-navbar")?.addEventListener("click", function (e) {
+			logout();
+		})
+	</script>
