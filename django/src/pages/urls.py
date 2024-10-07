@@ -3,7 +3,10 @@ from . import views
 
 urlpatterns = [
 	path('index/', views.index),
-	path('games/', views.games),
+	path('pong/', views.pong),
+	path('pong/local/', views.pong_local),
+    path('pong/online/', views.pong_online),
+    path('pong/online/<uuid:id>/', views.pong_online),
 	path('login/', views.login),
 	path('register/', views.register),
 	path('authorize/', views.authorize),

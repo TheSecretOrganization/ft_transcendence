@@ -1,0 +1,40 @@
+.navbar {
+	background-color: #424242;
+	height: 4.2rem;
+	min-height: 3.75rem;
+	display: flex;
+	flex-direction: row;
+}
+
+.navbar-brand {
+	color: white;
+	padding-left: 5rem;
+}
+
+.div-navbar-profile {
+	display: inline;
+	padding-right: 4.5rem;
+}
+
+#navbar-list {
+	list-style-type: none;
+	justify-content: center;
+	padding-right: 1.5rem;
+}
+
+.navbar-profile-button {
+	padding: 0.5rem 0.75rem;
+}
+
+.dropdown {
+	z-index: 1000;
+	right: 2.5rem;
+}
+
+.dropdown-item {
+	margin: 0;
+}
+
+.dropdown-toggle::after {
+	display: none;
+}

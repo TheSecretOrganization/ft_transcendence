@@ -37,6 +37,7 @@ function updateActiveRoute(path) {
 }
 
 async function handleLocation() {
+	resetEvents();
 	let path = window.location.pathname;
 	let pageName = path === '/' ? 'index' : path.substring(1);
 	let html = await fetchPage(pageName);
@@ -48,6 +49,14 @@ async function handleLocation() {
 	content.innerHTML = html;
 	content.querySelectorAll('script').forEach(script => eval(script.textContent));
 	updateActiveRoute(path);
+}
+
+function resetEvents() {
+	window.onresize = null;
+	document.onkeydown = null;
+	document.onmousemove = null;
+	document.onpointerlockchange = null;
+	document.exitPointerLock();
 }
 
 document.addEventListener("DOMContentLoaded", () => {

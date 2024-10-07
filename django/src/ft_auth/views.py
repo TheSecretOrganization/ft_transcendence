@@ -65,9 +65,9 @@ def authorize(request: HttpRequest):
 		return JsonResponse({'error': 'Missing body', 'code': 0}, status=400)
 
 	try:
-		token = get_token(data['code']) if 'token' not in request.session else request.session['token']
 		if 'token' not in request.session and 'code' not in data:
 				return JsonResponse({'error': 'Missing code field', 'code': 3}, status=400)
+		token = get_token(data['code']) if 'token' not in request.session else request.session['token']
 
 		user = ft_oauth(token).user
 		dlogin(request, user)

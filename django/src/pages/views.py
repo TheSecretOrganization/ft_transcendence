@@ -1,3 +1,4 @@
+from uuid import uuid4
 from django.db.models import Q
 from django.views.decorators.http import require_GET
 from django.http import JsonResponse, HttpRequest
@@ -26,8 +27,36 @@ def index(request):
 	return create_response(request, 'index.html', title="Home")
 
 @require_GET
-def games(request):
-	return create_response(request, 'games.html', title='Games')
+def pong(request):
+	return create_response(request, 'pong.html', title="Pong", need_authentication=True)
+
+@require_GET
+def pong_local(request):
+	return create_response(
+		request=request,
+		template_name='pong_game.html',
+		title="Local Pong",
+		context={
+			"mode": "local",
+			"room_id": str(uuid4()),
+			"host": True,
+		},
+		need_authentication=True,
+	)
+
+@require_GET
+def pong_online(request, id=None):
+	return create_response(
+		request=request,
+		template_name='pong_game.html',
+		title="Local Pong",
+		context={
+			"mode": "online",
+			"room_id": str(uuid4()) if id == None else id,
+			"host": True if id == None else False,
+		},
+		need_authentication=True,
+	)
 
 @require_GET
 def login(request: HttpRequest):
