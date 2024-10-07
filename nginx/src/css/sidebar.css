@@ -34,13 +34,13 @@
 	}
 }
 
-#sidebar ul li.active a {
+/* #sidebar ul li.active a {
 	color: var(--accent-clr);
 
 	svg {
 		fill: var(--accent-clr);
 	}
-}
+} */
 
 #sidebar a,
 #sidebar .dropdown-btn,

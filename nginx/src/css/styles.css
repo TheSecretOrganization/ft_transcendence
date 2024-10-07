@@ -55,3 +55,17 @@ body {
 .hidden {
 	display: none;
 }
+
+#content-wrapper {
+	display: flex;
+	width: 100%;
+	/* padding-top: 70px; */
+	min-height: 100vh;
+}
+
+#main-content {
+	flex-grow: 1;
+	padding: 20px;
+	background-color: yellow;
+	overflow-y: auto;
+}
