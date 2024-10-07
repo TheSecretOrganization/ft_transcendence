@@ -59,7 +59,7 @@
 			<div id="chat-title">Room: General</div>
 			<div id="chat-log"></div>
 			<form id="chat-form">
-				<input id="chat-input" type="text" placeholder="Tapez votre message..." />
+				<input id="chat-input" type="text" placeholder="Type your message here..." />
 				<button type="submit" id="chat-send-btn">Send</button>
 			</form>
 		</div>
@@ -91,7 +91,7 @@
 	let chatSocket = undefined;
 
 	function connectToChatRoom(roomId) {
-		document.getElementById('chat-title').innerText = 'Salle: ' + roomId;
+		document.getElementById('chat-title').innerText = 'Room: ' + roomId;
 		chatSocket = wsConnect(wsCreateUrl(`chat/${roomId}/`), handleOnMessage, handleOnError);
 	}
 
