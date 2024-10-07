@@ -1,4 +1,4 @@
-let currentUser = document.getElementById('current-user').getAttribute("value");
+let currentUser = document.getElementById("current-user").getAttribute("value");
 let roomId = "General";
 let chatSocket = wsConnect(wsCreateUrl("chat/" + roomId), handleOnMessage, handleOnError);
 
