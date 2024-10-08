@@ -24,7 +24,7 @@ jobs:
       - name: Run containers
         run: docker compose up -d
       - name: Wait for services to initialize
-        run: sleep 30
+        run: sleep 5
       - name: Perform health checks
         run: |
           services=$(docker compose ps --services)

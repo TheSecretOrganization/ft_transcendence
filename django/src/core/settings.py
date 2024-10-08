@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tools',
-	'ft_auth',
+    'friends',
+    'ft_auth',
     'games',
     'pages',
 ]
@@ -150,3 +151,46 @@ MEDIA_ROOT = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'ft_auth.User'
+
+DJANGO_LOG_LEVEL = os.getenv("DJANGO_LOG_LEVEL", default="INFO")
+LOGGING = {
+	'version': 1,
+	'disable_existing_loggers': False,
+	'formatters': {
+		'simple': {
+			'format': '{levelname}: {message}',
+			'style': '{',
+		},
+		'verbose': {
+			'format': '{asctime} [{levelname}] {name}: {message}',
+			'style': '{',
+		},
+	},
+	'handlers': {
+		'console': {
+			'class': 'logging.StreamHandler',
+			'formatter': 'verbose',
+		},
+	},
+	'root': {
+		'handlers': ['console'],
+		'level': DJANGO_LOG_LEVEL,
+	},
+	'loggers': {
+		'django': {
+			'handlers': ['console'],
+			'level': 'INFO',
+			'propagate': False,
+		},
+		'daphne': {
+			'handlers': ['console'],
+			'level': 'INFO',
+			'propagate': False,
+		},
+		'channels': {
+			'handlers': ['console'],
+			'level': 'INFO',
+			'propagate': False,
+		},
+	},
+}

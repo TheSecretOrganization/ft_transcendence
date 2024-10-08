@@ -1,7 +1,10 @@
+from uuid import uuid4
+from django.db.models import Q
 from django.views.decorators.http import require_GET
 from django.http import JsonResponse, HttpRequest
 from django.template.loader import get_template
 from urllib.parse import quote
+from friends.models import Friend
 import os
 
 def create_response(
@@ -28,19 +31,32 @@ def pong(request):
 	return create_response(request, 'pong.html', title="Pong", need_authentication=True)
 
 @require_GET
-def login(request: HttpRequest):
-	if (request.user.is_authenticated):
-		return JsonResponse({'redirect': '/'}, status=403)
-	return create_response(request, 'login.html', {
-		'oauth_url': (f"https://api.intra.42.fr/oauth/authorize?client_id={os.getenv('OAUTH_UID')}"
-		  f"&redirect_uri={quote(os.getenv('OAUTH_FALLBACK'))}&response_type=code")
-	}, title='Login')
+def pong_local(request):
+	return create_response(
+		request=request,
+		template_name='pong_game.html',
+		title="Local Pong",
+		context={
+			"mode": "local",
+			"room_id": str(uuid4()),
+			"host": True,
+		},
+		need_authentication=True,
+	)
 
 @require_GET
-def register(request: HttpRequest):
-	if (request.user.is_authenticated):
-		return JsonResponse({'redirect': '/'}, status=403)
-	return create_response(request, 'register.html', title='Register')
+def pong_online(request, id=None):
+	return create_response(
+		request=request,
+		template_name='pong_game.html',
+		title="Local Pong",
+		context={
+			"mode": "online",
+			"room_id": str(uuid4()) if id == None else id,
+			"host": True if id == None else False,
+		},
+		need_authentication=True,
+	)
 
 @require_GET
 def authorize(request: HttpRequest):
@@ -49,5 +65,23 @@ def authorize(request: HttpRequest):
 	return create_response(request, 'authorize.html')
 
 @require_GET
+def friends(request: HttpRequest):
+	if not request.user.is_authenticated:
+		return JsonResponse({'error': 'Need authentication', 'redirect': '/login'}, status=403)
+	friends = Friend.objects.filter(Q(origin=request.user) | Q(target=request.user), status__in=[1, 2])
+	for friend in friends:
+		friend.other_user = friend.other(request.user)
+	return create_response(request, 'friends.html', {'friends': friends}, True, 'Friends')
+
+@require_GET
 def error_404(request):
 	return create_response(request, '404.html', title="Page not found")
+
+@require_GET
+def authentification(request: HttpRequest):
+	if (request.user.is_authenticated):
+		return JsonResponse({'redirect': '/'}, status=403)
+	return create_response(request, 'authentification.html', {
+		'oauth_url': (f"https://api.intra.42.fr/oauth/authorize?client_id={os.getenv('OAUTH_UID')}"
+		  f"&redirect_uri={quote(os.getenv('OAUTH_FALLBACK'))}&response_type=code"),
+	}, title='Authentification')
