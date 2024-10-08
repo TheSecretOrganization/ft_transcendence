@@ -167,28 +167,38 @@ LOGGING = {
 		},
 	},
 	'handlers': {
-		'console': {
-			'class': 'logging.StreamHandler',
-			'formatter': 'verbose',
-		},
+		# 'console': {
+		# 	'class': 'logging.StreamHandler',
+		# 	'formatter': 'verbose',
+		# },
+		'logstash': {
+			'level': 'INFO',
+			'class': 'logstash.TCPLogstashHandler',
+			'host': 'logstash01',
+			'port': '50000',
+			'version': 1, # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
+			'message_type': 'logstash',  # 'type' field in logstash message. Default value: 'logstash'.
+			'fqdn': False, # Fully qualified domain name. Default value: false.
+			'tags': ['django'], # list of tags. Default: None.
+		}
 	},
 	'root': {
-		'handlers': ['console'],
+		'handlers': ['logstash'],
 		'level': DJANGO_LOG_LEVEL,
 	},
 	'loggers': {
 		'django': {
-			'handlers': ['console'],
+			'handlers': ['logstash'],
 			'level': 'INFO',
 			'propagate': False,
 		},
 		'daphne': {
-			'handlers': ['console'],
+			'handlers': ['logstash'],
 			'level': 'INFO',
 			'propagate': False,
 		},
 		'channels': {
-			'handlers': ['console'],
+			'handlers': ['logstash'],
 			'level': 'INFO',
 			'propagate': False,
 		},
