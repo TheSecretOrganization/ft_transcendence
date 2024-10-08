@@ -87,17 +87,24 @@
 
 {% if user.is_authenticated %}
 <script>
-	let chatSocket = undefined;
-
-	function connectToChatRoom(roomId) {
-		document.getElementById('chat-title').innerText = 'Room: ' + roomId;
-		chatSocket = wsConnect(wsCreateUrl(`chat/${roomId}/`), handleOnMessage, handleOnError);
+	if (!window.chatSocket) {
+		window.chatSocket = wsConnect(wsCreateUrl(`chat/General/`), handleOnMessage, handleOnError);
+		window.chatSocket.onopen = function () {
+			loadChatHistory('General');
+		};
 	}
 
 	function handleOnMessage(data) {
 		switch (data.type) {
-			case 'active_users': updateActiveUsers(data.users); break;
-			default: handleDefault(data); break;
+			case 'active_users':
+				updateActiveUsers(data.users);
+				break;
+			case 'chat_history':
+				displayChatHistory(data.messages);
+				break;
+			default:
+				handleDefault(data);
+				break;
 		}
 	}
 
@@ -117,6 +124,23 @@
 		});
 	}
 
+	function displayChatHistory(messages) {
+		const chatLog = document.getElementById('chat-log');
+		chatLog.innerHTML = '';
+
+		messages.forEach(message => {
+			const newMessageDiv = document.createElement('div');
+			if (message.username === "{{ user }}") {
+				newMessageDiv.classList.add('message', 'self');
+			} else {
+				newMessageDiv.classList.add('message', 'other');
+			}
+			newMessageDiv.innerHTML = `<strong>${message.username}:</strong> ${message.message}`;
+			chatLog.appendChild(newMessageDiv);
+		});
+		chatLog.scrollTop = chatLog.scrollHeight;
+	}
+
 	function handleDefault(data) {
 		const chatLog = document.getElementById('chat-log');
 		const newMessageDiv = document.createElement('div');
@@ -126,12 +150,21 @@
 		chatLog.scrollTop = chatLog.scrollHeight;
 	}
 
+	function loadChatHistory(roomId) {
+		if (window.chatSocket && window.chatSocket.readyState === WebSocket.OPEN) {
+			window.chatSocket.send(JSON.stringify({
+				'type': 'fetch_history',
+				'roomId': roomId
+			}));
+		}
+	}
+
 	document.getElementById("chat-form").addEventListener("submit", e => {
 		e.preventDefault();
 		const messageInput = document.getElementById('chat-input');
 		const message = messageInput.value.trim();
-		if (chatSocket && chatSocket.readyState === WebSocket.OPEN && message) {
-			chatSocket.send(JSON.stringify({
+		if (window.chatSocket && window.chatSocket.readyState === WebSocket.OPEN && message) {
+			window.chatSocket.send(JSON.stringify({
 				'message': message,
 				'username': "{{ user }}",
 			}));
@@ -145,6 +178,6 @@
 		this.classList.toggle("toggled");
 	});
 
-	connectToChatRoom('General');
+	loadChatHistory('General');
 </script>
 {% endif %}
