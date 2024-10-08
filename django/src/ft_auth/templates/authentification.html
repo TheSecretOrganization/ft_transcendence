@@ -124,7 +124,10 @@
 			return;
 		}
 
-		submitForm('register-form', () => route('/login'), (json) => {
+		submitForm('register-form', () => {
+			route('/login');
+			displayToast("Account creation successful.");
+		}, (json) => {
 			document.getElementById('register-error').textContent = json.error;
 			emptyPasswords();
 		});
