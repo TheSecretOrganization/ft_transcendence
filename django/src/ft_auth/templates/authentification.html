@@ -171,6 +171,10 @@
 </script>
 
 <style>
+	:root {
+		--slider-delay : 2s;
+	}
+
 	#page-container-wrapper {
 		display: flex;
 		height: calc(100vh - 67.5px);
@@ -228,7 +232,7 @@
 		position: absolute;
 		top: 67.5px;
 		left: 0%;
-		animation: moveRight 2s;
+		animation: moveRight var(--slider-delay);
 		animation-fill-mode: forwards;
 	}
 
@@ -240,7 +244,7 @@
 		position: absolute;
 		top: 67.5px;
 		left: 50%;
-		animation: moveLeft 2s;
+		animation: moveLeft var(--slider-delay);
 		animation-fill-mode: forwards;
 	}
 
