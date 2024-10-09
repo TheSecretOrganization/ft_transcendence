@@ -61,3 +61,13 @@ function logout() {
 			else r.json().then(json => console.log(json.error));
 		}).catch(error => console.error(error));
 }
+
+function displayToast(message) {
+	const toastContentElement = document.getElementById('toast-content');
+	toastContentElement.textContent = message;
+	console.log(message);
+	console.log("toast");
+	const toastElement = document.getElementById('toast');
+	const toast = new bootstrap.Toast(toastElement);
+	toast.show();
+}
