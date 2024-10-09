@@ -85,6 +85,5 @@ def error_404(request):
 def profile(request: HttpRequest):
 	if not request.user.is_authenticated:
 		return JsonResponse({'redirect': '/'}, status=403)
-	return create_response(request, 'profile.html', {
-		'user': request.user,
-	})
+	return create_response(request, 'profile.html', title="Profile", need_authentication=True)
+ 
