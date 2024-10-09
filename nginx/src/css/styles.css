@@ -55,13 +55,18 @@ body {
 
 #content-wrapper {
 	display: flex;
-	width: 100%;
-	min-height: 100vh;
+	width: calc(100vw - 60px);
+	min-height: calc(100vh - 4.2rem);
+	padding-left: 60px;
 }
 
 #main-content {
-	flex-grow: 1;
+	/* flex-grow: 1; */
 	background-color: white;
 	overflow-y: auto;
 	display: flex;
 }
+
+/* #content {
+	
+} */
