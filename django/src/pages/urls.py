@@ -11,5 +11,6 @@ urlpatterns = [
 	path('login/', views.authentification),
 	path('register/', views.authentification),
 	path('authorize/', views.authorize),
+	path('friends/', views.friends),
 	path('404/', views.error_404),
 ]

@@ -1,8 +1,10 @@
 from uuid import uuid4
+from django.db.models import Q
 from django.views.decorators.http import require_GET
 from django.http import JsonResponse, HttpRequest
 from django.template.loader import get_template
 from urllib.parse import quote
+from friends.models import Friend
 import os
 
 def create_response(
@@ -77,6 +79,15 @@ def authorize(request: HttpRequest):
 	if (request.user.is_authenticated):
 		return JsonResponse({'redirect': '/'}, status=403)
 	return create_response(request, 'authorize.html')
+
+@require_GET
+def friends(request: HttpRequest):
+	if not request.user.is_authenticated:
+		return JsonResponse({'error': 'Need authentication', 'redirect': '/login'}, status=403)
+	friends = Friend.objects.filter(Q(origin=request.user) | Q(target=request.user), status__in=[1, 2])
+	for friend in friends:
+		friend.other_user = friend.other(request.user)
+	return create_response(request, 'friends.html', {'friends': friends}, True, 'Friends')
 
 @require_GET
 def error_404(request):
