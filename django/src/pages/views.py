@@ -80,3 +80,11 @@ def authorize(request: HttpRequest):
 @require_GET
 def error_404(request):
 	return create_response(request, '404.html', title="Page not found")
+
+@require_GET
+def profile(request: HttpRequest):
+	if not request.user.is_authenticated:
+		return JsonResponse({'redirect': '/'}, status=403)
+	return create_response(request, 'profile.html', {
+		'user': request.user,
+	})

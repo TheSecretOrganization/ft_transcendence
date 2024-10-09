@@ -11,4 +11,5 @@ urlpatterns = [
 	path('register/', views.register),
 	path('authorize/', views.authorize),
 	path('404/', views.error_404),
+	path('profile/', views.profile),
 ]
