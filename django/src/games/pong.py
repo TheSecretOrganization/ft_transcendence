@@ -12,7 +12,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 logger = logging.getLogger(__name__)
 
-class Consumer(AsyncWebsocketConsumer):
+class PongGame(AsyncWebsocketConsumer):
     win_goal = 5
 
     async def connect(self):
@@ -242,9 +242,9 @@ class Consumer(AsyncWebsocketConsumer):
         )
 
     async def save_pong_to_db(self, winner):
-        Pong = apps.get_model('games', 'Pong')
+        PongGame = apps.get_model('games', 'PongGame')
         try:
-            await sync_to_async(Pong.objects.create)(
+            await sync_to_async(PongGame.objects.create)(
                 user1=await sync_to_async(get_user_model().objects.get)(id=self.info.players[0]),
                 user2=await sync_to_async(get_user_model().objects.get)(id=self.info.players[1]),
                 score1=self.info.score[0],
