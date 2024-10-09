@@ -55,12 +55,16 @@
 	<div id="chat-wrapper">
 		<button id="chat-button">💬</button>
 		<div id="chat-container" class="toggled">
-			<div id="chat-title">Room: General</div>
+			<div id="chat-title">Room: <span id="room-name">General</span></div>
 			<div id="chat-log"></div>
 			<form id="chat-form">
 				<input id="chat-input" type="text" placeholder="Type your message here..." />
 				<button type="submit" id="chat-send-btn">Send</button>
 			</form>
+			<div id="users-wrapper">
+				<h3>Users Online</h3>
+				<ul id="user-list"></ul>
+			</div>
 		</div>
 	</div>
 	{% endif %}
@@ -94,6 +98,20 @@
 		};
 	}
 
+	function startPrivateChat(otherUsername) {
+		const roomName = `private_chat_${otherUsername}`;
+		if (window.chatSocket) {
+			window.chatSocket.close();
+		}
+		window.chatSocket = wsConnect(wsCreateUrl(`chat/private/${otherUsername}/`), handleOnMessage, handleOnError);
+
+		window.chatSocket.onopen = function () {
+			loadChatHistory(roomName);
+		};
+
+		document.getElementById('chat-title').textContent = `Private Chat with ${otherUsername}`;
+	}
+
 	function handleOnMessage(data) {
 		switch (data.type) {
 			case 'active_users':
@@ -101,6 +119,9 @@
 				break;
 			case 'chat_history':
 				displayChatHistory(data.messages);
+				break;
+			case 'private_message_notification':
+				alert(`New PM from ${data.from_user}`);
 				break;
 			default:
 				handleDefault(data);
@@ -120,6 +141,15 @@
 			const userItem = document.createElement('li');
 			userItem.classList.add('user-item');
 			userItem.textContent = user;
+
+			if (user !== "{{ user }}") {
+				const privateChatButton = document.createElement('button');
+				privateChatButton.textContent = "PM";
+				privateChatButton.addEventListener('click', () => startPrivateChat(user));
+
+				userItem.appendChild(privateChatButton);
+			}
+
 			userList.appendChild(userItem);
 		});
 	}
