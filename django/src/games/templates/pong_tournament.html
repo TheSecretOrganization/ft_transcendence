@@ -1,5 +1,24 @@
 {% extends "./extends/base.html" %}
 
 {% block content %}
+<div class="container">
+	<table>
+		<tr>
+			<th>Players</th>
+		</tr>
+	</table>
+</div>
 
+<script>
+	const socket = wsConnect(wsCreateUrl("pong_tournament", { "name": "{{ name }}" }), onMessage, exit);
+
+	function onMessage(data) {
+		console.log(data);
+	}
+
+	function exit() {
+		if (socket)
+			socket.close();
+	}
+</script>
 {% endblock %}

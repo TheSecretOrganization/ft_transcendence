@@ -12,7 +12,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 logger = logging.getLogger(__name__)
 
-class Consumer(AsyncWebsocketConsumer):
+class Game(AsyncWebsocketConsumer):
     win_goal = 5
 
     async def connect(self):
@@ -315,3 +315,64 @@ class Consumer(AsyncWebsocketConsumer):
             self.y = 0.4
             self.step = 0.05
             self.move = 0
+
+class Tournament(AsyncWebsocketConsumer):
+    async def connect(self):
+        query_params = parse_qs(self.scope["query_string"].decode())
+        self.redis = redis.Redis(host="redis")
+
+        try:
+            self.user = self.scope.get("user")
+            if type(self.user) != get_user_model and self.user.is_anonymous:
+                raise ValueError("Invalid user")
+            self.name = query_params.get("name", [None])[0]
+            if self.name == None:
+                raise ValueError("Missing name")
+            else:
+                logger.info(f"User {self.user.id} is attempting to connect.")
+        except Exception as e:
+            logger.warning(f"Connection refused: {str(e)}")
+            await self.close()
+            return
+
+        await self.accept()
+        await self.channel_layer.group_add(self.name, self.channel_name)
+        players =  await self.redis.lrange(f'pong_{self.name}_username', 0, -1)
+        if self.user.username.encode('utf-8') not in players:
+            await self.redis.rpush(f"pong_{self.name}_id", self.user.id)
+            await self.redis.rpush(f"pong_{self.name}_username", self.user.username)
+
+        await self.channel_layer.group_send(self.name, {"type": "join"})
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
+        if hasattr(self, "redis"):
+            await self.redis.close()
+
+        logger.info(f"User {self.scope['user'].id} has disconnected.")
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+
+        try:
+            msg_type = data.get("type")
+            if not msg_type:
+                raise AttributeError("Missing 'type'")
+            logger.debug(f"Received '{msg_type}' message from user {self.scope['user'].id}.")
+            match msg_type:
+                case _:
+                    raise ValueError("Unknown 'type' in data")
+        except Exception as e:
+            logger.warning(f"Invalid message received from user {self.scope['user'].id}: {str(e)}")
+            await self.send(text_data=json.dumps({'type': 'error', 'content': str(e)}))
+
+    async def join(self, event):
+        usernames =  await self.redis.lrange(f'pong_{self.name}_username', 0, -1)
+        decoded_usernames = [username.decode('utf-8') for username in usernames]
+        logger.info(decoded_usernames)
+        await self.send(text_data=json.dumps({
+            "type": "join",
+            "content": {
+                "players": decoded_usernames
+            }
+        }))

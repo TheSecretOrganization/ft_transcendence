@@ -1,14 +1,14 @@
 from channels.testing import ChannelsLiveServerTestCase, WebsocketCommunicator
 from django.contrib.auth import get_user_model
 from asgiref.sync import sync_to_async
-from .pong import Consumer
+from .pong import Game
 
 class PongConsumerTest(ChannelsLiveServerTestCase):
     async def test_anonymous_user(self):
         """
         Test if anonymous user is rejected.
         """
-        communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1")
+        communicator = WebsocketCommunicator(Game.as_asgi(), "/ws/pong/?mode=local&player_needed=1")
 
         connected, _ = await communicator.connect()
         self.assertFalse(connected)
@@ -17,7 +17,7 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         """
         Test if wrong user is rejected.
         """
-        communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1")
+        communicator = WebsocketCommunicator(Game.as_asgi(), "/ws/pong/?mode=local&player_needed=1")
         communicator.scope['user'] = "wrong_user"
 
         connected, _ = await communicator.connect()
@@ -28,7 +28,7 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         Test if wrong parameters request is rejected.
         """
         user = await sync_to_async(get_user_model().objects.create_user)(username='testuser', password='password123')
-        communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/")
+        communicator = WebsocketCommunicator(Game.as_asgi(), "/ws/pong/")
         communicator.scope['user'] = user
 
         connected, _ = await communicator.connect()
@@ -39,7 +39,7 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         Test if the websocket consumer connects successfully.
         """
         user = await sync_to_async(get_user_model().objects.create_user)(username='testuser', password='password123')
-        communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1&host=True&room_id=1")
+        communicator = WebsocketCommunicator(Game.as_asgi(), "/ws/pong/?mode=local&player_needed=1&host=True&room_id=1")
         communicator.scope['user'] = user
 
         connected, _ = await communicator.connect()
@@ -54,7 +54,7 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         Test if the consumer handles invalid messages properly.
         """
         user = await sync_to_async(get_user_model().objects.create_user)(username='testuser', password='password123')
-        communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1&host=True&room_id=1")
+        communicator = WebsocketCommunicator(Game.as_asgi(), "/ws/pong/?mode=local&player_needed=1&host=True&room_id=1")
         communicator.scope['user'] = user
 
         connected, _ = await communicator.connect()
@@ -84,7 +84,7 @@ class PongConsumerTest(ChannelsLiveServerTestCase):
         Test if the consumer can send and receive messages, such as 'game_ready'.
         """
         user = await sync_to_async(get_user_model().objects.create_user)(username='testuser', password='password123')
-        communicator = WebsocketCommunicator(Consumer.as_asgi(), "/ws/pong/?mode=local&player_needed=1&host=True&room_id=1")
+        communicator = WebsocketCommunicator(Game.as_asgi(), "/ws/pong/?mode=local&player_needed=1&host=True&room_id=1")
         communicator.scope['user'] = user
 
         connected, _ = await communicator.connect()
