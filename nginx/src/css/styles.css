@@ -53,12 +53,8 @@ body {
 }
 
 #main-content {
-	/* flex-grow: 1; */
 	background-color: white;
 	overflow-y: auto;
 	display: flex;
+	width: 100%;
 }
-
-/* #content {
-	
-} */
