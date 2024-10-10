@@ -5,7 +5,9 @@ html {
 	scroll-behavior: smooth;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
 	box-sizing: inherit;
 }
 
@@ -32,9 +34,10 @@ body {
 }
 
 #page-container-wrapper {
-    width: 100%;
+	width: 100%;
 	flex-grow: 1;
 	display: flex;
+	justify-content: center;
 }
 
 .hidden {
@@ -42,7 +45,7 @@ body {
 }
 
 #content {
-    width: 100%;
-    min-height: 100%;
+	width: 100%;
+	min-height: 100%;
 	display: flexbox;
 }
