@@ -243,9 +243,9 @@ class PongGame(AsyncWebsocketConsumer):
         )
 
     async def save_pong_to_db(self, winner):
-        PongGame = apps.get_model('games', 'PongGame')
+        pong_game = apps.get_model('games', 'PongGame')
         try:
-            await sync_to_async(PongGame.objects.create)(
+            await sync_to_async(pong_game.objects.create)(
                 user1=await sync_to_async(get_user_model().objects.get)(id=self.info.players[0]),
                 user2=await sync_to_async(get_user_model().objects.get)(id=self.info.players[1]),
                 score1=self.info.score[0],
