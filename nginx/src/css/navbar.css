@@ -4,6 +4,7 @@
 	min-height: 3.75rem;
 	display: flex;
 	flex-direction: row;
+	padding: 0;
 }
 
 .navbar-brand {

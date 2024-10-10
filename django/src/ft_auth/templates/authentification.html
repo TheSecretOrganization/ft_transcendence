@@ -180,7 +180,7 @@
 
 	#page-container-wrapper {
 		display: flex;
-		height: calc(100vh - 67.5px);
+		height: calc(100vh - 4.2rem);
 	}
 
 	#register-side,
@@ -209,44 +209,44 @@
 
 	.slider-register-page {
 		z-index: 9000;
-		width: 50%;
-		height: calc(100vh - 67.5px);
+		width: calc(50vw - 30px);
+		height: calc(100vh - 4.2rem);
 		background-color: #e0e0e0;
 		position: absolute;
-		top: 67.5px;
-		left: 50%;
+		top: 4.2rem;
+		left: calc(50% + 30px);
 	}
 
 	.slider-login-page {
 		z-index: 9000;
-		width: 50%;
-		height: calc(100vh - 67.5px);
+		width: calc(50vw - 30px);
+		height: calc(100vh - 4.2rem);
 		background-color: #e0e0e0;
 		position: absolute;
-		top: 67.5px;
-		left: 0%;
+		top: 4.2rem;
+		left: calc(0% + 60px);
 	}
 
 	.slider-register-animation {
 		z-index: 9000;
-		width: 50%;
-		height: calc(100vh - 67.5px);
+		width: calc(50vw - 30px);
+		height: calc(100vh - 4.2rem);
 		background-color: #e0e0e0;
 		position: absolute;
-		top: 67.5px;
-		left: 0%;
+		top: 4.2rem;
+		left: calc(0% + 60px);
 		animation: moveRight var(--slider-delay);
 		animation-fill-mode: forwards;
 	}
 
 	.slider-login-animation {
 		z-index: 9000;
-		width: 50%;
-		height: calc(100vh - 67.5px);
+		width: calc(50vw - 30px);
+		height: calc(100vh - 4.2rem);
 		background-color: #e0e0e0;
 		position: absolute;
-		top: 67.5px;
-		left: 50%;
+		top: 4.2rem;
+		left: calc(50% + 60px);
 		animation: moveLeft var(--slider-delay);
 		animation-fill-mode: forwards;
 	}
@@ -260,21 +260,21 @@
 
 	@keyframes moveRight {
 		0% {
-			left: 0;
+			left: calc(0% + 60px);
 		}
 
 		100% {
-			left: 50%;
+			left: calc(50% + 30px);
 		}
 	}
 
 	@keyframes moveLeft {
 		0% {
-			left: 50;
+			left: calc(50% + 30px);
 		}
 
 		100% {
-			left: 0%;
+			left: calc(0% + 60px);
 		}
 	}
 
