@@ -100,11 +100,12 @@
 /* Toggle Button Styles */
 #toggle-btn {
 	margin-left: auto;
-	padding: 1em;
 	border: none;
 	border-radius: .5em;
 	background: none;
 	cursor: pointer;
+	padding: 0.85rem;
+	width: 100%;
 }
 
 #toggle-btn img {
@@ -113,12 +114,6 @@
 
 #toggle-btn:hover {
 	background-color: var(--hover-clr);
-}
-
-/* Adjust Toggle Button Size */
-#toggle-btn {
-	padding: 0.85rem;
-	width: 100%;
 }
 
 /* Rotation Effects */
