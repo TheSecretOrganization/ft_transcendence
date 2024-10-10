@@ -14,6 +14,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         else:
             self.room_group_name = 'chat_general'
 
+        await self.channel_layer.group_add(f'user_{self.username}', self.channel_name)
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.add_active_user()
         await self.accept()
@@ -23,6 +24,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.notify_other_user(other_username)
         
     async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(f'user_{self.username}', self.channel_name)
         await self.remove_active_user()
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
         await self.broadcast_active_users()

@@ -52,6 +52,7 @@
 	</div>
 
 	{% if user.is_authenticated %}
+	<div id="notification-area"></div>
 	<div id="chat-wrapper">
 		<button id="chat-button">💬</button>
 		<div id="chat-container" class="toggled">
@@ -112,6 +113,25 @@
 		document.getElementById('chat-title').textContent = `Private Chat with ${otherUsername}`;
 	}
 
+	function joinPrivateChat(otherUsername) {
+		if (window.chatSocket) {
+			window.chatSocket.close();
+		}
+
+		// Ouvrir la WebSocket pour la conversation privée
+		window.chatSocket = wsConnect(wsCreateUrl(`chat/private/${otherUsername}`), handleOnMessage, handleOnError);
+
+		window.chatSocket.onopen = function () {
+			loadChatHistory(`private_chat_${otherUsername}`);
+		};
+
+		document.getElementById('chat-title').textContent = `Private Chat with ${otherUsername}`;
+
+		// Supprimer la notification une fois que la conversation a été rejointe
+		const notificationArea = document.getElementById('notification-area');
+		notificationArea.innerHTML = '';
+	}
+
 	function handleOnMessage(data) {
 		switch (data.type) {
 			case 'active_users':
@@ -121,7 +141,7 @@
 				displayChatHistory(data.messages);
 				break;
 			case 'private_message_notification':
-				alert(`New PM from ${data.from_user}`);
+				showPrivateChatNotification(data.from_user);
 				break;
 			default:
 				handleDefault(data);
@@ -169,6 +189,19 @@
 			chatLog.appendChild(newMessageDiv);
 		});
 		chatLog.scrollTop = chatLog.scrollHeight;
+	}
+
+	function showPrivateChatNotification(fromUser) {
+		const notificationArea = document.getElementById('notification-area');
+
+		const notificationDiv = document.createElement('div');
+		notificationDiv.classList.add('notification');
+		notificationDiv.innerHTML = `
+        <p>Message privé de ${fromUser}</p>
+        <button onclick="joinPrivateChat('${fromUser}')">Voir la conversation</button>
+    	`;
+
+		notificationArea.appendChild(notificationDiv);
 	}
 
 	function handleDefault(data) {
