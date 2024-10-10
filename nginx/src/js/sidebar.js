@@ -1,9 +1,14 @@
 function toggleSubMenu(button) {
-	button.nextElementSibling.classList.toggle('show')
-	button.classList.toggle('rotate')
+	if (document.getElementById("sidebar").classList.contains('close')) {
+		document.getElementById("sidebar").classList.remove('close');
+		document.getElementById("toggle-btn").classList.toggle('rotate');
 
-	if (sidebar.classList.contains('close')) {
-		sidebar.classList.toggle('close')
-		toggleButton.classList.toggle('rotate')
+		document.getElementById("sidebar").addEventListener("transitionend", () => {
+			button.nextElementSibling.classList.toggle('show')
+			button.classList.toggle('rotate')
+		}, { once : true });
+	} else {
+		button.nextElementSibling.classList.toggle('show')
+		button.classList.toggle('rotate')
 	}
 }
