@@ -1,23 +1,24 @@
 /* Sidebar Container */
 #sidebar {
 	box-sizing: border-box;
-	height: 100vh;
-	width: 250px;
-	padding: 5px 1em;
+	height: calc(100vh - 4.2rem);
+	width: 24rem;
+	padding: 0.25rem 1em;
 	background-color: var(--base-clr);
 	border-right: 1px solid var(--line-clr);
-	position: sticky;
-	top: 0;
+	position: absolute;
+	top: 4.2rem;
 	align-self: start;
 	transition: 300ms ease-in-out;
 	overflow: hidden;
 	text-wrap: nowrap;
+	z-index: 9001;
 }
 
 /* Sidebar Closed State */
 #sidebar.close {
-	padding: 5px;
-	width: 60px;
+	padding: 0.25rem;
+	width: var(--sidebar-width);
 }
 
 /* Sidebar List */
@@ -30,7 +31,6 @@
 #sidebar>ul>li:first-child {
 	display: flex;
 	justify-content: flex-end;
-	margin-bottom: 16px;
 }
 
 #sidebar>ul>li:first-child .logo {
@@ -117,8 +117,8 @@
 
 /* Adjust Toggle Button Size */
 #toggle-btn {
-	padding: 8.5px;
-	width: 55px;
+	padding: 0.85rem;
+	width: 100%;
 }
 
 /* Rotation Effects */
@@ -133,3 +133,4 @@
 .rotate svg:last-child {
 	rotate: 180deg;
 }
+

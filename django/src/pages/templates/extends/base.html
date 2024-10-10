@@ -31,77 +31,75 @@
 	</nav>
 </div>
 
+<aside id="sidebar" class="close">
+	<ul>
+		<li>
+			<button id="toggle-btn" class="rotate">
+				<img draggable="false" src="/assets/double-arrow.svg" alt="double arrow icon">
+			</button>
+		</li>
+		<li class="active">
+			<a data-route href="/">
+				<img draggable="false" src="/assets/home.svg" alt="home icon">
+				<span>HOME</span>
+			</a>
+		</li>
+		<li>
+			<button onclick=toggleSubMenu(this) class="dropdown-btn">
+				<img draggable="false" src="/assets/controller.svg" alt="controller icon">
+				<span>GAMES</span>
+				<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
+			</button>
+			<ul class="sub-menu">
+				<div>
+					<li>
+						<a data-route href="/pong" tabindex="-1">
+							<img draggable="false" src="/assets/pong-racket.svg" alt="racket icon">
+							<span>PONG</span>
+						</a>
+					</li>
+					<li>
+						<a data-route href="/tictactoe" tabindex="-1">
+							<img draggable="false" src="/assets/tictactoe.svg" alt="tictactoe icon">
+							<span>TIC-TAC-TOE</span>
+						</a>
+					</li>
+					<li>
+						<a data-route href="/tournaments" tabindex="-1">
+							<img draggable="false" src="/assets/trophy.svg" alt="trophy icon">
+							<span>TOURNAMENTS</span>
+						</a>
+					</li>
+				</div>
+			</ul>
+		</li>
+		<li>
+			<button onclick=toggleSubMenu(this) class="dropdown-btn">
+				<img draggable="false" src="/assets/community.svg" alt="community icon">
+				<span>COMMUNITY</span>
+				<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
+			</button>
+			<ul class="sub-menu">
+				<div>
+					<li>
+						<a data-route href="/chat" tabindex="-1">
+							<img draggable="false" src="/assets/chat.svg" alt="chat icon">
+							<span>CHAT</span>
+						</a>
+					</li>
+					<li>
+						<a data-route href="/friends" tabindex="-1">
+							<img draggable="false" src="/assets/group.svg" alt="group icon">
+							<span>FRIENDS</span>
+						</a>
+					</li>
+				</div>
+			</ul>
+		</li>
+	</ul>
+</aside>
 
 <div id="content-wrapper">
-	<aside id="sidebar">
-		<ul>
-			<li>
-				<span class="logo">Johnny Depp</span>
-				<button id="toggle-btn">
-					<img draggable="false" src="/assets/double-arrow.svg" alt="double arrow icon">
-				</button>
-			</li>
-			<li class="active">
-				<a href="/">
-					<img draggable="false" src="/assets/home.svg" alt="home icon">
-					<span>HOME</span>
-				</a>
-			</li>
-			<li>
-				<button onclick=toggleSubMenu(this) class="dropdown-btn">
-					<img draggable="false" src="/assets/controller.svg" alt="controller icon">
-					<span>GAMES</span>
-					<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
-				</button>
-				<ul class="sub-menu">
-					<div>
-						<li>
-							<a href="/pong">
-								<img draggable="false" src="/assets/pong-racket.svg" alt="racket icon">
-								<span>PONG</span>
-							</a>
-						</li>
-						<li>
-							<a href="/tictactoe">
-								<img draggable="false" src="/assets/tictactoe.svg" alt="tictactoe icon">
-								<span>TIC-TAC-TOE</span>
-							</a>
-						</li>
-						<li>
-							<a href="/tournaments">
-								<img draggable="false" src="/assets/trophy.svg" alt="trophy icon">
-								<span>TOURNAMENTS</span>
-							</a>
-						</li>
-					</div>
-				</ul>
-			</li>
-			<li>
-				<button onclick=toggleSubMenu(this) class="dropdown-btn">
-					<img draggable="false" src="/assets/community.svg" alt="community icon">
-					<span>COMMUNITY</span>
-					<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
-				</button>
-				<ul class="sub-menu">
-					<div>
-						<li>
-							<a href="/chat">
-								<img draggable="false" src="/assets/chat.svg" alt="chat icon">
-								<span>CHAT</span>
-							</a>
-						</li>
-						<li>
-							<a href="/friends">
-								<img draggable="false" src="/assets/group.svg" alt="group icon">
-								<span>FRIENDS</span>
-							</a>
-						</li>
-					</div>
-				</ul>
-			</li>
-		</ul>
-	</aside>
-
 	<div id="main-content">
 		{% block content %}{% endblock %}
 	</div>

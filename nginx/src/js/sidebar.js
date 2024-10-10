@@ -1,9 +1,33 @@
+function subMenuInteractivity(submenu) {
+	const submenuLinks = submenu.querySelectorAll('a');
+
+	if (submenu.classList.contains('show')) {
+		submenuLinks.forEach(link => {
+			link.removeAttribute('tabindex');
+		});
+	} else {
+		submenuLinks.forEach(link => {
+			link.setAttribute('tabindex', '-1');
+		});
+	}
+}
+
 function toggleSubMenu(button) {
-	button.nextElementSibling.classList.toggle('show')
-	button.classList.toggle('rotate')
+	const sidebar = document.getElementById('sidebar');
+	const submenu = button.nextElementSibling;
 
 	if (sidebar.classList.contains('close')) {
-		sidebar.classList.toggle('close')
-		toggleButton.classList.toggle('rotate')
+		sidebar.classList.remove('close');
+		document.getElementById("toggle-btn").classList.toggle('rotate');
+
+		sidebar.addEventListener("transitionend", () => {
+			submenu.classList.toggle('show');
+			button.classList.toggle('rotate');
+			subMenuInteractivity(submenu);
+		}, { once: true });
+	} else {
+		submenu.classList.toggle('show');
+		button.classList.toggle('rotate');
+		subMenuInteractivity(submenu);
 	}
 }

@@ -7,6 +7,9 @@
 	--text-clr: #000;
 	--accent-clr: #470d0d;
 	--secondary-text-clr: #000;
+
+	--navbar-height: 4.2rem;
+	--sidebar-width: 6rem;
 }
 
 * {
@@ -34,17 +37,6 @@ body {
 	display: grid;
 }
 
-.list-group-item {
-	padding: 10px;
-	cursor: pointer;
-	text-align: center;
-}
-
-.list-group-item.active {
-	background-color: #007bff;
-	color: white;
-}
-
 #page-container-wrapper {
 	position: relative;
 }
@@ -55,13 +47,14 @@ body {
 
 #content-wrapper {
 	display: flex;
-	width: 100%;
-	min-height: 100vh;
+	width: calc(100vw - 60px);
+	min-height: calc(100vh - 4.2rem);
+	padding-left: 60px;
 }
 
 #main-content {
-	flex-grow: 1;
-	padding: 20px;
 	background-color: white;
 	overflow-y: auto;
+	display: flex;
+	width: 100%;
 }
