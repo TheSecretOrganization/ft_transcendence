@@ -8,13 +8,13 @@
 			<div class="row">
 				<h1 class="text-center">Register</h1>
 			</div>
-			<div class="row text-center text-wrap">
+			<div class="row text-center text-wrap text-danger">
 				<p id="register-error"></p>
 			</div>
 			{% csrf_token %}
 			<div class="form-floating mb-3 row">
 				<input register-input type="text" class="form-control" id="username" placeholder="Username"
-					autocomplete="username">
+					autocomplete="username" minlength="3" maxlength="15">
 				<label for="username">Username</label>
 			</div>
 
@@ -52,7 +52,7 @@
 			<div class="row">
 				<h1 class="text-center">Login</h1>
 			</div>
-			<div class="row text-center text-wrap">
+			<div class="row text-center text-wrap text-danger">
 				<p id="login-error"></p>
 			</div>
 			{% csrf_token %}
@@ -90,11 +90,20 @@
 </div>
 
 <script>
+	function emptyPasswords() {
+		const passwordFields = document.querySelectorAll('input[type="password"]');
+		passwordFields.forEach((field) => {
+			field.value = '';
+		});
+	}
+
+
 	document.getElementById('login-btn').onclick = function (e) {
 		document.getElementById('login-error').textContent = '';
 		e.preventDefault();
 		submitForm('login-form', () => route('/'), (json) => {
 			document.getElementById('login-error').textContent = json.error;
+			emptyPasswords();
 		});
 	};
 
@@ -111,11 +120,16 @@
 
 		if (!validate()) {
 			document.getElementById('register-error').textContent = 'Passwords don\'t match';
+			emptyPasswords();
 			return;
 		}
 
-		submitForm('register-form', () => route('/login'), (json) => {
+		submitForm('register-form', () => {
+			route('/login');
+			displayToast("Account creation successful.");
+		}, (json) => {
 			document.getElementById('register-error').textContent = json.error;
+			emptyPasswords();
 		});
 	};
 
@@ -160,6 +174,10 @@
 </script>
 
 <style>
+	:root {
+		--slider-delay : 1s;
+	}
+
 	#page-container-wrapper {
 		display: flex;
 		height: calc(100vh - 4.2rem);
@@ -217,7 +235,7 @@
 		position: absolute;
 		top: 4.2rem;
 		left: calc(0% + 60px);
-		animation: moveRight 2s;
+		animation: moveRight var(--slider-delay);
 		animation-fill-mode: forwards;
 	}
 
@@ -229,7 +247,7 @@
 		position: absolute;
 		top: 4.2rem;
 		left: calc(50% + 60px);
-		animation: moveLeft 2s;
+		animation: moveLeft var(--slider-delay);
 		animation-fill-mode: forwards;
 	}
 
