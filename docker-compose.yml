@@ -15,7 +15,7 @@ services:
       - network
     volumes:
       - static-files:/static
-      - media-files:/media
+      - media-files:/app/media
       - ssl-keys:/ssl
     env_file:
       - .env
