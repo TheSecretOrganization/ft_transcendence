@@ -37,17 +37,6 @@ body {
 	display: grid;
 }
 
-.list-group-item {
-	padding: 10px;
-	cursor: pointer;
-	text-align: center;
-}
-
-.list-group-item.active {
-	background-color: #007bff;
-	color: white;
-}
-
 #page-container-wrapper {
 	position: relative;
 }
