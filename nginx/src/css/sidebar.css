@@ -2,7 +2,7 @@
 #sidebar {
 	box-sizing: border-box;
 	height: calc(100vh - 4.2rem);
-	width: 16rem;
+	width: 24rem;
 	padding: 0.25rem 1em;
 	background-color: var(--base-clr);
 	border-right: 1px solid var(--line-clr);
@@ -17,8 +17,8 @@
 
 /* Sidebar Closed State */
 #sidebar.close {
-	padding: 5px;
-	width: 60px;
+	padding: 0.25rem;
+	width: var(--sidebar-width);
 }
 
 /* Sidebar List */
@@ -31,7 +31,6 @@
 #sidebar>ul>li:first-child {
 	display: flex;
 	justify-content: flex-end;
-	margin-bottom: 16px;
 }
 
 #sidebar>ul>li:first-child .logo {
@@ -118,8 +117,8 @@
 
 /* Adjust Toggle Button Size */
 #toggle-btn {
-	padding: 8.5px;
-	width: 55px;
+	padding: 0.85rem;
+	width: 100%;
 }
 
 /* Rotation Effects */
