@@ -7,10 +7,13 @@
 			<th>Players</th>
 		</tr>
 	</table>
+
+	<button id="lock-btn" class="btn btn-primary hidden" disabled>Lock Tournament</button>
 </div>
 
 <script>
 	const socket = wsConnect(wsCreateUrl("pong_tournament", { "name": "{{ name }}" }), onMessage, exit);
+	const lockBtn = document.getElementById("lock-btn");
 
 	function onMessage(data) {
 		if (data?.type === undefined) {
@@ -20,12 +23,14 @@
 
 		switch (data.type) {
 			case "join": handleJoin(data.content.players); break;
+			case "creator": handleCreator(); break;
 			default: console.error("Invalid message from server ignored."); break;
 		}
 	}
 
 	function handleJoin(players) {
 		const tableBody = document.getElementById("players").getElementsByTagName('tbody')[0];
+		tableBody.innerHTML = '';
 
 		players.forEach(element => {
 			const row = document.createElement('tr');
@@ -36,9 +41,21 @@
 		});
 	}
 
+	function handleCreator() {
+		lockBtn.classList.remove("hidden");
+		lockBtn.disabled = false;
+	}
+
 	function exit() {
 		if (socket)
 			socket.close();
+		route("/tournament");
+	}
+
+	lockBtn.onclick = e => {
+		lockBtn.classList.add("hidden");
+		lockBtn.disabled = true;
+		socket.send(JSON.stringify({ type: "lock" }));
 	}
 </script>
 {% endblock %}
