@@ -1,5 +1,44 @@
 {% extends "./extends/base.html" %}
 
 {% block content %}
+<div class="container">
+	<table id="players">
+		<tr>
+			<th>Players</th>
+		</tr>
+	</table>
+</div>
 
+<script>
+	const socket = wsConnect(wsCreateUrl("pong_tournament", { "name": "{{ name }}" }), onMessage, exit);
+
+	function onMessage(data) {
+		if (data?.type === undefined) {
+			console.error("Invalid message from server ignored.");
+			return;
+		}
+
+		switch (data.type) {
+			case "join": handleJoin(data.content.players); break;
+			default: console.error("Invalid message from server ignored."); break;
+		}
+	}
+
+	function handleJoin(players) {
+		const tableBody = document.getElementById("players").getElementsByTagName('tbody')[0];
+
+		players.forEach(element => {
+			const row = document.createElement('tr');
+			const player = document.createElement('td');
+			player.textContent = element;
+			row.appendChild(player);
+			tableBody.appendChild(row);
+		});
+	}
+
+	function exit() {
+		if (socket)
+			socket.close();
+	}
+</script>
 {% endblock %}

@@ -315,3 +315,55 @@ class PongGame(AsyncWebsocketConsumer):
             self.y = 0.4
             self.step = 0.05
             self.move = 0
+
+class PongTournament(AsyncWebsocketConsumer):
+    async def connect(self):
+        query_params = parse_qs(self.scope["query_string"].decode())
+
+        try:
+            self.user = self.scope.get("user")
+            if type(self.user) != get_user_model and self.user.is_anonymous:
+                raise ValueError("Invalid user")
+            self.name = query_params.get("name", [None])[0]
+            if self.name == None:
+                raise ValueError("Missing name")
+            else:
+                logger.info(f"User {self.user.id} is attempting to connect.")
+        except Exception as e:
+            logger.warning(f"Connection refused: {str(e)}")
+            await self.close()
+            return
+
+        await self.accept()
+        self.redis = redis.Redis(host="redis")
+        players =  await self.redis.lrange(f'pong_{self.name}_username', 0, -1)
+        if self.user.username.encode('utf-8') not in players:
+            await self.redis.rpush(f"pong_{self.name}_id", self.user.id)
+            await self.redis.rpush(f"pong_{self.name}_username", self.user.username)
+
+        await self.channel_layer.group_add(self.name, self.channel_name)
+        await self.channel_layer.group_send(self.name, {"type": "join"})
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
+        if hasattr(self, "redis"):
+            await self.redis.close()
+
+        logger.info(f"User {self.scope['user'].id} has disconnected.")
+
+    async def join(self, event):
+        usernames =  await self.redis.lrange(f'pong_{self.name}_username', 0, -1)
+        decoded_usernames = [username.decode('utf-8') for username in usernames]
+        await self.send(text_data=json.dumps({
+            "type": "join",
+            "content": {
+                "players": decoded_usernames
+            }
+        }))
+
+    async def send_message(self, destination="client", msg_type="", args={}):
+        message = {"type": msg_type, "content": args} if msg_type else args
+        if destination == "group":
+            await self.channel_layer.group_send(self.group_name, message)
+        elif destination == "client":
+            await self.send(text_data=json.dumps(message))
