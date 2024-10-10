@@ -74,6 +74,19 @@ def tournament(request):
         need_authentication=True,
     )
 
+def pong_tournament(request, name: str):
+	if not name.isalpha():
+		return JsonResponse({'redirect': '/'}, status=403)
+	return create_response(
+		request=request,
+		template_name='pong_tournament.html',
+		title="Pong Tournament",
+		context={
+			"name": name,
+		},
+		need_authentication=True,
+	)
+
 @require_GET
 def authorize(request: HttpRequest):
 	if (request.user.is_authenticated):

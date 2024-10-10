@@ -1,6 +1,7 @@
 import asyncio
 import json
 import random
+from time import sleep
 import redis.asyncio as redis
 import logging
 from typing import Any, List
@@ -12,7 +13,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 logger = logging.getLogger(__name__)
 
-class Consumer(AsyncWebsocketConsumer):
+class PongGame(AsyncWebsocketConsumer):
     win_goal = 5
 
     async def connect(self):
@@ -242,9 +243,9 @@ class Consumer(AsyncWebsocketConsumer):
         )
 
     async def save_pong_to_db(self, winner):
-        Pong = apps.get_model('games', 'Pong')
+        pong_game = apps.get_model('games', 'PongGame')
         try:
-            await sync_to_async(Pong.objects.create)(
+            await sync_to_async(pong_game.objects.create)(
                 user1=await sync_to_async(get_user_model().objects.get)(id=self.info.players[0]),
                 user2=await sync_to_async(get_user_model().objects.get)(id=self.info.players[1]),
                 score1=self.info.score[0],
@@ -315,3 +316,73 @@ class Consumer(AsyncWebsocketConsumer):
             self.y = 0.4
             self.step = 0.05
             self.move = 0
+
+class PongTournament(AsyncWebsocketConsumer):
+    async def connect(self):
+        query_params = parse_qs(self.scope["query_string"].decode())
+        self.redis = redis.Redis(host="redis")
+
+        try:
+            self.user = self.scope.get("user")
+            if type(self.user) != get_user_model and self.user.is_anonymous:
+                raise ValueError("Invalid user")
+
+            logger.info(f"User {self.user.id} is attempting to connect.")
+            self.name = query_params.get("name", [None])[0]
+            if self.name == None:
+                raise ValueError("Missing name")
+
+            lock = await self.redis.get(f"pong_{self.name}_lock")
+            players =  await self.redis.lrange(f'pong_{self.name}_username', 0, -1)
+            if lock != None and self.user.username.encode('utf-8') not in players:
+                raise ConnectionRefusedError("Tournament is locked")
+
+        except Exception as e:
+            logger.warning(f"Connection refused: {str(e)}")
+            await self.close()
+            return
+
+        await self.accept()
+        await self.channel_layer.group_add(self.name, self.channel_name)
+        if await self.redis.get(f"pong_{self.name}_creator") == None:
+            await self.redis.set(f"pong_{self.name}_creator", self.user.username)
+            await self.send(text_data=json.dumps({"type": "creator"}))
+
+        if self.user.username.encode('utf-8') not in players:
+            await self.redis.rpush(f"pong_{self.name}_id", self.user.id)
+            await self.redis.rpush(f"pong_{self.name}_username", self.user.username)
+
+        await self.channel_layer.group_send(self.name, {"type": "join"})
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(self.name, self.channel_name)
+        if hasattr(self, "redis"):
+            await self.redis.close()
+
+        logger.info(f"User {self.scope['user'].id} has disconnected.")
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+
+        try:
+            msg_type = data.get("type")
+            if not msg_type:
+                raise AttributeError("Missing 'type'")
+
+            logger.debug(f"Received '{msg_type}' message from user {self.scope['user'].id}.")
+            match msg_type:
+                case "lock":
+                    await self.lock()
+                case _:
+                    raise ValueError("Unknown 'type' in data")
+        except Exception as e:
+            logger.warning(f"Invalid message received from user {self.scope['user'].id}: {str(e)}")
+            await self.send_error("Invalid message")
+
+    async def join(self, event):
+        usernames =  await self.redis.lrange(f'pong_{self.name}_username', 0, -1)
+        decoded_usernames = [username.decode('utf-8') for username in usernames]
+        await self.send(text_data=json.dumps({"type": "join", "content": {"players": decoded_usernames}}))
+
+    async def lock(self):
+        await self.redis.set(f"pong_{self.name}_lock", 1)
