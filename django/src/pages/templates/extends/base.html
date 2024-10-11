@@ -92,6 +92,8 @@
 
 {% if user.is_authenticated %}
 <script>
+	let currentChatRoom = 'General';
+
 	if (!window.chatSocket) {
 		window.chatSocket = wsConnect(wsCreateUrl(`chat/General/`), handleOnMessage, handleOnError);
 		window.chatSocket.onopen = function () {
@@ -111,23 +113,40 @@
 		};
 
 		document.getElementById('chat-title').textContent = `Private Chat with ${otherUsername}`;
+		currentChatRoom = roomName;
 	}
 
-	function joinPrivateChat(otherUsername) {
+	window.joinGeneralChat = function () {
 		if (window.chatSocket) {
 			window.chatSocket.close();
 		}
-
-		// Ouvrir la WebSocket pour la conversation privée
-		window.chatSocket = wsConnect(wsCreateUrl(`chat/private/${otherUsername}`), handleOnMessage, handleOnError);
+		window.chatSocket = wsConnect(wsCreateUrl(`chat/General/`), handleOnMessage, handleOnError);
 
 		window.chatSocket.onopen = function () {
-			loadChatHistory(`private_chat_${otherUsername}`);
+			loadChatHistory('General');
+		};
+
+		document.getElementById('chat-title').textContent = 'Room: General';
+		currentChatRoom = 'General';
+		const notificationArea = document.getElementById('notification-area');
+		notificationArea.innerHTML = '';
+	}
+
+	window.joinPrivateChat = function (otherUsername) {
+		const roomName = `private_chat_${otherUsername}`;
+		if (currentChatRoom === roomName) {
+			return;
+		}
+		if (window.chatSocket) {
+			window.chatSocket.close();
+		}
+		window.chatSocket = wsConnect(wsCreateUrl(`chat/private/${otherUsername}/`), handleOnMessage, handleOnError);
+		window.chatSocket.onopen = function () {
+			loadChatHistory(roomName);
 		};
 
 		document.getElementById('chat-title').textContent = `Private Chat with ${otherUsername}`;
-
-		// Supprimer la notification une fois que la conversation a été rejointe
+		currentChatRoom = roomName;
 		const notificationArea = document.getElementById('notification-area');
 		notificationArea.innerHTML = '';
 	}
@@ -141,7 +160,9 @@
 				displayChatHistory(data.messages);
 				break;
 			case 'private_message_notification':
-				showPrivateChatNotification(data.from_user);
+				if (currentChatRoom !== `private_chat_${data.from_user}`) {
+					showPrivateChatNotification(data.from_user);
+				}
 				break;
 			default:
 				handleDefault(data);
@@ -160,14 +181,19 @@
 		users.forEach(user => {
 			const userItem = document.createElement('li');
 			userItem.classList.add('user-item');
-			userItem.textContent = user;
 
 			if (user !== "{{ user }}") {
+				userItem.textContent = user;
 				const privateChatButton = document.createElement('button');
 				privateChatButton.textContent = "PM";
 				privateChatButton.addEventListener('click', () => startPrivateChat(user));
-
 				userItem.appendChild(privateChatButton);
+			} else {
+				userItem.textContent = 'General Chat';
+				const generalChatButton = document.createElement('button');
+				generalChatButton.textContent = "GC";
+				generalChatButton.addEventListener('click', () => joinGeneralChat());
+				userItem.appendChild(generalChatButton);
 			}
 
 			userList.appendChild(userItem);
@@ -193,14 +219,12 @@
 
 	function showPrivateChatNotification(fromUser) {
 		const notificationArea = document.getElementById('notification-area');
-
 		const notificationDiv = document.createElement('div');
 		notificationDiv.classList.add('notification');
 		notificationDiv.innerHTML = `
-        <p>Message privé de ${fromUser}</p>
-        <button onclick="joinPrivateChat('${fromUser}')">Voir la conversation</button>
+        <p>Private message from ${fromUser}</p>
+        <button onclick="joinPrivateChat('${fromUser}')">Show</button>
     	`;
-
 		notificationArea.appendChild(notificationDiv);
 	}
 
