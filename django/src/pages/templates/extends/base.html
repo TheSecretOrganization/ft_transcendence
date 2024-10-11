@@ -54,7 +54,9 @@
 	{% if user.is_authenticated %}
 	<div id="notification-area"></div>
 	<div id="chat-wrapper">
-		<button id="chat-button">💬</button>
+		<button id="chat-button" class="icon-chat-button">
+			<i class="fa-solid fa-message" style="font-size: 30px;"></i>
+		</button>
 		<div id="chat-container" class="toggled">
 			<div id="chat-title">Room: <span id="room-name">General</span></div>
 			<div id="chat-log"></div>
