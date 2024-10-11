@@ -54,8 +54,8 @@
 	{% if user.is_authenticated %}
 	<div id="notification-area"></div>
 	<div id="chat-wrapper">
-		<button id="chat-button" class="icon-chat-button">
-			<i class="fa-solid fa-message" style="font-size: 30px;"></i>
+		<button id="chat-button" class="anim-chat-button">
+			<i class="fa-solid fa-message icon-msg" style="font-size: 30px;"></i>
 		</button>
 		<div id="chat-container" class="toggled">
 			<div id="chat-title">Room: <span id="room-name">General</span></div>
@@ -65,7 +65,7 @@
 				<button type="submit" id="chat-send-btn">Send</button>
 			</form>
 			<div id="users-wrapper">
-				<h3>Users Online</h3>
+				<h6>Users Online</h6>
 				<ul id="user-list"></ul>
 			</div>
 		</div>
