@@ -7,6 +7,7 @@
 	--text-clr: #000;
 	--accent-clr: #470d0d;
 	--secondary-text-clr: #000;
+	--selection-clr: #257AFD;
 
 	--navbar-height: 4.2rem;
 	--sidebar-width: 6rem;
@@ -57,4 +58,9 @@ body {
 	overflow-y: auto;
 	display: flex;
 	width: 100%;
+}
+
+a:focus {
+	border: 0.1rem solid var(--selection-clr) !important;
+	border-radius: 0.3rem !important;
 }
