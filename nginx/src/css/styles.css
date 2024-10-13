@@ -1,3 +1,12 @@
+:root {
+	--base-clr: #f3e2f0;
+	--line-clr: #b21313;
+	--hover-clr: #dfbac8;
+	--text-clr: #000;
+	--accent-clr: #470d0d;
+	--secondary-text-clr: #000;
+}
+
 html {
 	box-sizing: border-box;
 	font-size: 100%;
