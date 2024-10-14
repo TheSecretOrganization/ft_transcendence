@@ -1,26 +1,30 @@
 {% extends "./extends/base.html" %}
 
 {% block content %}
-<div class="container">
-	<div game-menu="main">
-		<a class="btn btn-primary text-decoration-none" data-route href="/pong/local">Local Game</a>
-		<button class="btn btn-danger" menu-id="online">Online Play</button>
-	</div>
+<div class="container-fluid d-flex vh-70">
+	<div class="row justify-content-center align-items-center w-100">
+		<div class="col-12 col-md-6" id="main-pong-column">
+			<div game-menu="main" class="row">
+				<a class="btn btn-lg btn-primary text-decoration-none mb-4" data-route href="/pong/local">Local Game</a>
+				<button class="btn btn-lg btn-danger mt-4" menu-id="online">Online Play</button>
+			</div>
 
-	<div game-menu="online">
-		<a class="btn btn-primary text-decoration-none" data-route href="/pong/online">Create a Room</a>
-		<button class="btn btn-danger text-decoration-none" menu-id="join">Join a Room</button>
-		<a class="btn btn-warning text-decoration-none" data-route href="/tounament/pong">Join a Tournament</a>
-	</div>
+			<div game-menu="online" class="row">
+				<a class="btn btn-primary text-decoration-none" data-route href="/pong/online">Create a Room</a>
+				<button class="btn btn-danger text-decoration-none" menu-id="join">Join a Room</button>
+				<a class="btn btn-warning text-decoration-none" data-route href="/tounament/pong">Join a Tournament</a>
+			</div>
 
-	<div game-menu="join">
-		<form class="form-group" id="join-form">
-			<input class="form-control" type="text" id="join-id" placeholder="Room Id">
-			<button type="submit" class="btn btn-primary">Join</button>
-		</form>
-	</div>
+			<div game-menu="join" class="row">
+				<form class="form-group" id="join-form">
+					<input class="form-control" type="text" id="join-id" placeholder="Room Id">
+					<button type="submit" class="btn btn-primary">Join</button>
+				</form>
+			</div>
 
-	<button class="btn btn-success" id="back-btn" menu-id="main">Back</button>
+			<button class="btn btn-success" id="back-btn" menu-id="main">Back</button>
+		</div>
+	</div>
 </div>
 
 <script>
