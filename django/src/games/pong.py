@@ -73,12 +73,13 @@ class Consumer(AsyncWebsocketConsumer):
         self.connected = False
 
         if self.host:
+            players =  await self.redis.lrange(f'pong_{self.room_id}_id', 0, -1)
             if hasattr(self, "game_task"):
                 self.game_task.cancel()
             await self.redis.delete(self.room_id)
-            await self.redis.delete(self.room_id)
+            await self.redis.delete(f'pong_{self.room_id}_id')
             logger.info(f"Room {self.room_id} has been closed by the host.")
-            if self.mode == "online":
+            if self.mode == "online" and len(players) == 2:
                 if not hasattr(self, "winner"):
                     self.punish_coward(self.info.creator)
                 await self.save_pong_to_db(self.winner)
