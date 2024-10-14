@@ -39,3 +39,25 @@
 .dropdown-toggle::after {
 	display: none;
 }
+
+#notif-button {
+	margin: auto;
+    background-color: transparent;
+	font-size: 20px;
+	border: none;
+	color:#f3e2f0;
+}
+
+.notif-hidden {
+	display: none;
+}
+
+#notification-area {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f9f9f9;
+    width: 200px;
+    position: absolute;
+    top: 50px;
+    right: 20px;
+}

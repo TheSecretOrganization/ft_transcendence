@@ -2,11 +2,15 @@
 	<nav class="navbar">
 		<a class="navbar-brand nav navbar-nav navbar-left link-info text-decoration-none" data-route href="/">Johnny Depp</a>
 		{% if user.is_authenticated %}
+		<button id="notif-button">
+			<i id="icon-notif" class="fa-solid fa-bell"></i>
+		</button>
+		<div id="notification-area" class = "notif-hidden"></div>
 		<div class="container-dropdown">
 			<div class="dropdown">
 				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-					data-bs-toggle="dropdown" aria-expanded="false">
-					{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
+				data-bs-toggle="dropdown" aria-expanded="false">
+				{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
 				</button>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
 					<li><a class="dropdown-item" data-route href="#">Profile</a></li>
@@ -16,8 +20,8 @@
 					</li>
 					<li><button id="logout-button-navbar" class="dropdown-item fw-bold">Log out <span
 								class="glyphicon glyphicon-log-out"></span></button></li>
-				</ul>
-			</div>
+							</ul>
+						</div>
 		</div>
 		{% else %}
 		<ul id="navbar-list"
@@ -25,14 +29,14 @@
 			<li class="m-2"><a class="btn btn-sm btn-success rounded-pill rounded-5" data-route href="/login"><span
 						class="glyphicon glyphicon-log-in"></span> Login</a></li>
 			<li class="m-2"><a class="btn btn-sm btn-outline-success rounded-pill rounded-5" data-route
-					href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
-		</ul>
-		{% endif %}
-	</nav>
-</div>
-
-<aside id="sidebar" class="close">
-	<ul>
+				href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+			</ul>
+			{% endif %}
+		</nav>
+	</div>
+	
+	<aside id="sidebar" class="close">
+		<ul>
 		<li>
 			<button id="toggle-btn" class="rotate">
 				<img draggable="false" src="/assets/double-arrow.svg" alt="double arrow icon">
@@ -103,28 +107,26 @@
 	<div id="main-content">
 		{% block content %}{% endblock %}
 	</div>
-	{% if user.is_authenticated %}
-	<div id="notification-area"></div>
-	<div id="chat-wrapper">
-		<button id="chat-button" class="anim-chat-button">
-			<i class="fa-solid fa-message icon-msg" style="font-size: 30px;"></i>
-		</button>
-		<div id="chat-container" class="toggled">
-			<div id="chat-title">Room: <span id="room-name">General</span></div>
-			<div id="chat-log"></div>
-			<form id="chat-form">
-				<input id="chat-input" type="text" placeholder="Type your message here..." />
-				<button type="submit" id="chat-send-btn">Send</button>
-			</form>
-			<div id="users-wrapper">
-				<h6>Users Online</h6>
-				<ul id="user-list"></ul>
-			</div>
+</div>
+{% if user.is_authenticated %}
+<div id="chat-wrapper">
+	<button id="chat-button" class="anim-chat-button">
+		<i class="fa-solid fa-message icon-msg" style="font-size: 40px;"></i>
+	</button>
+	<div id="chat-container" class="toggled">
+		<div id="chat-title">Room: <span id="room-name">General</span></div>
+		<div id="chat-log"></div>
+		<form id="chat-form">
+			<input id="chat-input" type="text" placeholder="Type your message here..." autocomplete="off"/>
+			<button type="submit" id="chat-send-btn">Send</button>
+		</form>
+		<div id="users-wrapper">
+			<h6>Users Online</h6>
+			<ul id="user-list"></ul>
 		</div>
 	</div>
-	{% endif %}
 </div>
-
+{% endif %}
 <script>
 	document.getElementById("toggle-btn").onclick = function (e) {
 		toggleSidebar();
@@ -159,6 +161,7 @@
 {% if user.is_authenticated %}
 <script>
 	let currentChatRoom = 'General';
+	let blockedUsers = [];
 
 	if (!window.chatSocket) {
 		window.chatSocket = wsConnect(wsCreateUrl(`chat/General/`), handleOnMessage, handleOnError);
@@ -168,6 +171,10 @@
 	}
 
 	function startPrivateChat(otherUsername) {
+		if (blockedUsers.includes(otherUsername)) {
+			alert(`You have blocked ${otherUsername}. Unblock them to start a private chat.`);
+			return;
+		}
 		const roomName = `private_chat_${otherUsername}`;
 		if (window.chatSocket) {
 			window.chatSocket.close();
@@ -248,10 +255,28 @@
 			const userItem = document.createElement('li');
 			userItem.classList.add('user-item');
 
+			const usernameLink = document.createElement('a');
+        	usernameLink.textContent = user;
+        	usernameLink.href = `/profile/${user}`;
+			usernameLink.target = "_blank";
+			userItem.appendChild(usernameLink);
+
 			if (user !== "{{ user }}") {
-				userItem.textContent = user;
+				const blockButton = document.createElement('button');
+				blockButton.textContent = blockedUsers.includes(user) ? "Unblock" : "Block";
+				blockButton.addEventListener('click', () => {
+					toggleBlockUser(user);
+					blockButton.textContent = blockedUsers.includes(user) ? "Unblock" : "Block";
+				});
+				userItem.appendChild(blockButton);
+
 				const privateChatButton = document.createElement('button');
 				privateChatButton.textContent = "PM";
+				if (blockedUsers.includes(user)) {
+					privateChatButton.disabled = true;
+				} else {
+					privateChatButton.disabled = false;
+				}
 				privateChatButton.addEventListener('click', () => startPrivateChat(user));
 				userItem.appendChild(privateChatButton);
 			} else {
@@ -284,13 +309,25 @@
 	}
 
 	function showPrivateChatNotification(fromUser) {
+		if (blockedUsers.includes(fromUser)) {
+			console.log(`Notification from ${fromUser} ignored because they are blocked.`);
+			return;
+		}
+		const notifIcon = document.getElementById('icon-notif');
+    	notifIcon.classList.remove('fa-solid', 'fa-bell');
+    	notifIcon.classList.add('fa-solid', 'fa-bell', 'fa-spin-pulse'); 
 		const notificationArea = document.getElementById('notification-area');
+		document.getElementById('notif-button').addEventListener('click', function() {
+			notifIcon.classList.remove('fa-solid', 'fa-bell', 'fa-spin-pulse');
+			notifIcon.classList.add('fa-solid', 'fa-bell');
+			notificationArea.classList.toggle('notif-hidden');
+		});
 		const notificationDiv = document.createElement('div');
 		notificationDiv.classList.add('notification');
 		notificationDiv.innerHTML = `
-        <p>Private message from ${fromUser}</p>
-        <button onclick="joinPrivateChat('${fromUser}')">Show</button>
-    	`;
+			<p>Private message from ${fromUser}</p>
+			<button onclick="joinPrivateChat('${fromUser}')">Show</button>
+		`;
 		notificationArea.appendChild(notificationDiv);
 	}
 
@@ -298,7 +335,11 @@
 		const chatLog = document.getElementById('chat-log');
 		const newMessageDiv = document.createElement('div');
 		newMessageDiv.classList.add('message', data.username === "{{ user }}" ? 'self' : 'other');
-		newMessageDiv.innerHTML = `<strong>${data.username}:</strong> ${data.message}`;
+		const linkRegex = /https?:\/\/[a-zA-Z0-9.-:]+(?:\/[^\s]*)?/g;
+    	const formattedMessage = data.message.replace(linkRegex, (url) => {
+        return `<a href="${url}" target="_blank">${url}</a>`;
+    	});
+		newMessageDiv.innerHTML = `<strong>${data.username}:</strong> ${formattedMessage}`;
 		chatLog.appendChild(newMessageDiv);
 		chatLog.scrollTop = chatLog.scrollHeight;
 	}
@@ -312,10 +353,23 @@
 		}
 	}
 
+	function toggleBlockUser(user) {
+		if (blockedUsers.includes(user)) {
+			blockedUsers = blockedUsers.filter(u => u !== user);
+		} else {
+			blockedUsers.push(user);
+		}
+	}
+
 	document.getElementById("chat-form").addEventListener("submit", e => {
 		e.preventDefault();
 		const messageInput = document.getElementById('chat-input');
 		const message = messageInput.value.trim();
+		const otherUsername = currentChatRoom.split('private_chat_')[1];
+    	if (otherUsername && blockedUsers.includes(otherUsername)) {
+        	alert(`You have blocked ${otherUsername}. Unblock them to send messages.`);
+        	return;
+    }
 		if (window.chatSocket && window.chatSocket.readyState === WebSocket.OPEN && message) {
 			window.chatSocket.send(JSON.stringify({
 				'message': message,
