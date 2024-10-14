@@ -1,7 +1,6 @@
 import asyncio
 import json
 import random
-from time import sleep
 import redis.asyncio as redis
 import logging
 from typing import Any, List
@@ -380,6 +379,8 @@ class Tournament(AsyncWebsocketConsumer):
             match msg_type:
                 case "lock":
                     await self.lock()
+                case "mix":
+                    await self.mix()
                 case _:
                     raise ValueError("Unknown 'type' in data")
         except Exception as e:
@@ -389,7 +390,21 @@ class Tournament(AsyncWebsocketConsumer):
     async def join(self, event):
         usernames =  await self.redis.lrange(f'pong_{self.name}_username', 0, -1)
         decoded_usernames = [username.decode('utf-8') for username in usernames]
-        await self.send(text_data=json.dumps({"type": "join", "content": {"players": decoded_usernames}}))
+        await self.send(text_data=json.dumps({"type": "join", "players": decoded_usernames}))
 
     async def lock(self):
         await self.redis.set(f"pong_{self.name}_lock", 1)
+        usernames =  await self.redis.lrange(f'pong_{self.name}_username', 0, -1)
+        self.players = [username.decode('utf-8') for username in usernames]
+
+    async def mix(self):
+        random.shuffle(self.players)
+        self.last_player = None
+        if len(self.players) % 2 != 0:
+            self.last_player = self.players.pop()
+
+        pairs = [(self.players[i], self.players[i + 1]) for i in range(0, len(self.players), 2)]
+        if self.last_player:
+            pairs.append((self.last_player, 'bye'))
+
+        await self.send(text_data=json.dumps({"type": "mix", "pairs": pairs}))

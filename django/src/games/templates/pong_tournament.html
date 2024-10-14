@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="container">
+	<p>Tournament name: {{ name }}</p>
 	<table id="players" class="table table-striped table-bordered">
 		<thead>
 			<tr>
@@ -12,11 +13,13 @@
 	</table>
 
 	<button id="lock-btn" class="btn btn-primary hidden" disabled>Lock</button>
+	<button id="mix-btn" class="btn btn-success hidden" disabled>Mix</button>
 </div>
 
 <script>
 	const socket = wsConnect(wsCreateUrl("pong_tournament", { "name": "{{ name }}" }), onMessage, exit);
 	const lockBtn = document.getElementById("lock-btn");
+	const mixBtn = document.getElementById("mix-btn");
 	const playersTbl = document.getElementById("players");
 
 	function onMessage(data) {
@@ -26,8 +29,9 @@
 		}
 
 		switch (data.type) {
-			case "join": handleJoin(data.content.players); break;
+			case "join": handleJoin(data.players); break;
 			case "creator": handleCreator(); break;
+			// case "mix": handleMix(data.pairs); break;
 			default: console.error("Invalid message from server ignored."); break;
 		}
 	}
@@ -50,6 +54,10 @@
 		lockBtn.disabled = false;
 	}
 
+	// function handleMix(pairs) {
+
+	// }
+
 	function exit(reroute = true) {
 		if (socket)
 			socket.close();
@@ -62,7 +70,7 @@
 		e.srcElement.removeEventListener('pagechange', onPageChange);
 	}
 
-	lockBtn.onclick = e => {
+	lockBtn.onclick = () => {
 		const tableBody = document.querySelector("#players tbody");
 		const rowCount = tableBody.rows.length;
 		if (rowCount < 2) {
@@ -72,6 +80,14 @@
 		lockBtn.classList.add("hidden");
 		lockBtn.disabled = true;
 		socket.send(JSON.stringify({ type: "lock" }));
+		mixBtn.classList.remove("hidden");
+		mixBtn.disabled = false;
+	}
+
+	mixBtn.onclick = () => {
+		mixBtn.classList.add("hidden");
+		mixBtn.disabled = true;
+		socket.send(JSON.stringify({ type: "mix" }));
 	}
 
 	document.getElementById('content').addEventListener('pagechange', onPageChange);
