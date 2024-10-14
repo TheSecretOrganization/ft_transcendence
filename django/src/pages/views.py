@@ -1,3 +1,4 @@
+import re
 from uuid import uuid4
 from django.db.models import Q
 from django.views.decorators.http import require_GET
@@ -51,6 +52,11 @@ def pong_local(request):
 
 @require_GET
 def pong_online(request, id=None):
+	uuid_regex = re.compile(r'^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$', re.IGNORECASE)
+
+	if id != None and not uuid_regex.match(str(id)):
+		return JsonResponse({'redirect': '/'}, status=403)
+
 	return create_response(
 		request=request,
 		template_name='pong_game.html',
