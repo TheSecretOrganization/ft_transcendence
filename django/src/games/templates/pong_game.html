@@ -148,7 +148,10 @@
 	}
 
 	function sliceAndUpdate(prefix) {
-		const pathname = window.location.pathname;
+		let pathname = window.location.pathname;
+		if (pathname.endsWith('/')) {
+			pathname = pathname.slice(0, -1);
+		}
 
 		if (pathname.startsWith(prefix)) {
 			const term = pathname.slice(prefix.length);
