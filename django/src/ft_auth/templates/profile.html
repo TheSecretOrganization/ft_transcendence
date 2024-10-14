@@ -9,7 +9,7 @@
 				<img src="{{ user.avatar.url }}" alt="User Profile Picture">
 			</div>
 			<div class="edit-icon">
-				<button class="edit-button">
+				<button id="edit-avatar-button" class="edit-button">
 					<i class="fas fa-pen"></i>
 				</button>
 			</div>
@@ -18,20 +18,54 @@
 	<hr class="profile-divider">
 	<div class="profile-content">
 		<div class="username-container">
-			<span class="username">{{ user.username }}</span>
+			<span class="username">{{ user.username }}<span>
 		</div>
-		<div class="password-container">
-			<div class="password-wrapper">
-				<span class="password">●●●●●●●●</span>
-				<div class="password-edit-icon">
-					<button class="edit-button">
-						<i class="fas fa-pen"></i>
-					</button>
-				</div>
-			</div>
-		</div>
+		<hr class="profile-divider">
+		<form class="form-floating row">
+			<input type="password" class="form-control password-container" id="password" placeholder="Current password"
+				value="">
+			<label for="password">Current Password</label>
+		</form>
+		<form class="form-floating row">
+			<input type="password" class="form-control password-container" id="password" placeholder="New password"
+				value="">
+			<label for="password">New Password</label>
+		</form>
+		<form class="form-floating row">
+			<input type="password" class="form-control password-container" id="password"
+				placeholder="Confirm new password" value="">
+			<label for="password">Confirm New Password</label>
+		</form>
 	</div>
 </div>
 
-<!-- <h1>{{ user.username }}'s Profile</h1>
+<div id="avatarModal" class="modal-overlay" style="display:none;">
+	<div class="modal-content">
+		<button type="button" class="close-button" id="closeModalBtn">&times;</button>
+		<h2>Upload New Avatar</h2>
+		<form id="avatarForm" enctype="multipart/form-data">
+			{% csrf_token %}
+			<input type="file" name="avatar" accept="image/*" required>
+			<button type="submit">Upload</button>
+		</form>
+	</div>
+</div>
+
+<script>
+	// Show modal
+	function showModal() {
+		const modal = document.getElementById('avatarModal');
+		modal.style.display = 'block';
+	}
+
+	// Hide modal
+	function hideModal() {
+		const modal = document.getElementById('avatarModal');
+		modal.style.display = 'none';
+	}
+
+	document.getElementById('edit-avatar-button').onclick = showModal;
+	document.getElementById('closeModalBtn').onclick = hideModal;
+</script>
+
 {% endblock %}
