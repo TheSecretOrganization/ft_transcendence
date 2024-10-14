@@ -352,6 +352,8 @@ class Tournament(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.name, self.channel_name)
         if await self.redis.get(f"pong_{self.name}_creator") == None:
             await self.redis.set(f"pong_{self.name}_creator", self.user.username)
+
+        if await self.redis.get(f"pong_{self.name}_creator") == self.user.username.encode("utf-8") and lock == None:
             await self.send(text_data=json.dumps({"type": "creator"}))
 
         if self.user.username.encode('utf-8') not in players:
