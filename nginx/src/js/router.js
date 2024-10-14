@@ -1,5 +1,8 @@
 
+const content = document.getElementById('content');
+
 function route(url) {
+	window.last_route = window.location.pathname;
 	window.history.pushState({}, "", url);
 	handleLocation();
 }
@@ -38,6 +41,7 @@ function updateActiveRoute(path) {
 
 async function handleLocation() {
 	resetEvents();
+	content.dispatchEvent(new Event("pagechange"));
 	let path = window.location.pathname;
 	let pageName = path === '/' ? 'index' : path.substring(1);
 	let html = await fetchPage(pageName);
@@ -45,7 +49,6 @@ async function handleLocation() {
 		html = await fetchPage('404');
 	}
 
-	const content = document.getElementById("content");
 	content.innerHTML = html;
 	content.querySelectorAll('script').forEach(script => eval(script.textContent));
 	updateActiveRoute(path);

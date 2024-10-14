@@ -1,9 +1,14 @@
 from uuid import uuid4
+from django.db.models import Q
 from django.views.decorators.http import require_GET
 from django.http import JsonResponse, HttpRequest
 from django.template.loader import get_template
 from urllib.parse import quote
+from friends.models import Friend
+from logging import getLogger
 import os
+
+logger = getLogger(__name__)
 
 def create_response(
 		request: HttpRequest,
@@ -13,11 +18,13 @@ def create_response(
 		title: str|None = None
 		):
 	if need_authentication and not request.user.is_authenticated:
+		logger.warning(f"anonymous requested page {template_name} without auth.")
 		return JsonResponse({'error': 'Need authentication', 'redirect': '/login'}, status=403)
 	content = {}
 	content['html'] = get_template(template_name).render(context, request)
 	if title:
 		content['title'] = title
+	logger.info(f"{request.user.username if request.user.is_authenticated else 'anonymous'} requested {template_name}")
 	return JsonResponse(content, status=200)
 
 @require_GET
@@ -57,29 +64,35 @@ def pong_online(request, id=None):
 	)
 
 @require_GET
-def login(request: HttpRequest):
-	if (request.user.is_authenticated):
-		return JsonResponse({'redirect': '/'}, status=403)
-	return create_response(request, 'login.html', {
-		'oauth_url': (f"https://api.intra.42.fr/oauth/authorize?client_id={os.getenv('OAUTH_UID')}"
-		  f"&redirect_uri={quote(os.getenv('OAUTH_FALLBACK'))}&response_type=code")
-	}, title='Login')
-
-@require_GET
-def register(request: HttpRequest):
-	if (request.user.is_authenticated):
-		return JsonResponse({'redirect': '/'}, status=403)
-	return create_response(request, 'register.html', title='Register')
-
-@require_GET
 def authorize(request: HttpRequest):
 	if (request.user.is_authenticated):
+		logger.warning(f"{request.user.username} tried to access to authorize page.")
 		return JsonResponse({'redirect': '/'}, status=403)
 	return create_response(request, 'authorize.html')
 
 @require_GET
+def friends(request: HttpRequest):
+	if not request.user.is_authenticated:
+		logger.warning("anonymous tried to access to friends page.")
+		return JsonResponse({'error': 'Need authentication', 'redirect': '/login'}, status=403)
+	friends = Friend.objects.filter(Q(origin=request.user) | Q(target=request.user), status__in=[1, 2])
+	for friend in friends:
+		friend.other_user = friend.other(request.user)
+	return create_response(request, 'friends.html', {'friends': friends}, True, 'Friends')
+
+@require_GET
 def error_404(request):
 	return create_response(request, '404.html', title="Page not found")
+
+@require_GET
+def authentification(request: HttpRequest):
+	if (request.user.is_authenticated):
+		logger.warning(f"{request.user.username} tried to access to auth page.")
+		return JsonResponse({'redirect': '/'}, status=403)
+	return create_response(request, 'authentification.html', {
+		'oauth_url': (f"https://api.intra.42.fr/oauth/authorize?client_id={os.getenv('OAUTH_UID')}"
+		  f"&redirect_uri={quote(os.getenv('OAUTH_FALLBACK'))}&response_type=code"),
+	}, title='Authentification')
 
 @require_GET
 def profile(request: HttpRequest):
