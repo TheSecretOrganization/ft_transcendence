@@ -9,7 +9,7 @@
 	--secondary-text-clr: #000;
 	--selection-clr: #257AFD;
 
-	--navbar-height: 4.2rem;
+	--navbar-height: 4.5rem;
 	--sidebar-width: 6rem;
 }
 
@@ -49,7 +49,7 @@ body {
 #content-wrapper {
 	display: flex;
 	width: calc(100vw - 60px);
-	min-height: calc(100vh - 4.2rem);
+	min-height: calc(100vh - var(--navbar-height));
 	padding-left: 60px;
 }
 

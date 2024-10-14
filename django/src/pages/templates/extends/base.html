@@ -26,17 +26,17 @@
 		{% else %}
 		<ul id="navbar-list"
 			class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
-			<li class="m-2"><a class="btn btn-sm btn-success rounded-pill rounded-5" data-route href="/login"><span
+			<li class="m-2"><a class="btn btn btn-success rounded-pill rounded-5" data-route href="/login"><span
 						class="glyphicon glyphicon-log-in"></span> Login</a></li>
-			<li class="m-2"><a class="btn btn-sm btn-outline-success rounded-pill rounded-5" data-route
-				href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
-			</ul>
-			{% endif %}
-		</nav>
-	</div>
-	
-	<aside id="sidebar" class="close">
-		<ul>
+			<li class="m-2"><a class="btn btn btn-outline-success rounded-pill rounded-5" data-route
+					href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+		</ul>
+		{% endif %}
+	</nav>
+</div>
+
+<aside id="sidebar" class="close">
+	<ul>
 		<li>
 			<button id="toggle-btn" class="rotate">
 				<img draggable="false" src="/assets/double-arrow.svg" alt="double arrow icon">
@@ -60,12 +60,6 @@
 						<a data-route href="/pong" tabindex="-1">
 							<img draggable="false" src="/assets/pong-racket.svg" alt="racket icon">
 							<span>PONG</span>
-						</a>
-					</li>
-					<li>
-						<a data-route href="/tictactoe" tabindex="-1">
-							<img draggable="false" src="/assets/tictactoe.svg" alt="tictactoe icon">
-							<span>TIC-TAC-TOE</span>
 						</a>
 					</li>
 					<li>
