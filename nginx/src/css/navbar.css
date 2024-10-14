@@ -1,6 +1,6 @@
 .navbar {
 	background-color: #424242;
-	height: 4.2rem;
+	height: var(--navbar-height);
 	min-height: 3.75rem;
 	display: flex;
 	flex-direction: row;

@@ -1,13 +1,13 @@
 /* Sidebar Container */
 #sidebar {
 	box-sizing: border-box;
-	height: calc(100vh - 4.2rem);
+	height: calc(100vh - var(--navbar-height));
 	width: 24rem;
 	padding: 0.25rem 1em;
 	background-color: var(--base-clr);
 	border-right: 1px solid var(--line-clr);
 	position: absolute;
-	top: 4.2rem;
+	top: var(--navbar-height);
 	align-self: start;
 	transition: 300ms ease-in-out;
 	overflow: hidden;
