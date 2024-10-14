@@ -139,6 +139,25 @@
 		e.srcElement.removeEventListener('pagechange', onPageChange);
 	}
 
+	function checkAndUpdateUrl() {
+		const localPrefix = '/pong/local';
+		const onlinePrefix = '/pong/online';
+
+		sliceAndUpdate(localPrefix);
+		sliceAndUpdate(onlinePrefix);
+	}
+
+	function sliceAndUpdate(prefix) {
+		const pathname = window.location.pathname;
+
+		if (pathname.startsWith(prefix)) {
+			const term = pathname.slice(prefix.length);
+			if (term.length === 0) {
+				history.pushState(null, '', `${prefix}/{{ room_id }}`);
+			}
+		}
+	}
+
 	function initializeEvents() {
 		readyBtn.addEventListener("click", e => {
 			readyBtn.classList.add("hidden");
@@ -199,5 +218,6 @@
 	}
 
 	initializeEvents();
+	checkAndUpdateUrl();
 </script>
 {% endblock %}
