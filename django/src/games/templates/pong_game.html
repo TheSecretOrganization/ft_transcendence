@@ -134,6 +134,11 @@
 		drawText(text, x, y, color, font);
 	}
 
+	function onPageChange(e) {
+		exit(false);
+		e.srcElement.removeEventListener('pagechange', onPageChange);
+	}
+
 	function initializeEvents() {
 		readyBtn.addEventListener("click", e => {
 			readyBtn.classList.add("hidden");
@@ -170,6 +175,8 @@
 				keyInterval = null;
 			}
 		};
+
+		document.getElementById('content').addEventListener('pagechange', onPageChange);
 
 		if (localGame) {
 			canvas.onclick = () => {
