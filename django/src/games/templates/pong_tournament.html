@@ -46,10 +46,16 @@
 		lockBtn.disabled = false;
 	}
 
-	function exit() {
+	function exit(reroute=true) {
 		if (socket)
 			socket.close();
-		route("/tournament");
+		if (reroute)
+			route("/tournament");
+	}
+
+	function onPageChange(e) {
+		exit(false);
+		e.srcElement.removeEventListener('pagechange', onPageChange);
 	}
 
 	lockBtn.onclick = e => {
@@ -57,5 +63,7 @@
 		lockBtn.disabled = true;
 		socket.send(JSON.stringify({ type: "lock" }));
 	}
+
+	document.getElementById('content').addEventListener('pagechange', onPageChange);
 </script>
 {% endblock %}
