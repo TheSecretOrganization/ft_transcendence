@@ -1,15 +1,21 @@
 .profile-container {
 	font-family: 'Poppins', sans-serif;
 	text-align: center;
-	border: 3px solid #ccc;
+	background-color: var(--base-clr);
+	box-shadow: 0 4px 5px var(--accent-clr);
+	border: 3px solid var(--line-clr);
 	border-radius: 15px;
-	box-shadow: 0 4px 5px #ccc;
 	padding: 0rem 3rem;
+	max-width: 300px;
+	min-width: 150px;
+	max-height: 450px;
+	min-height: 450px;
+	margin: 5rem auto 0 auto;
 }
 
 .profile-header {
 	display: flex;
-	background-color: #f5f5f5;
+	background-color: var(--base-clr);
 	padding: 2rem;
 	justify-content: center;
 }
@@ -49,15 +55,13 @@
 	position: absolute;
 	bottom: 5px;
 	right: 5px;
-	background: white;
-	border-radius: 50%;
 	padding: 5px;
 	cursor: pointer;
-	z-index: 100;
+	z-index: 1;
 }
 
 .profile-divider {
-	border: 1px solid #ccc;
+	border: 1px solid var(--line-clr);
 	width: 75%;
 	margin: 0.5rem auto;
 }
@@ -75,25 +79,56 @@
 	position: relative;
 	display: flex;
 	justify-content: center;
-	border: 1px solid #ccc;
-	padding: 1rem;
+	border: 1px solid var(--line-clr);
+	background-color: var(--light-base-clr);
+	padding: 2rem;
+	border-radius: 5px;
+}
+
+.username,
+.password {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	max-width: 100%;
+	padding: 0.5rem;
+	font-family: 'Poppins', sans-serif;
+	font-size: 1.5rem;
 }
 
 .password-wrapper {
-	/* position: relative; */
-	display: inline-block;
-	padding-right: 2rem;
+	max-width: 100%;
 }
 
 .password-edit-icon {
 	position: absolute;
 	bottom: -0.8rem;
 	right: -1.6rem;
-	background: white;
-	border-radius: 50%;
 	padding: 5px;
 	cursor: pointer;
 	z-index: 1;
+}
+
+.edit-button {
+	background-color: var(--base-clr);
+	color: var(--accent-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 50%;
+	width: 3rem;
+	height: 3rem;
+	padding: 0;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.edit-button:hover {
+	background-color: var(--hover-clr);
+	color: var(--base-clr);
 }
 
 .username,
