@@ -102,12 +102,15 @@ class Consumer(AsyncWebsocketConsumer):
                 raise AttributeError("Missing 'content'")
 
             logger.debug(f"Received '{msg_type}' message from user {self.scope['user'].id}.")
-            if msg_type == "game_stop":
-                await self.close()
-            elif msg_type in ["game_ready", "game_move"]:
-                await self.send_message("group", args=data)
-            else:
-                raise ValueError("Unknown 'type' in data")
+            match msg_type:
+                case "game_stop":
+                    await self.close()
+                case "game_ready":
+                    await self.send_message("group", args=data)
+                case "game_move":
+                    await self.send_message("group", args=data)
+                case _:
+                    raise ValueError("Unknown 'type' in data")
         except Exception as e:
             logger.warning(f"Invalid message received from user {self.scope['user'].id}: {str(e)}")
             await self.send_error("Invalid message")
