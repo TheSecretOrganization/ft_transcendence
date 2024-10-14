@@ -18,6 +18,7 @@ class Game(AsyncWebsocketConsumer):
 
     async def connect(self):
         self.connected = True
+        self.redis = redis.Redis(host="redis")
 
         try:
             self.user = self.scope.get("user")
@@ -26,7 +27,6 @@ class Game(AsyncWebsocketConsumer):
             else:
                 logger.info(f"User {self.user.id} is attempting to connect.")
 
-            self.redis = redis.Redis(host="redis")
             await self.initialize_game()
         except Exception as e:
             logger.warning(f"Connection refused: {str(e)}")
@@ -35,7 +35,7 @@ class Game(AsyncWebsocketConsumer):
 
         self.valid = True
         await self.accept()
-        await self.channel_layer.group_add(self.group_name, self.channel_name)
+        await self.channel_layer.group_add(self.room_id, self.channel_name)
         logger.info(f"User {self.user.id} successfully connected to room {self.room_id}.")
         await self.send_message("group", "game_join", {"user": self.user.id})
         await self.send_message("client", "game_pad", {"game_pad": self.pad_n})
@@ -46,8 +46,8 @@ class Game(AsyncWebsocketConsumer):
         player_needed = self.check_missing_param(query_params, "player_needed")
         self.room_id = self.check_missing_param(query_params, "room_id")
         self.host = self.check_missing_param(query_params, "host") == "True"
-        self.group_name = f"pong_{self.room_id}"
         self.pad_n = "pad_1" if self.host else "pad_2"
+        players =  await self.redis.lrange(f'pong_{self.room_id}_id', 0, -1)
 
         if self.host:
             self.info = self.Info(
@@ -59,12 +59,16 @@ class Game(AsyncWebsocketConsumer):
             self.pad_1 = self.Pad(True)
             self.pad_2 = self.Pad(False)
             logger.info(f"User {self.user.id} is the host for room {self.room_id}.")
-            await self.redis.set(self.group_name, 1)
+            await self.redis.set(self.room_id, 1)
         else:
-            if not await self.redis.get(self.group_name):
+            if not await self.redis.get(self.room_id):
                 raise ConnectionRefusedError("Invalid room")
-            if await self.redis.get(self.room_id):
+            if str(self.user.id).encode("utf-8") in players:
+                raise ConnectionRefusedError("User already connected to the room")
+            if len(players) == 2:
                 raise ConnectionRefusedError("Room is full")
+
+        await self.redis.rpush(f"pong_{self.room_id}_id", self.user.id)
 
     async def disconnect(self, close_code):
         self.connected = False
@@ -72,7 +76,7 @@ class Game(AsyncWebsocketConsumer):
         if self.host:
             if hasattr(self, "game_task"):
                 self.game_task.cancel()
-            await self.redis.delete(self.group_name)
+            await self.redis.delete(self.room_id)
             await self.redis.delete(self.room_id)
             logger.info(f"Room {self.room_id} has been closed by the host.")
             if self.mode == "online":
@@ -82,11 +86,9 @@ class Game(AsyncWebsocketConsumer):
 
         if hasattr(self, "valid"):
             await self.send_message("group", "game_stop", {"user": self.user.id})
-            await self.channel_layer.group_discard(self.group_name, self.channel_name)
+            await self.channel_layer.group_discard(self.room_id, self.channel_name)
 
-        if hasattr(self, "redis"):
-            await self.redis.aclose()
-
+        await self.redis.close()
         logger.info(f"User {self.scope['user'].id} has disconnected.")
 
     async def receive(self, text_data):
@@ -223,7 +225,7 @@ class Game(AsyncWebsocketConsumer):
     async def send_message(self, destination="client", msg_type="", args={}):
         message = {"type": msg_type, "content": args} if msg_type else args
         if destination == "group":
-            await self.channel_layer.group_send(self.group_name, message)
+            await self.channel_layer.group_send(self.room_id, message)
         elif destination == "client":
             await self.send(text_data=json.dumps(message))
 
