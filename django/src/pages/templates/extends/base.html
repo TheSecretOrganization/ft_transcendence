@@ -329,7 +329,7 @@
 		const chatLog = document.getElementById('chat-log');
 		const newMessageDiv = document.createElement('div');
 		newMessageDiv.classList.add('message', data.username === "{{ user }}" ? 'self' : 'other');
-		const linkRegex = /https?:\/\/[a-zA-Z0-9.-:]+(?:\/[^\s]*)?/g;
+		const linkRegex = /https?:\/\/[a-zA-Z0-9.-]+(?::\d+)?(?:\/[^\s]*)?/g;
     	const formattedMessage = data.message.replace(linkRegex, (url) => {
         return `<a href="${url}" target="_blank">${url}</a>`;
     	});
