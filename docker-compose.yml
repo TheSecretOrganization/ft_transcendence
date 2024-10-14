@@ -29,6 +29,13 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      logstash01:
+        condition: service_healthy
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
+        tag: 'django'
     healthcheck:
       test: ["CMD-SHELL", "python manage.py healthcheck || exit 1"]
       interval: 2s
@@ -61,6 +68,13 @@ services:
     depends_on:
       django:
         condition: service_healthy
+      logstash01:
+        condition: service_healthy
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
+        tag: 'nginx'
     healthcheck:
       test: ["CMD", "nginx", "-t"]
       interval: 2s
@@ -79,6 +93,14 @@ services:
       - postgres-data:/var/lib/postgresql/data
     env_file:
       - .env
+    depends_on:
+      logstash01:
+        condition: service_healthy
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
+        tag: 'postgres'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} || exit 1"]
       interval: 2s
@@ -93,6 +115,14 @@ services:
       - 6379
     networks:
       - network
+    depends_on:
+      logstash01:
+        condition: service_healthy
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
+        tag: 'redis'
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 2s
