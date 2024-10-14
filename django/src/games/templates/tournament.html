@@ -3,12 +3,6 @@
 {% block content %}
 <div class="container">
 	<form class="form-group" id="tournament-form">
-		<select class="form-control" game-select required>
-			<option value="" disabled selected>Select a game</option>
-			{% for game in games %}
-			<option value="{{ game.value }}">{{ game.label }}</option>
-			{% endfor %}
-		</select>
 		<input class="form-control" type="text" pattern="^[A-Za-z]+$" title="letters only" tournament-name
 			placeholder="Name" required>
 		<button type="submit" class="btn btn-primary">Rumble</button>
@@ -18,9 +12,8 @@
 <script>
 	document.getElementById('tournament-form').onsubmit = (e) => {
 		e.preventDefault();
-		const game = e.target.querySelector('[game-select]').value;
 		const name = e.target.querySelector('[tournament-name]')?.value;
-		route(`/tournament/${game}/${name}`);
+		route(`/tournament/pong/${name}`);
 	};
 </script>
 {% endblock %}
