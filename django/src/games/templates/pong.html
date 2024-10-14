@@ -3,13 +3,8 @@
 {% block content %}
 <div class="container">
 	<div game-menu="main">
-		<button class="btn btn-primary" menu-id="local">Local Play</button>
+		<a class="btn btn-primary text-decoration-none" data-route href="/pong/local">Local Game</a>
 		<button class="btn btn-danger" menu-id="online">Online Play</button>
-	</div>
-
-	<div game-menu="local">
-		<a class="btn btn-primary text-decoration-none" data-route href="/pong/local">Play with a Friend</a>
-		<a class="btn btn-danger text-decoration-none" data-route href="/pong/ai">Play with an AI</a>
 	</div>
 
 	<div game-menu="online">
