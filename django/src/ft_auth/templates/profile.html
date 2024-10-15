@@ -57,7 +57,7 @@
 			<input type="file" name="avatar" id="avatarInput" accept="image/*" required style="display: none;">
 			<label for="avatarInput" class="custom-file-label">Choose File</label>
 			<span id="file-name" class="file-name">No file chosen</span>
-			<button type="submit" class="upload-btn">Upload</button>
+			<button id="upload-avatar-btn" type="submit" class="upload-btn">Upload</button>
 		</form>
 	</div>
 </div>
@@ -110,6 +110,38 @@
 		const fileInput = document.getElementById('avatarInput');
 		const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
 		document.getElementById('file-name').textContent = fileName;
+	};
+
+	document.getElementById('upload-avatar-btn').onclick = function (e) {
+		e.preventDefault();
+
+		const formData = new FormData();
+		const avatarInput = document.getElementById('avatarInput').files[0];
+
+		if (avatarInput) {
+			console.log("test")
+			formData.append('avatar', avatarInput);
+
+			fetch('/api/auth/upload-avatar/', {
+				method: 'POST',
+				body: formData,
+				headers: {
+					'X-CSRFToken': getCookie('csrftoken')
+				},
+			})
+				.then(response => response.json())
+				.then(data => {
+					if (data.avatar_url) {
+						const avatarImg = document.querySelector('.profile-image-container img');
+						avatarImg.src = data.avatar_url;
+						hideModal();
+						displayToast("Avatar updated successfully.");
+					} else {
+						alert('Error uploading avatar');
+					}
+				})
+				.catch(error => console.error('Error:', error));
+		}
 	};
 
 	document.getElementById('edit-avatar-button').onclick = showModal;
