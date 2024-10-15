@@ -72,7 +72,7 @@ def pong_online(request, id=None, tournament_name=""):
 	)
 
 @require_GET
-def tournament(request):
+def tournaments(request):
     return create_response(request, 'tournament.html', title="Tournament", need_authentication=True)
 
 def pong_tournament(request, name: str):

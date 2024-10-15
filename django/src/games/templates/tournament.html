@@ -13,7 +13,7 @@
 	document.getElementById('tournament-form').onsubmit = (e) => {
 		e.preventDefault();
 		const name = e.target.querySelector('[tournament-name]')?.value;
-		route(`/tournament/pong/${name}`);
+		route(`/tournaments/pong/${name}`);
 	};
 </script>
 {% endblock %}

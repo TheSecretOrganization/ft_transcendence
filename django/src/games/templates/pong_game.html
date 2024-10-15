@@ -56,7 +56,7 @@
 			case 'game_state': handleGameState(data); break;
 			case 'game_stop': handleGameStop(data); break;
 			case 'game_error': handleGameError(data); break;
-			case 'tournament_name': exitRoute = `/tournament/pong/${data.content.tournament_name}`; break;
+			case 'tournament_name': exitRoute = `/tournaments/pong/${data.content.tournament_name}`; break;
 		}
 	}
 
