@@ -10,14 +10,53 @@
     border: 1px solid var(--line-clr);
     background-color: var(--base-clr);
 	color: var(--secondary-text-clr);
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: 5px;
-    width: 95%;
+    /* width: 95%; */
 	font-size: large;
+	box-sizing: border-box;
+}
+
+.pong-btn-scnd-color {
+    background-color: var(--secondary-base-clr);
+}
+
+.pong-btn-scnd-color:focus {
+	border: 3px solid var(--selection-clr) !important;
+	border-radius: 0.5rem !important;
 }
 
 .pong-selection-buttons:hover {
     border: 1px solid var(--base-clr);
     background-color: var(--hover-clr);
 	color: var(--secondary-text-clr);
+}
+
+.pong-selection-buttons:focus {
+	border: 3px solid var(--selection-clr) !important;
+	border-radius: 0.5rem !important;
+    background-color: var(--hover-clr);
+	color: var(--secondary-text-clr);
+}
+
+.row-divider {
+    border: 1px solid var(--line-clr);
+    width: 75%;
+    margin: 0.5rem auto;
+}
+
+#back-btn {
+	display:block;
+}
+
+.room-input-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    border: 1px solid var(--line-clr);
+    border-radius: 5px;
+}
+
+.room-input {
+    background-color: var(--light-base-clr);
 }
