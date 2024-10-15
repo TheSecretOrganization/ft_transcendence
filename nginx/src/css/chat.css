@@ -54,17 +54,6 @@
 	word-wrap: break-word;
 }
 
-.message.self {
-	align-self: flex-end;
-	text-align: right;
-}
-
-.message.other {
-	align-self: flex-start;
-	text-align: left;
-}
-
-
 #chat-button {
 	background-color: #f3e2f0;
 	position: fixed;
