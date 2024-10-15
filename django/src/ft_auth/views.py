@@ -71,14 +71,14 @@ def password_update(request: HttpRequest):
 	return HttpResponse(status=200)
 
 def upload_avatar(request):
-    if request.FILES.get('avatar'):
-        avatar_file = request.FILES['avatar']
-        user = request.user
-        user.avatar = avatar_file
-        user.avatar.save(avatar_file.name, avatar_file)
-        user.save()
-        return JsonResponse({'avatar_url': user.avatar.url}, status=200)
-    return JsonResponse({'error': 'No avatar file provided'}, status=400)
+	if request.FILES.get('avatar'):
+		avatar_file = request.FILES['avatar']
+		user = request.user
+		user.avatar = avatar_file
+		user.avatar.save(avatar_file.name, avatar_file)
+		user.save()
+		return JsonResponse({'avatar_url': user.avatar.url}, status=200)
+	return JsonResponse({'error': 'No avatar file provided'}, status=400)
 
 @require_POST
 def authorize(request: HttpRequest):
