@@ -1,9 +1,10 @@
 import asyncio
 import json
 import random
+from uuid import uuid4
 import redis.asyncio as redis
 import logging
-from typing import Any, List
+from typing import Any, List, Tuple
 from urllib.parse import parse_qs
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
@@ -11,6 +12,7 @@ from django.apps import apps
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 logger = logging.getLogger(__name__)
+
 
 class Game(AsyncWebsocketConsumer):
     win_goal = 5
@@ -35,20 +37,33 @@ class Game(AsyncWebsocketConsumer):
         self.valid = True
         await self.accept()
         await self.channel_layer.group_add(self.room_id, self.channel_name)
-        logger.info(f"User {self.user.id} successfully connected to room {self.room_id}.")
+        logger.info(
+            f"User {self.user.id} successfully connected to room {self.room_id}."
+        )
         await self.send_message("group", "game_join", {"user": self.user.id})
         await self.send_message("client", "game_pad", {"game_pad": self.pad_n})
+        if self.tournament_name != "":
+            await self.send_message(
+                "client",
+                "tournament_name",
+                {"tournament_name": self.tournament_name},
+            )
 
     async def initialize_game(self):
         query_params = parse_qs(self.scope["query_string"].decode())
+        logger.warning(query_params)
         self.mode = self.check_missing_param(query_params, "mode")
         player_needed = self.check_missing_param(query_params, "player_needed")
         self.room_id = self.check_missing_param(query_params, "room_id")
-        self.host = self.check_missing_param(query_params, "host") == "True"
+        self.tournament_name = self.check_missing_param(
+            query_params, "tournament_name"
+        )
+        self.host = await self.redis.get(self.room_id) == None
         self.pad_n = "pad_1" if self.host else "pad_2"
-        players =  await self.redis.lrange(f'pong_{self.room_id}_id', 0, -1)
+        players = await self.redis.lrange(f"pong_{self.room_id}_id", 0, -1)
 
         if self.host:
+            await self.redis.set(self.room_id, 1)
             self.info = self.Info(
                 creator=self.user.id,
                 room_id=self.room_id,
@@ -57,13 +72,14 @@ class Game(AsyncWebsocketConsumer):
             self.ball = self.Ball()
             self.pad_1 = self.Pad(True)
             self.pad_2 = self.Pad(False)
-            logger.info(f"User {self.user.id} is the host for room {self.room_id}.")
-            await self.redis.set(self.room_id, 1)
+            logger.info(
+                f"User {self.user.id} is the host for room {self.room_id}."
+            )
         else:
-            if not await self.redis.get(self.room_id):
-                raise ConnectionRefusedError("Invalid room")
             if str(self.user.id).encode("utf-8") in players:
-                raise ConnectionRefusedError("User already connected to the room")
+                raise ConnectionRefusedError(
+                    "User already connected to the room"
+                )
             if len(players) == 2:
                 raise ConnectionRefusedError("Room is full")
 
@@ -72,12 +88,12 @@ class Game(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         self.connected = False
 
-        if self.host:
-            players =  await self.redis.lrange(f'pong_{self.room_id}_id', 0, -1)
+        if hasattr(self, "host") and self.host:
+            players = await self.redis.lrange(f"pong_{self.room_id}_id", 0, -1)
             if hasattr(self, "game_task"):
                 self.game_task.cancel()
             await self.redis.delete(self.room_id)
-            await self.redis.delete(f'pong_{self.room_id}_id')
+            await self.redis.delete(f"pong_{self.room_id}_id")
             logger.info(f"Room {self.room_id} has been closed by the host.")
             if self.mode == "online" and len(players) == 2:
                 if not hasattr(self, "winner"):
@@ -85,8 +101,12 @@ class Game(AsyncWebsocketConsumer):
                 await self.save_pong_to_db(self.winner)
 
         if hasattr(self, "valid"):
-            await self.send_message("group", "game_stop", {"user": self.user.id})
-            await self.channel_layer.group_discard(self.room_id, self.channel_name)
+            await self.send_message(
+                "group", "game_stop", {"user": self.user.id}
+            )
+            await self.channel_layer.group_discard(
+                self.room_id, self.channel_name
+            )
 
         await self.redis.close()
         logger.info(f"User {self.scope['user'].id} has disconnected.")
@@ -101,7 +121,9 @@ class Game(AsyncWebsocketConsumer):
             if "content" not in data:
                 raise AttributeError("Missing 'content'")
 
-            logger.debug(f"Received '{msg_type}' message from user {self.scope['user'].id}.")
+            logger.debug(
+                f"Received '{msg_type}' message from user {self.scope['user'].id}."
+            )
             match msg_type:
                 case "game_stop":
                     await self.close()
@@ -112,7 +134,9 @@ class Game(AsyncWebsocketConsumer):
                 case _:
                     raise ValueError("Unknown 'type' in data")
         except Exception as e:
-            logger.warning(f"Invalid message received from user {self.scope['user'].id}: {str(e)}")
+            logger.warning(
+                f"Invalid message received from user {self.scope['user'].id}: {str(e)}"
+            )
             await self.send_error("Invalid message")
 
     async def game_join(self, event):
@@ -142,9 +166,13 @@ class Game(AsyncWebsocketConsumer):
                     raise AttributeError("Missing 'pad_n'")
                 if event["content"].get("direction") == None:
                     raise AttributeError("Missing 'direction'")
-                await self.move_pad(event["content"]["pad_n"], event["content"]["direction"])
+                await self.move_pad(
+                    event["content"]["pad_n"], event["content"]["direction"]
+                )
             except AssertionError as e:
-                logger.warning(f"Invalid game_move received in {self.room_id}: {str(e)}")
+                logger.warning(
+                    f"Invalid game_move received in {self.room_id}: {str(e)}"
+                )
 
     async def game_stop(self, event):
         if not self.connected:
@@ -172,20 +200,33 @@ class Game(AsyncWebsocketConsumer):
             try:
                 self.ball.move()
                 self.handle_collisions()
-                if self.info.score[0] == self.win_goal or self.info.score[1] == self.win_goal:
-                    await self.send_message("group", "game_stop", {"winner": self.get_winner()})
+                if (
+                    self.info.score[0] == self.win_goal
+                    or self.info.score[1] == self.win_goal
+                ):
+                    await self.send_message(
+                        "group", "game_stop", {"winner": self.get_winner()}
+                    )
                     break
                 await self.send_game_state()
                 await asyncio.sleep(fps)
             except Exception as e:
-                logger.error(f"Unexpected error in the loop from game {self.room_id}: {str(e)}")
+                logger.error(
+                    f"Unexpected error in the loop from game {self.room_id}: {str(e)}"
+                )
                 break
 
     def get_winner(self):
         if self.mode == "online":
-            return self.info.players[0] if self.info.score[0] > self.info.score[1] else self.info.players[1]
+            return (
+                self.info.players[0]
+                if self.info.score[0] > self.info.score[1]
+                else self.info.players[1]
+            )
         else:
-            return "Pad 1" if self.info.score[0] > self.info.score[1] else "Pad 2"
+            return (
+                "Pad 1" if self.info.score[0] > self.info.score[1] else "Pad 2"
+            )
 
     async def move_pad(self, pad_number, direction):
         pad = self.pad_1 if pad_number == "pad_1" else self.pad_2
@@ -194,7 +235,10 @@ class Game(AsyncWebsocketConsumer):
         await self.send_game_state()
 
     def handle_collisions(self):
-        if self.ball.y - self.ball.radius / 2 <= 0 or self.ball.y + self.ball.radius / 2 >= 1:
+        if (
+            self.ball.y - self.ball.radius / 2 <= 0
+            or self.ball.y + self.ball.radius / 2 >= 1
+        ):
             self.ball.revert_velocity(1)
         elif self.check_pad_collision():
             self.ball.revert_velocity(0)
@@ -248,19 +292,25 @@ class Game(AsyncWebsocketConsumer):
         )
 
     async def save_pong_to_db(self, winner):
-        pong_game = apps.get_model('games', 'PongGame')
+        pong_game = apps.get_model("games", "PongGame")
         try:
             await sync_to_async(pong_game.objects.create)(
-                user1=await sync_to_async(get_user_model().objects.get)(id=self.info.players[0]),
-                user2=await sync_to_async(get_user_model().objects.get)(id=self.info.players[1]),
+                user1=await sync_to_async(get_user_model().objects.get)(
+                    id=self.info.players[0]
+                ),
+                user2=await sync_to_async(get_user_model().objects.get)(
+                    id=self.info.players[1]
+                ),
                 score1=self.info.score[0],
-                score2=self.info.score[1]
+                score2=self.info.score[1],
             )
             logger.debug(f"Game {self.room_id} saved to db.")
         except Exception as e:
             logger.error(f"Could not save game {self.room_id} to db: {str(e)}")
 
-    def check_missing_param(self, query_params: dict[Any, List], param_name: str):
+    def check_missing_param(
+        self, query_params: dict[Any, List], param_name: str
+    ):
         param = query_params.get(param_name, [None])[0]
         if param == None:
             raise AttributeError(f"Missing query parameter: {param_name}")
@@ -322,6 +372,7 @@ class Game(AsyncWebsocketConsumer):
             self.step = 0.05
             self.move = 0
 
+
 class Tournament(AsyncWebsocketConsumer):
     async def connect(self):
         query_params = parse_qs(self.scope["query_string"].decode())
@@ -329,17 +380,25 @@ class Tournament(AsyncWebsocketConsumer):
 
         try:
             self.user = self.scope.get("user")
+
             if type(self.user) != get_user_model and self.user.is_anonymous:
                 raise ValueError("Invalid user")
 
             logger.info(f"User {self.user.id} is attempting to connect.")
             self.name = query_params.get("name", [None])[0]
+
             if self.name == None:
                 raise ValueError("Missing name")
 
             lock = await self.redis.get(f"pong_{self.name}_lock")
-            players =  await self.redis.lrange(f'pong_{self.name}_username', 0, -1)
-            if lock != None and self.user.username.encode('utf-8') not in players:
+            players = await self.redis.lrange(
+                f"pong_{self.name}_username", 0, -1
+            )
+
+            if (
+                lock != None
+                and self.user.username.encode("utf-8") not in players
+            ):
                 raise ConnectionRefusedError("Tournament is locked")
 
         except Exception as e:
@@ -349,15 +408,24 @@ class Tournament(AsyncWebsocketConsumer):
 
         await self.accept()
         await self.channel_layer.group_add(self.name, self.channel_name)
-        if await self.redis.get(f"pong_{self.name}_creator") == None:
-            await self.redis.set(f"pong_{self.name}_creator", self.user.username)
 
-        if await self.redis.get(f"pong_{self.name}_creator") == self.user.username.encode("utf-8") and lock == None:
+        if await self.redis.get(f"pong_{self.name}_creator") == None:
+            await self.redis.set(
+                f"pong_{self.name}_creator", self.user.username
+            )
+
+        if (
+            await self.redis.get(f"pong_{self.name}_creator")
+            == self.user.username.encode("utf-8")
+            and lock == None
+        ):
             await self.send(text_data=json.dumps({"type": "creator"}))
 
-        if self.user.username.encode('utf-8') not in players:
+        if self.user.username.encode("utf-8") not in players:
             await self.redis.rpush(f"pong_{self.name}_id", self.user.id)
-            await self.redis.rpush(f"pong_{self.name}_username", self.user.username)
+            await self.redis.rpush(
+                f"pong_{self.name}_username", self.user.username
+            )
 
         await self.channel_layer.group_send(self.name, {"type": "join"})
 
@@ -372,10 +440,14 @@ class Tournament(AsyncWebsocketConsumer):
 
         try:
             msg_type = data.get("type")
+
             if not msg_type:
                 raise AttributeError("Missing 'type'")
 
-            logger.debug(f"Received '{msg_type}' message from user {self.scope['user'].id}.")
+            logger.debug(
+                f"Received '{msg_type}' message from user {self.scope['user'].id}."
+            )
+
             match msg_type:
                 case "lock":
                     await self.lock()
@@ -384,27 +456,74 @@ class Tournament(AsyncWebsocketConsumer):
                 case _:
                     raise ValueError("Unknown 'type' in data")
         except Exception as e:
-            logger.warning(f"Invalid message received from user {self.scope['user'].id}: {str(e)}")
-            await self.send(text_data=json.dumps({'type': 'error', 'content': str(e)}))
+            logger.warning(
+                f"Invalid message received from user {self.scope['user'].id}: {str(e)}"
+            )
+            await self.send(
+                text_data=json.dumps({"type": "error", "content": str(e)})
+            )
 
     async def join(self, event):
-        usernames =  await self.redis.lrange(f'pong_{self.name}_username', 0, -1)
-        decoded_usernames = [username.decode('utf-8') for username in usernames]
-        await self.send(text_data=json.dumps({"type": "join", "players": decoded_usernames}))
+        usernames = await self.redis.lrange(
+            f"pong_{self.name}_username", 0, -1
+        )
+        decoded_usernames = [
+            username.decode("utf-8") for username in usernames
+        ]
+        await self.send(
+            text_data=json.dumps(
+                {"type": "join", "players": decoded_usernames}
+            )
+        )
 
     async def lock(self):
         await self.redis.set(f"pong_{self.name}_lock", 1)
-        usernames =  await self.redis.lrange(f'pong_{self.name}_username', 0, -1)
-        self.players = [username.decode('utf-8') for username in usernames]
+        usernames = await self.redis.lrange(
+            f"pong_{self.name}_username", 0, -1
+        )
+        self.players = [username.decode("utf-8") for username in usernames]
 
     async def mix(self):
         random.shuffle(self.players)
+        player_pairs = []
+        uuid_list = []
         self.last_player = None
+
         if len(self.players) % 2 != 0:
             self.last_player = self.players.pop()
 
-        pairs = [(self.players[i], self.players[i + 1]) for i in range(0, len(self.players), 2)]
-        if self.last_player:
-            pairs.append((self.last_player, 'bye'))
+        for i in range(0, len(self.players), 2):
+            player_pairs.append((self.players[i], self.players[i + 1]))
+            uuid_list.append(str(uuid4()))
 
-        await self.send(text_data=json.dumps({"type": "mix", "pairs": pairs}))
+        if self.last_player:
+            player_pairs.append((self.last_player, "-"))
+
+        self.match_history = getattr(self, "match_history", []) + uuid_list
+        await self.channel_layer.group_send(
+            self.name,
+            {
+                "type": "get_next_round_id",
+                "player_pairs": player_pairs,
+                "uuid_list": uuid_list,
+            },
+        )
+
+    async def get_next_round_id(self, event):
+        player_pairs: List[Tuple] = event["player_pairs"]
+        uuid_list: List = event["uuid_list"]
+        await self.send(
+            text_data=json.dumps({"type": "mix", "player_pairs": player_pairs})
+        )
+
+        for i, (player1, player2) in enumerate(player_pairs):
+            if self.user.username not in (player1, player2):
+                continue
+
+            message = (
+                {"type": "bye"}
+                if player2 == "-"
+                else {"type": "next_round_id", "id": uuid_list[i]}
+            )
+            await self.send(text_data=json.dumps(message))
+            break

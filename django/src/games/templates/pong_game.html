@@ -18,10 +18,10 @@
 	const mode = "{{mode}}";
 	const localGame = mode === "local";
 	let socket = wsConnect(wsCreateUrl("pong", {
-			"mode": mode,
-			"room_id": "{{room_id}}",
-			"host": "{{host}}",
-			"player_needed": mode === "online" ? 2 : 1,
+		"mode": mode,
+		"room_id": "{{room_id}}",
+		"player_needed": mode === "online" ? 2 : 1,
+		"tournament_name": "{{ tournament_name }}",
 	}), onMessage, exit);
 	let upKey = "w";
 	let downKey = "s";
@@ -32,6 +32,7 @@
 	let keyInterval = null;
 	let pointerLock = false;
 	const mouseSensitivity = 1;
+	let exitRoute = "/pong"
 
 	function exit(goBack = true) {
 		if (socket) {
@@ -41,7 +42,7 @@
 		}
 		document.exitPointerLock();
 		if (goBack)
-			route("/pong");
+			route(exitRoute);
 	}
 
 	function sendToWebSocket(type, args = {}) {
@@ -55,6 +56,7 @@
 			case 'game_state': handleGameState(data); break;
 			case 'game_stop': handleGameStop(data); break;
 			case 'game_error': handleGameError(data); break;
+			case 'tournament_name': exitRoute = `/tournament/pong/${data.content.tournament_name}`; break;
 		}
 	}
 
@@ -210,7 +212,7 @@
 				if (run && pointerLock) {
 					let direction = e.movementY < 0 ? "up" : "down";
 					if (Math.abs(e.movementY) * mouseSensitivity >= 1)
-					sendToWebSocket("game_move", { "pad_n": "pad_2", "direction": direction });
+						sendToWebSocket("game_move", { "pad_n": "pad_2", "direction": direction });
 				}
 			};
 

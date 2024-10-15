@@ -45,13 +45,13 @@ def pong_local(request):
 		context={
 			"mode": "local",
 			"room_id": str(uuid4()),
-			"host": True,
+			"tournament_name": ""
 		},
 		need_authentication=True,
 	)
 
 @require_GET
-def pong_online(request, id=None):
+def pong_online(request, id=None, tournament_name=""):
 	uuid_regex = re.compile(r'^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$', re.IGNORECASE)
 
 	if id != None and not uuid_regex.match(str(id)):
@@ -64,7 +64,7 @@ def pong_online(request, id=None):
 		context={
 			"mode": "online",
 			"room_id": str(uuid4()) if id == None else id,
-			"host": True if id == None else False,
+			"tournament_name": tournament_name
 		},
 		need_authentication=True,
 	)
