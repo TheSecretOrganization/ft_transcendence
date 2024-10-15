@@ -5,3 +5,19 @@
 	border: 3px solid lightskyblue;
 	margin: 0 auto;
 }
+
+.pong-selection-buttons {
+    border: 1px solid var(--line-clr);
+    background-color: var(--base-clr);
+	color: var(--secondary-text-clr);
+    padding: 2rem;
+    border-radius: 5px;
+    width: 95%;
+	font-size: large;
+}
+
+.pong-selection-buttons:hover {
+    border: 1px solid var(--base-clr);
+    background-color: var(--hover-clr);
+	color: var(--secondary-text-clr);
+}
