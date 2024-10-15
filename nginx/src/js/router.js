@@ -54,9 +54,10 @@ async function handleLocation() {
 	updateActiveRoute(path);
 
 	document.querySelectorAll('[data-route]').forEach((element) => {
+		const link = element.getAttribute('href');
 		element.addEventListener("click", (event) => {
 			event.preventDefault();
-			route(event.target.getAttribute('href'));
+			route(link);
 		});
 	});
 }
