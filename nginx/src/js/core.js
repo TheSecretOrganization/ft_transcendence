@@ -58,6 +58,14 @@ function logout() {
 	fetch('/api/auth/logout/')
 		.then(r => {
 			if (r.status == 200) route('/');
-			else r.json().then(json => console.log(json.error));
+			else r.json().then(json => console.error(json.error));
 		}).catch(error => console.error(error));
+}
+
+function displayToast(message) {
+	const toastContentElement = document.getElementById('toast-content');
+	toastContentElement.textContent = message;
+	const toastElement = document.getElementById('toast');
+	const toast = new bootstrap.Toast(toastElement);
+	toast.show();
 }

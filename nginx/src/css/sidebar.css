@@ -1,37 +1,131 @@
-#sidebar-wrapper {
-	position: fixed;
-	top: 0;
-	left: 0;
-	height: 100vh;
-	width: 250px;
-	border-radius: 0 5px 5px 0;
-	transition: all 0.3s ease;
-	z-index: 1000;
-	text-align: center;
+/* Sidebar Container */
+#sidebar {
+	box-sizing: border-box;
+	height: calc(100vh - var(--navbar-height));
+	width: 24rem;
+	padding: 0.25rem 1em;
+	background-color: var(--base-clr);
+	border-right: 1px solid var(--line-clr);
+	position: absolute;
+	top: var(--navbar-height);
+	align-self: start;
+	transition: 300ms ease-in-out;
+	overflow: hidden;
+	text-wrap: nowrap;
+	z-index: 9001;
 }
 
-#sidebar-wrapper.toggled {
-	margin-left: -250px;
+/* Sidebar Closed State */
+#sidebar.close {
+	padding: 0.25rem;
+	width: var(--sidebar-width);
 }
 
-#sidebar-wrapper .sidebar-heading {
-	padding: 1rem;
-	font-size: 1.5rem;
+/* Sidebar List */
+#sidebar ul {
+	margin-left: -2.6rem;
+	list-style: none;
 }
 
-#sidebar-wrapper .list-group-item {
-	padding: 1rem 1.5rem;
+/* First List Item Styles */
+#sidebar>ul>li:first-child {
+	display: flex;
+	justify-content: flex-end;
 }
 
-#sidebar-toggle {
-	position: fixed;
-	top: 1rem;
-	left: 1rem;
-	font-size: 20px;
-	z-index: 1050;
-	transition: all 0.3s ease;
+#sidebar>ul>li:first-child .logo {
+	font-weight: 600;
 }
 
-#sidebar-toggle.toggled {
-	margin-left: 250px;
+/* Links and Buttons in Sidebar */
+#sidebar a,
+#sidebar .dropdown-btn,
+#sidebar .logo {
+	border-radius: .5em;
+	padding: .85rem;
+	text-decoration: none;
+	color: var(--text-clr);
+	display: flex;
+	align-items: center;
+	gap: 1em;
 }
+
+/* Dropdown Button Styles */
+.dropdown-btn {
+	width: 100%;
+	text-align: left;
+	background: none;
+	border: none;
+	font: inherit;
+	cursor: pointer;
+}
+
+/* Sidebar Icons */
+#sidebar svg {
+	flex-shrink: 0;
+	fill: var(--text-clr);
+}
+
+/* Flex Properties for Links */
+#sidebar a span,
+#sidebar .dropdown-btn span {
+	flex-grow: 1;
+}
+
+/* Hover Effects */
+#sidebar a:hover,
+#sidebar .dropdown-btn:hover {
+	background-color: var(--hover-clr);
+}
+
+/* Sub-menu Styles */
+#sidebar .sub-menu {
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: 300ms ease-in-out;
+}
+
+#sidebar .sub-menu>div {
+	overflow: hidden;
+}
+
+#sidebar .sub-menu.show {
+	grid-template-rows: 1fr;
+}
+
+#sidebar .sub-menu a {
+	padding-left: 2em;
+}
+
+/* Toggle Button Styles */
+#toggle-btn {
+	margin-left: auto;
+	border: none;
+	border-radius: .5em;
+	background: none;
+	cursor: pointer;
+	padding: 0.85rem;
+	width: 100%;
+}
+
+#toggle-btn img {
+	transition: rotate 150ms ease;
+}
+
+#toggle-btn:hover {
+	background-color: var(--hover-clr);
+}
+
+/* Rotation Effects */
+.dropdown-btn img:last-child {
+	transition: 200ms ease;
+}
+
+.rotate img:last-child {
+	rotate: 180deg;
+}
+
+.rotate svg:last-child {
+	rotate: 180deg;
+}
+
