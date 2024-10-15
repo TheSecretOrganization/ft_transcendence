@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-class PongGame(models.Model):
+class Pong(models.Model):
     user1 = models.ForeignKey(
         get_user_model(), on_delete=models.SET_NULL, null=True, related_name="user1"
     )
@@ -18,7 +18,7 @@ class PongGame(models.Model):
 class PongTournament(models.Model):
     name = models.CharField(max_length=255)
     participants = models.ManyToManyField(get_user_model(), related_name='tournaments')
-    games = models.ManyToManyField(PongGame, related_name='tournaments')
+    games = models.ManyToManyField(Pong, related_name='tournaments')
     current_round = models.PositiveSmallIntegerField(default=1)
     max_rounds = models.PositiveSmallIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
