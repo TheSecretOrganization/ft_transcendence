@@ -2,11 +2,15 @@
 	<nav class="navbar">
 		<a class="navbar-brand nav navbar-nav navbar-left link-info text-decoration-none" data-route href="/">Johnny Depp</a>
 		{% if user.is_authenticated %}
+		<button id="notif-button">
+			<i id="icon-notif" class="fa-solid fa-bell"></i>
+		</button>
+		<div id="notification-area" class = "notif-hidden"></div>
 		<div class="container-dropdown">
 			<div class="dropdown">
 				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-					data-bs-toggle="dropdown" aria-expanded="false">
-					{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
+				data-bs-toggle="dropdown" aria-expanded="false">
+				{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
 				</button>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
 					<li><a class="dropdown-item" data-route href="#">Profile</a></li>
@@ -16,8 +20,8 @@
 					</li>
 					<li><button id="logout-button-navbar" class="dropdown-item fw-bold">Log out <span
 								class="glyphicon glyphicon-log-out"></span></button></li>
-				</ul>
-			</div>
+							</ul>
+						</div>
 		</div>
 		{% else %}
 		<ul id="navbar-list"
@@ -98,7 +102,25 @@
 		{% block content %}{% endblock %}
 	</div>
 </div>
-
+{% if user.is_authenticated %}
+<div id="chat-wrapper">
+	<button id="chat-button" class="anim-chat-button">
+		<i class="fa-solid fa-message icon-msg" style="font-size: 40px;"></i>
+	</button>
+	<div id="chat-container" class="toggled">
+		<div id="chat-title">Room: <span id="room-name">General</span></div>
+		<div id="chat-log"></div>
+		<form id="chat-form">
+			<input id="chat-input" type="text" placeholder="Type your message here..." autocomplete="off"/>
+			<button type="submit" id="chat-send-btn">Send</button>
+		</form>
+		<div id="users-wrapper">
+			<h6>Users Online</h6>
+			<ul id="user-list"></ul>
+		</div>
+	</div>
+</div>
+{% endif %}
 <script>
 	document.getElementById("toggle-btn").onclick = function (e) {
 		toggleSidebar();
@@ -117,15 +139,239 @@
 		})
 	}
 
-	document.querySelectorAll('[data-route]').forEach((element) => {
-		element.addEventListener("click", (event) => {
-			event.preventDefault();
-			route(event.target.getAttribute('href'));
-		});
-	});
-
 	document.getElementById("logout-button-navbar")?.addEventListener("click", function (e) {
 		logout();
 	})
 
 </script>
+
+{% if user.is_authenticated %}
+<script>
+	let currentChatRoom = 'General';
+	let blockedUsers = [];
+
+	if (!window.chatSocket) {
+		window.chatSocket = wsConnect(wsCreateUrl(`chat/General/`), handleOnMessage, handleOnError);
+		window.chatSocket.onopen = function () {
+			loadChatHistory('General');
+		};
+	}
+
+	function startPrivateChat(otherUsername) {
+		if (blockedUsers.includes(otherUsername)) {
+			alert(`You have blocked ${otherUsername}. Unblock them to start a private chat.`);
+			return;
+		}
+		const roomName = `private_chat_${otherUsername}`;
+		if (window.chatSocket) {
+			window.chatSocket.close();
+		}
+		window.chatSocket = wsConnect(wsCreateUrl(`chat/private/${otherUsername}/`), handleOnMessage, handleOnError);
+
+		window.chatSocket.onopen = function () {
+			loadChatHistory(roomName);
+		};
+
+		document.getElementById('chat-title').textContent = `Private Chat with ${otherUsername}`;
+		currentChatRoom = roomName;
+	}
+
+	window.joinGeneralChat = function () {
+		if (window.chatSocket) {
+			window.chatSocket.close();
+		}
+		window.chatSocket = wsConnect(wsCreateUrl(`chat/General/`), handleOnMessage, handleOnError);
+
+		window.chatSocket.onopen = function () {
+			loadChatHistory('General');
+		};
+
+		document.getElementById('chat-title').textContent = 'Room: General';
+		currentChatRoom = 'General';
+		const notificationArea = document.getElementById('notification-area');
+		notificationArea.innerHTML = '';
+	}
+
+	window.joinPrivateChat = function (otherUsername) {
+		const roomName = `private_chat_${otherUsername}`;
+		if (currentChatRoom === roomName) {
+			return;
+		}
+		if (window.chatSocket) {
+			window.chatSocket.close();
+		}
+		window.chatSocket = wsConnect(wsCreateUrl(`chat/private/${otherUsername}/`), handleOnMessage, handleOnError);
+		window.chatSocket.onopen = function () {
+			loadChatHistory(roomName);
+		};
+
+		document.getElementById('chat-title').textContent = `Private Chat with ${otherUsername}`;
+		currentChatRoom = roomName;
+		const notificationArea = document.getElementById('notification-area');
+		notificationArea.innerHTML = '';
+	}
+
+	function handleOnMessage(data) {
+		switch (data.type) {
+			case 'active_users':
+				updateActiveUsers(data.users);
+				break;
+			case 'chat_history':
+				displayChatHistory(data.messages);
+				break;
+			case 'private_message_notification':
+				if (currentChatRoom !== `private_chat_${data.from_user}`) {
+					showPrivateChatNotification(data.from_user);
+				}
+				break;
+			default:
+				handleDefault(data);
+				break;
+		}
+	}
+
+	function handleOnError(error) {
+		console.error('WebSocket Error:', error);
+	}
+
+	function updateActiveUsers(users) {
+		const userList = document.getElementById('user-list');
+		userList.innerHTML = '';
+
+		users.forEach(user => {
+			const userItem = document.createElement('li');
+			userItem.classList.add('user-item');
+
+			const usernameLink = document.createElement('a');
+        	usernameLink.textContent = user;
+        	usernameLink.href = `/profiles/${user}`;
+			usernameLink.target = "_blank";
+			userItem.appendChild(usernameLink);
+
+			if (user !== "{{ user }}") {
+				const blockButton = document.createElement('button');
+				blockButton.textContent = blockedUsers.includes(user) ? "Unblock" : "Block";
+				blockButton.addEventListener('click', () => {
+					toggleBlockUser(user);
+					blockButton.textContent = blockedUsers.includes(user) ? "Unblock" : "Block";
+				});
+				userItem.appendChild(blockButton);
+
+				const privateChatButton = document.createElement('button');
+				privateChatButton.textContent = "PM";
+				if (blockedUsers.includes(user)) {
+					privateChatButton.disabled = true;
+				} else {
+					privateChatButton.disabled = false;
+				}
+				privateChatButton.addEventListener('click', () => startPrivateChat(user));
+				userItem.appendChild(privateChatButton);
+			} else {
+				userItem.textContent = 'General Chat';
+				const generalChatButton = document.createElement('button');
+				generalChatButton.textContent = "GC";
+				generalChatButton.addEventListener('click', () => joinGeneralChat());
+				userItem.appendChild(generalChatButton);
+			}
+
+			userList.appendChild(userItem);
+		});
+	}
+
+	function displayChatHistory(messages) {
+		const chatLog = document.getElementById('chat-log');
+		chatLog.innerHTML = '';
+
+		messages.forEach(message => {
+			const newMessageDiv = document.createElement('div');
+			if (message.username === "{{ user }}") {
+				newMessageDiv.classList.add('message', 'self');
+			} else {
+				newMessageDiv.classList.add('message', 'other');
+			}
+			newMessageDiv.innerHTML = `<strong>${message.username}:</strong> ${message.message}`;
+			chatLog.appendChild(newMessageDiv);
+		});
+		chatLog.scrollTop = chatLog.scrollHeight;
+	}
+
+	function showPrivateChatNotification(fromUser) {
+		if (blockedUsers.includes(fromUser)) {
+			console.log(`Notification from ${fromUser} ignored because they are blocked.`);
+			return;
+		}
+		const notifIcon = document.getElementById('icon-notif');
+    	notifIcon.classList.remove('fa-solid', 'fa-bell');
+    	notifIcon.classList.add('fa-solid', 'fa-bell', 'fa-spin-pulse'); 
+		const notificationArea = document.getElementById('notification-area');
+		document.getElementById('notif-button').addEventListener('click', function() {
+			notifIcon.classList.remove('fa-solid', 'fa-bell', 'fa-spin-pulse');
+			notifIcon.classList.add('fa-solid', 'fa-bell');
+			notificationArea.classList.toggle('notif-hidden');
+		});
+		const notificationDiv = document.createElement('div');
+		notificationDiv.classList.add('notification');
+		notificationDiv.innerHTML = `
+			<p>Private message from ${fromUser}</p>
+			<button onclick="joinPrivateChat('${fromUser}')">Show</button>
+		`;
+		notificationArea.appendChild(notificationDiv);
+	}
+
+	function handleDefault(data) {
+		const chatLog = document.getElementById('chat-log');
+		const newMessageDiv = document.createElement('div');
+		newMessageDiv.classList.add('message', data.username === "{{ user }}" ? 'self' : 'other');
+		const linkRegex = /https?:\/\/[a-zA-Z0-9.-]+(?::\d+)?(?:\/[^\s]*)?/g;
+    	const formattedMessage = data.message.replace(linkRegex, (url) => {
+        return `<a href="${url}" target="_blank">${url}</a>`;
+    	});
+		newMessageDiv.innerHTML = `<strong>${data.username}:</strong> ${formattedMessage}`;
+		chatLog.appendChild(newMessageDiv);
+		chatLog.scrollTop = chatLog.scrollHeight;
+	}
+
+	function loadChatHistory(roomId) {
+		if (window.chatSocket && window.chatSocket.readyState === WebSocket.OPEN) {
+			window.chatSocket.send(JSON.stringify({
+				'type': 'fetch_history',
+				'roomId': roomId
+			}));
+		}
+	}
+
+	function toggleBlockUser(user) {
+		if (blockedUsers.includes(user)) {
+			blockedUsers = blockedUsers.filter(u => u !== user);
+		} else {
+			blockedUsers.push(user);
+		}
+	}
+
+	document.getElementById("chat-form").addEventListener("submit", e => {
+		e.preventDefault();
+		const messageInput = document.getElementById('chat-input');
+		const message = messageInput.value.trim();
+		const otherUsername = currentChatRoom.split('private_chat_')[1];
+    	if (otherUsername && blockedUsers.includes(otherUsername)) {
+        	alert(`You have blocked ${otherUsername}. Unblock them to send messages.`);
+        	return;
+    }
+		if (window.chatSocket && window.chatSocket.readyState === WebSocket.OPEN && message) {
+			window.chatSocket.send(JSON.stringify({
+				'message': message,
+				'username': "{{ user }}",
+			}));
+		}
+		messageInput.value = '';
+	});
+
+	document.getElementById("chat-button").addEventListener("click", function (e) {
+		e.preventDefault();
+		document.getElementById("chat-container").classList.toggle("toggled");
+		this.classList.toggle("toggled");
+	});
+
+	loadChatHistory('General');
+</script>
+{% endif %}
