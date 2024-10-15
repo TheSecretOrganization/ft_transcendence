@@ -18,23 +18,31 @@
 	<hr class="profile-divider">
 	<div class="profile-content">
 		<div class="username-container">
-			<span class="username">{{ user.username }}<span>
+			<span class="username">{{ user.username }}</span>
 		</div>
 		<hr class="profile-divider">
-		<form class="form-floating row">
-			<input type="password" class="form-control password-container" id="password" placeholder="Current password"
-				value="">
-			<label for="password">Current Password</label>
-		</form>
-		<form class="form-floating row">
-			<input type="password" class="form-control password-container" id="password" placeholder="New password"
-				value="">
-			<label for="password">New Password</label>
-		</form>
-		<form class="form-floating row">
-			<input type="password" class="form-control password-container" id="password"
-				placeholder="Confirm new password" value="">
-			<label for="password">Confirm New Password</label>
+		<form id="password-form" data-url="/api/auth/password/update/" class="form-container">
+			<div class="row text-center text-wrap text-danger">
+				<p id="password-error"></p>
+			</div>
+			<div class="form-floating row">
+				<input type="password" class="form-control password-container" id="current_password"
+					placeholder="Current password" value="">
+				<label for="current_password">Current Password</label>
+			</div>
+			<div class="form-floating row">
+				<input type="password" class="form-control password-container" id="new_password"
+					placeholder="New password" value="">
+				<label for="new_password">New Password</label>
+			</div>
+			<div class="form-floating row">
+				<input type="password" class="form-control password-container" id="confirm_password"
+					placeholder="Confirm new password" value="">
+				<label for="confirm_password">Confirm New Password</label>
+			</div>
+			<button id="password-btn" class="confirm-btn">
+				Confirm changes
+			</button>
 		</form>
 	</div>
 </div>
@@ -52,17 +60,48 @@
 </div>
 
 <script>
-	// Show modal
 	function showModal() {
 		const modal = document.getElementById('avatarModal');
 		modal.style.display = 'block';
 	}
 
-	// Hide modal
 	function hideModal() {
 		const modal = document.getElementById('avatarModal');
 		modal.style.display = 'none';
 	}
+
+	function validate() {
+		let password = document.getElementById('new_password').value;
+		let passwordcfrm = document.getElementById('confirm_password').value;
+
+		return password == passwordcfrm;
+	}
+
+	function emptyPasswords() {
+		const passwordFields = document.querySelectorAll('input[type="password"]');
+		passwordFields.forEach((field) => {
+			field.value = '';
+		});
+	}
+
+	document.getElementById('password-btn').onclick = function (e) {
+		document.getElementById('password-error').textContent = '';
+		e.preventDefault();
+
+		if (!validate()) {
+			document.getElementById('password-error').textContent = 'Passwords don\'t match';
+			emptyPasswords();
+			return;
+		}
+
+		submitForm('password-form', () => {
+			route('/profile');
+			displayToast("Password changed successfully.");
+		}, (json) => {
+			document.getElementById('password-error').textContent = json.error;
+			emptyPasswords();
+		});
+	};
 
 	document.getElementById('edit-avatar-button').onclick = showModal;
 	document.getElementById('closeModalBtn').onclick = hideModal;

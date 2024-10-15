@@ -8,8 +8,8 @@
 	padding: 0rem 3rem;
 	max-width: 400px;
 	min-width: 200px;
-	max-height: 600px;
-	min-height: 600px;
+	max-height: 650px;
+	min-height: 650px;
 	margin: 5rem auto 0 auto;
 }
 
@@ -74,10 +74,11 @@
 	padding: 1rem 0.5rem;
 }
 
-.username-container {
-	position: relative;
+.form-container {
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
+	gap: 1rem;
 	padding: 0.5rem;
 }
 
@@ -129,6 +130,25 @@
 	color: var(--base-clr);
 }
 
+.confirm-btn {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--base-clr);
+	color: var(--text-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	height: 3.5rem;
+	width: 80%;
+	cursor: pointer;
+	margin-left: 2.3rem;
+	font-weight: 500;
+}
+
+.confirm-btn:hover {
+	background-color: var(--hover-clr);
+}
+
 .username,
 .password {
 	padding: 0.5rem;
@@ -149,6 +169,8 @@
 }
 
 .modal-content {
+	display: flex;
+	justify-content: space-between;
 	top: 40%;
 	left: 39%;
 	background-color: var(--base-clr);
@@ -156,6 +178,7 @@
 	border-radius: 5px;
 	border: 1px solid var(--line-clr);
 	box-shadow: var(--accent-clr);
+	height: 10rem;
 	width: 400px;
 	max-width: 90%;
 }
