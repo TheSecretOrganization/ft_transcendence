@@ -282,7 +282,6 @@ services:
     volumes:
       - certs:/usr/share/logstash/certs
       - logstashdata01:/usr/share/logstash/data
-      - "./logstash_ingest_data/:/usr/share/logstash/ingest_data/"
       - "./logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro"
     environment:
       - xpack.monitoring.enabled=false
@@ -321,6 +320,10 @@ volumes:
     driver: local
   esdata01:
     driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './es_data/'
   kibanadata:
     driver: local
   logstashdata01:
