@@ -3,7 +3,7 @@ import random
 from uuid import uuid4
 import redis.asyncio as redis
 import logging
-from typing import Any, List, Tuple
+from typing import List, Tuple
 from urllib.parse import parse_qs
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
@@ -31,14 +31,9 @@ class Tournament(AsyncWebsocketConsumer):
                 raise ValueError("Missing name")
 
             lock = await self.redis.get(f"pong_{self.name}_lock")
-            players = await self.redis.lrange(
-                f"pong_{self.name}_username", 0, -1
-            )
+            players = await self.get_decoded_list(f"pong_{self.name}_username")
 
-            if (
-                lock != None
-                and self.user.username.encode("utf-8") not in players
-            ):
+            if lock != None and self.user.username not in players:
                 raise ConnectionRefusedError("Tournament is locked")
 
         except Exception as e:
@@ -61,27 +56,16 @@ class Tournament(AsyncWebsocketConsumer):
         ):
             await self.send(text_data=json.dumps({"type": "creator"}))
 
-        if self.user.username.encode("utf-8") not in players:
-            await self.redis.rpush(f"pong_{self.name}_id", self.user.id)
+        if self.user.username not in players:
             await self.redis.rpush(
                 f"pong_{self.name}_username", self.user.username
             )
 
         await self.channel_layer.group_send(self.name, {"type": "join"})
-        current_games = await self.redis.lrange(
-            f"pong_{self.name}_current_games", 0, -1
-        )
-        await self.send(
-            text_data=json.dumps(
-                {"type": "current_games", "current_games": current_games}
-            )
-        )
-        history = await self.redis.lrange(f"pong_{self.name}_history", 0, -1)
-        await self.send(
-            text_data=json.dumps({"type": "history", "history": history})
-        )
+        await self.send_games_and_archive()
 
     async def disconnect(self, close_code):
+        # delete redis stuff in save db
         await self.channel_layer.group_discard(self.name, self.channel_name)
         await self.redis.close()
 
@@ -118,33 +102,29 @@ class Tournament(AsyncWebsocketConsumer):
             )
 
     async def join(self, event):
-        usernames = await self.redis.lrange(
-            f"pong_{self.name}_username", 0, -1
-        )
-        decoded_usernames = [
-            username.decode("utf-8") for username in usernames
-        ]
         await self.send(
             text_data=json.dumps(
-                {"type": "join", "players": decoded_usernames}
+                {
+                    "type": "join",
+                    "players": self.get_decoded_list(
+                        f"pong_{self.name}_username"
+                    ),
+                }
             )
         )
 
     async def lock(self):
         await self.redis.set(f"pong_{self.name}_lock", 1)
-        usernames = await self.redis.lrange(
-            f"pong_{self.name}_username", 0, -1
-        )
-        self.players = [username.decode("utf-8") for username in usernames]
+        self.players = self.get_decoded_list(f"pong_{self.name}_username")
 
     async def mix(self):
         random.shuffle(self.players)
         player_pairs = []
         uuid_list = []
-        self.last_player = None
+        last_player = None
 
         if len(self.players) % 2 != 0:
-            self.last_player = self.players.pop()
+            last_player = self.players.pop()
 
         for i in range(0, len(self.players), 2):
             player_pairs.append((self.players[i], self.players[i + 1]))
@@ -152,8 +132,9 @@ class Tournament(AsyncWebsocketConsumer):
             uuid_list.append(id)
             await self.redis.rpush(f"pong_{self.name}_current_games", id)
 
-        if self.last_player:
-            player_pairs.append((self.last_player, "-"))
+        if last_player:
+            player_pairs.append((last_player, "-"))
+            self.players.push(last_player)
 
         await self.channel_layer.group_send(
             self.name,
@@ -186,6 +167,14 @@ class Tournament(AsyncWebsocketConsumer):
     async def archive(self, id):
         await self.redis.lrem(f"pong_{self.name}_current_games", 1, id)
         await self.redis.rpush(f"pong_{self.name}_history", id)
+        await self.send_games_and_archive()
+
+    async def get_decoded_list(self, name):
+        l = await self.redis.lrange(name, 0, -1)
+        decoded_list = [el.decode("utf-8") for el in l]
+        return decoded_list
+
+    async def send_games_and_archive(self):
         await self.send(
             text_data=json.dumps(
                 {
@@ -206,8 +195,3 @@ class Tournament(AsyncWebsocketConsumer):
                 }
             )
         )
-
-    async def get_decoded_list(self, name):
-        l = await self.redis.lrange(name, 0, -1)
-        decoded_list = [el.decode("utf-8") for el in l]
-        return decoded_list

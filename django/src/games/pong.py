@@ -3,7 +3,7 @@ import json
 import random
 import redis.asyncio as redis
 import logging
-from typing import Any, List, Tuple
+from typing import Any, List
 from urllib.parse import parse_qs
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
