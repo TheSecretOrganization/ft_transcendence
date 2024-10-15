@@ -106,7 +106,7 @@ class Tournament(AsyncWebsocketConsumer):
             text_data=json.dumps(
                 {
                     "type": "join",
-                    "players": self.get_decoded_list(
+                    "players": await self.get_decoded_list(
                         f"pong_{self.name}_username"
                     ),
                 }
@@ -115,7 +115,7 @@ class Tournament(AsyncWebsocketConsumer):
 
     async def lock(self):
         await self.redis.set(f"pong_{self.name}_lock", 1)
-        self.players = self.get_decoded_list(f"pong_{self.name}_username")
+        self.players = await self.get_decoded_list(f"pong_{self.name}_username")
 
     async def mix(self):
         random.shuffle(self.players)
@@ -134,7 +134,7 @@ class Tournament(AsyncWebsocketConsumer):
 
         if last_player:
             player_pairs.append((last_player, "-"))
-            self.players.push(last_player)
+            self.players.append(last_player)
 
         await self.channel_layer.group_send(
             self.name,
@@ -179,7 +179,7 @@ class Tournament(AsyncWebsocketConsumer):
             text_data=json.dumps(
                 {
                     "type": "current_games",
-                    "current_games": self.get_decoded_list(
+                    "current_games": await self.get_decoded_list(
                         f"pong_{self.name}_current_games"
                     ),
                 }
@@ -189,7 +189,7 @@ class Tournament(AsyncWebsocketConsumer):
             text_data=json.dumps(
                 {
                     "type": "history",
-                    "history": self.get_decoded_list(
+                    "history": await self.get_decoded_list(
                         f"pong_{self.name}_history"
                     ),
                 }
