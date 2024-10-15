@@ -8,7 +8,7 @@ function wsConnect(url, onMessageCallBack=undefined, onErrorCallBack=undefined) 
 
 	if (onErrorCallBack) {
 		socket.onerror = (e) => {
-			onErrorCallBack();
+			onErrorCallBack(e);
 		}
 	}
 

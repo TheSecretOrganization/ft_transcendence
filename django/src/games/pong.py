@@ -34,12 +34,19 @@ class Game(AsyncWebsocketConsumer):
             await self.close()
             return
 
-        self.valid = True
         await self.accept()
-        await self.channel_layer.group_add(self.room_id, self.channel_name)
         logger.info(
             f"User {self.user.id} successfully connected to room {self.room_id}."
         )
+
+        if self.watch:
+            await self.channel_layer.group_add(
+                f"{self.room_id}_watcher", self.channel_name
+            )
+            return
+
+        self.valid = True
+        await self.channel_layer.group_add(self.room_id, self.channel_name)
         await self.send_message("group", "game_join", {"user": self.user.id})
         await self.send_message("client", "game_pad", {"game_pad": self.pad_n})
         if self.tournament_name != "":
@@ -51,10 +58,14 @@ class Game(AsyncWebsocketConsumer):
 
     async def initialize_game(self):
         query_params = parse_qs(self.scope["query_string"].decode())
-        logger.warning(query_params)
+        self.room_id = self.check_missing_param(query_params, "room_id")
+        self.watch = query_params.get("watch", [None])[0] != None
+
+        if self.watch:
+            return
+
         self.mode = self.check_missing_param(query_params, "mode")
         player_needed = self.check_missing_param(query_params, "player_needed")
-        self.room_id = self.check_missing_param(query_params, "room_id")
         self.tournament_name = self.check_missing_param(
             query_params, "tournament_name"
         )
@@ -89,12 +100,20 @@ class Game(AsyncWebsocketConsumer):
         self.connected = False
 
         if hasattr(self, "host") and self.host:
+            await self.channel_layer.group_send(
+                f"{self.room_id}_watcher",
+                {"type": "watcher_stop", "id": self.room_id},
+            )
             players = await self.redis.lrange(f"pong_{self.room_id}_id", 0, -1)
+
             if hasattr(self, "game_task"):
                 self.game_task.cancel()
+
             await self.redis.delete(self.room_id)
             await self.redis.delete(f"pong_{self.room_id}_id")
+            await self.redis.delete(f"{self.room_id}_watcher")
             logger.info(f"Room {self.room_id} has been closed by the host.")
+
             if self.mode == "online" and len(players) == 2:
                 if not hasattr(self, "winner"):
                     self.punish_coward(self.info.creator)
@@ -106,6 +125,11 @@ class Game(AsyncWebsocketConsumer):
             )
             await self.channel_layer.group_discard(
                 self.room_id, self.channel_name
+            )
+
+        if self.watch:
+            await self.channel_layer.group_discard(
+                f"{self.room_id}_watcher", self.channel_name
             )
 
         await self.redis.close()
@@ -184,6 +208,10 @@ class Game(AsyncWebsocketConsumer):
         await self.send_message("client", args=event)
         await self.close()
 
+    async def watcher_stop(self, event):
+        await self.send_message("client", args=event)
+        await self.close()
+
     def punish_coward(self, coward):
         if not coward:
             return
@@ -196,10 +224,11 @@ class Game(AsyncWebsocketConsumer):
     async def loop(self):
         fps = 0.033
         self.reset_game()
+        await self.send_game_state("watch")
         while True:
             try:
                 self.ball.move()
-                self.handle_collisions()
+                await self.handle_collisions()
                 if (
                     self.info.score[0] == self.win_goal
                     or self.info.score[1] == self.win_goal
@@ -234,7 +263,7 @@ class Game(AsyncWebsocketConsumer):
         pad.y = min(max(pad.y + step, 0), 1 - pad.height)
         await self.send_game_state()
 
-    def handle_collisions(self):
+    async def handle_collisions(self):
         if (
             self.ball.y - self.ball.radius / 2 <= 0
             or self.ball.y + self.ball.radius / 2 >= 1
@@ -247,9 +276,9 @@ class Game(AsyncWebsocketConsumer):
             else:
                 self.ball.x = 1 - self.pad_2.width - self.ball.radius / 2
         elif self.ball.x + self.ball.radius / 2 <= self.pad_1.width:
-            self.score_point(1)
+            await self.score_point(1)
         elif self.ball.x - self.ball.radius / 2 >= 1 - self.pad_2.width:
-            self.score_point(0)
+            await self.score_point(0)
 
     def check_pad_collision(self):
         if self.ball.x - self.ball.radius <= self.pad_1.width:
@@ -260,9 +289,10 @@ class Game(AsyncWebsocketConsumer):
                 return True
         return False
 
-    def score_point(self, winner: int):
+    async def score_point(self, winner: int):
         self.info.score[winner] += 1
         self.reset_game()
+        await self.send_game_state("watch")
 
     def reset_game(self):
         self.ball.reset()
@@ -273,15 +303,19 @@ class Game(AsyncWebsocketConsumer):
         message = {"type": msg_type, "content": args} if msg_type else args
         if destination == "group":
             await self.channel_layer.group_send(self.room_id, message)
+        elif destination == "watch":
+            await self.channel_layer.group_send(
+                f"{self.room_id}_watcher", message
+            )
         elif destination == "client":
             await self.send(text_data=json.dumps(message))
 
     async def send_error(self, error: str):
         await self.send_message("client", "game_error", {"error": error})
 
-    async def send_game_state(self):
+    async def send_game_state(self, destination="group"):
         await self.send_message(
-            "group",
+            destination,
             "game_state",
             {
                 "score": self.info.score,
@@ -428,6 +462,18 @@ class Tournament(AsyncWebsocketConsumer):
             )
 
         await self.channel_layer.group_send(self.name, {"type": "join"})
+        current_games = await self.redis.lrange(
+            f"pong_{self.name}_current_games", 0, -1
+        )
+        await self.send(
+            text_data=json.dumps(
+                {"type": "current_games", "current_games": current_games}
+            )
+        )
+        history = await self.redis.lrange(f"pong_{self.name}_history", 0, -1)
+        await self.send(
+            text_data=json.dumps({"type": "history", "history": history})
+        )
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.name, self.channel_name)
@@ -453,6 +499,8 @@ class Tournament(AsyncWebsocketConsumer):
                     await self.lock()
                 case "mix":
                     await self.mix()
+                case "archive":
+                    await self.archive(data.id)
                 case _:
                     raise ValueError("Unknown 'type' in data")
         except Exception as e:
@@ -494,12 +542,13 @@ class Tournament(AsyncWebsocketConsumer):
 
         for i in range(0, len(self.players), 2):
             player_pairs.append((self.players[i], self.players[i + 1]))
-            uuid_list.append(str(uuid4()))
+            id = str(uuid4())
+            uuid_list.append(id)
+            await self.redis.rpush(f"pong_{self.name}_current_games", id)
 
         if self.last_player:
             player_pairs.append((self.last_player, "-"))
 
-        self.match_history = getattr(self, "match_history", []) + uuid_list
         await self.channel_layer.group_send(
             self.name,
             {
@@ -527,3 +576,19 @@ class Tournament(AsyncWebsocketConsumer):
             )
             await self.send(text_data=json.dumps(message))
             break
+
+    async def archive(self, id):
+        await self.redis.lrem(f"pong_{self.name}_current_games", 1, id)
+        await self.redis.rpush(f"pong_{self.name}_history", id)
+        current_games = await self.redis.lrange(
+            f"pong_{self.name}_current_games", 0, -1
+        )
+        await self.send(
+            text_data=json.dumps(
+                {"type": "current_games", "current_games": current_games}
+            )
+        )
+        history = await self.redis.lrange(f"pong_{self.name}_history", 0, -1)
+        await self.send(
+            text_data=json.dumps({"type": "history", "history": history})
+        )

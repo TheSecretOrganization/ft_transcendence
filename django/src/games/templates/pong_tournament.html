@@ -19,6 +19,16 @@
 		<tbody></tbody>
 	</table>
 
+	<h2 class="text-start fs-4 fw-bold mb-3">History</h2>
+	<table id="history" class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>ID</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+
 	<button id="lock-btn" class="btn btn-primary hidden" disabled>Lock</button>
 	<button id="mix-btn" class="btn btn-success hidden" disabled>Mix</button>
 </div>
@@ -28,6 +38,7 @@
 	const lockBtn = document.getElementById("lock-btn");
 	const mixBtn = document.getElementById("mix-btn");
 	const playersTbl = document.getElementById("players");
+	let gameWatchers = []
 
 	function onMessage(data) {
 		if (data?.type === undefined) {
@@ -41,6 +52,8 @@
 			case "mix": handleMix(data.player_pairs); break;
 			case "next_round_id": route(`/pong/online/${data.id}/{{ name }}`); break;
 			case "bye": displayToast("You have received a bye for this round. Enjoy the break!"); break;
+			case "current_games": handleCurrentGames(data.current_games); break;
+			case "history": handleHistory(data.history); break;
 			default: console.error("Invalid message from server ignored."); break;
 		}
 	}
@@ -63,11 +76,11 @@
 		lockBtn.disabled = false;
 	}
 
-	function handleMix(player_pairs) {
+	function handleMix(playerPairs) {
 		const tableBody = document.querySelector("#next-round tbody");
 		tableBody.innerHTML = '';
 
-		player_pairs.forEach(element => {
+		playerPairs.forEach(element => {
 			const row = document.createElement('tr');
 			const player1 = document.createElement('td');
 			const player2 = document.createElement('td');
@@ -79,7 +92,72 @@
 		});
 	}
 
+	function handleCurrentGames(currentGames) {
+		closeWatchers();
+		currentGames.forEach(id => {
+			watcher = wsConnect(wsCreateUrl("pong", {
+				"room_id": id,
+				"watch": true,
+			}), onWactherMessage, onWatcherError);
+			watcher.id = id;
+			gameWatchers.push(watcher);
+		});
+	}
+
+	function handleHistory(history) {
+		const tableBody = document.querySelector("#history tbody");
+		tableBody.innerHTML = '';
+
+		history.forEach(element => {
+			const row = document.createElement('tr');
+			const id = document.createElement('td');
+			id.textContent = element;
+			row.appendChild(id);
+			tableBody.appendChild(row);
+		});
+	}
+
+	function closeWatchers() {
+		while (gameWatchers.length > 0) {
+			watcher = gameWatchers.pop();
+			watcher.close()
+		}
+	}
+
+	function onWatcherError(e) {
+		console.log(e);
+		socket.send(JSON.stringify({ type: "close_game", "id": e.target.id }));
+	}
+
+	function onWactherMessage(data) {
+		console.log(data);
+		if (data?.type === undefined) {
+			console.error("Invalid message from watcher ignored.");
+			return;
+		}
+
+		switch (data.type) {
+			case "game_state": handleGameState(); break;
+			case "watcher_stop": handleWatcherStop(data.id); break;
+			default: console.error("Invalid message from watcher ignored."); break;
+		}
+	}
+
+	function handleGameState() {
+
+	}
+
+	function handleWatcherStop(id) {
+		const index = gameWatchers.findIndex(watcher => watcher.id === id);
+		if (index !== -1) {
+			watcher = gameWatchers.splice(index, 1)[0];
+			watcher.close();
+			socket.send(JSON.stringify({"type": "archive", "id": id}));
+		}
+	}
+
 	function exit(reroute = true) {
+		closeWatchers();
 		if (socket)
 			socket.close();
 		if (reroute)
