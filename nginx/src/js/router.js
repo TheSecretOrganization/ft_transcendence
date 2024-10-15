@@ -52,6 +52,13 @@ async function handleLocation() {
 	content.innerHTML = html;
 	content.querySelectorAll('script').forEach(script => eval(script.textContent));
 	updateActiveRoute(path);
+
+	document.querySelectorAll('[data-route]').forEach((element) => {
+		element.addEventListener("click", (event) => {
+			event.preventDefault();
+			route(event.target.getAttribute('href'));
+		});
+	});
 }
 
 function resetEvents() {
