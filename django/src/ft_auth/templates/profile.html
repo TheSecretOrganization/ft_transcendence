@@ -50,11 +50,14 @@
 <div id="avatarModal" class="modal-overlay" style="display:none;">
 	<div class="modal-content">
 		<button type="button" class="close-button" id="closeModalBtn">&times;</button>
-		<h2>Upload New Avatar</h2>
-		<form id="avatarForm" enctype="multipart/form-data">
+		<h2 class="form-title">Upload New Avatar</h2>
+		<hr class="profile-divider">
+		<form id="avatarForm" enctype="multipart/form-data" class="avatar-form">
 			{% csrf_token %}
-			<input type="file" name="avatar" accept="image/*" required>
-			<button type="submit">Upload</button>
+			<input type="file" name="avatar" id="avatarInput" accept="image/*" required style="display: none;">
+			<label for="avatarInput" class="custom-file-label">Choose File</label>
+			<span id="file-name" class="file-name">No file chosen</span>
+			<button type="submit" class="upload-btn">Upload</button>
 		</form>
 	</div>
 </div>
@@ -101,6 +104,12 @@
 			document.getElementById('password-error').textContent = json.error;
 			emptyPasswords();
 		});
+	};
+
+	document.getElementById('avatarInput').onchange = function () {
+		const fileInput = document.getElementById('avatarInput');
+		const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
+		document.getElementById('file-name').textContent = fileName;
 	};
 
 	document.getElementById('edit-avatar-button').onclick = showModal;

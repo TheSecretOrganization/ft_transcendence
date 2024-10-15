@@ -134,7 +134,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: var(--base-clr);
+	background-color: var(--hover-clr);
 	color: var(--text-clr);
 	border: 1px solid var(--line-clr);
 	border-radius: 5px;
@@ -146,7 +146,7 @@
 }
 
 .confirm-btn:hover {
-	background-color: var(--hover-clr);
+	background-color: var(--dark-hover-clr);
 }
 
 .username,
@@ -170,7 +170,7 @@
 
 .modal-content {
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-around;
 	top: 40%;
 	left: 39%;
 	background-color: var(--base-clr);
@@ -178,7 +178,7 @@
 	border-radius: 5px;
 	border: 1px solid var(--line-clr);
 	box-shadow: var(--accent-clr);
-	height: 10rem;
+	height: 9rem;
 	width: 400px;
 	max-width: 90%;
 }
@@ -192,4 +192,56 @@
 	top: -5px;
 	right: 10px;
 	color: var(--text-clr);
+}
+
+.avatar-form {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	padding-top: 1rem;
+	width: 100%;
+}
+
+.upload-btn {
+	background-color: var(--hover-clr);
+	color: var(--accent-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	padding: 0.7rem;
+	cursor: pointer;
+	display: flex;
+	align-items: baseline;
+	justify-content: flex-end;
+}
+
+.upload-btn:hover {
+	background-color: var(--dark-hover-clr);
+}
+
+.custom-file-label {
+	background-color: var(--hover-clr);
+	color: var(--accent-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	padding: 0.7rem;
+	cursor: pointer;
+	display: flex;
+	align-items: baseline;
+	justify-content: flex-start;
+}
+
+.custom-file-label:hover {
+	background-color: var(--primary-clr-dark);
+}
+
+.form-title {
+	display: flex;
+	justify-content: center;
+	padding-bottom: 1rem;
+}
+
+.file-name {
+	margin-left: -30px;
+	font-size: 14px;
+	color: #555;
 }
