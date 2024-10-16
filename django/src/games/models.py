@@ -26,7 +26,7 @@ class Pong(models.Model):
 
 
 class PongTournament(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     winner = models.ForeignKey(
         get_user_model(),
         on_delete=models.SET_NULL,
