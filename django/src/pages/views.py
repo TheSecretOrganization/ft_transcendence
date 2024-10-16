@@ -1,3 +1,4 @@
+import re
 from uuid import uuid4
 from django.db.models import Q
 from django.views.decorators.http import require_GET
@@ -6,6 +7,8 @@ from django.template.loader import get_template
 from urllib.parse import quote
 from friends.models import Friend
 from logging import getLogger
+from ft_auth.models import User
+from games.models import Pong
 import os
 
 logger = getLogger(__name__)
@@ -51,6 +54,11 @@ def pong_local(request):
 
 @require_GET
 def pong_online(request, id=None):
+	uuid_regex = re.compile(r'^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$', re.IGNORECASE)
+
+	if id != None and not uuid_regex.match(str(id)):
+		return JsonResponse({'redirect': '/'}, status=403)
+
 	return create_response(
 		request=request,
 		template_name='pong_game.html',
@@ -93,3 +101,16 @@ def authentification(request: HttpRequest):
 		'oauth_url': (f"https://api.intra.42.fr/oauth/authorize?client_id={os.getenv('OAUTH_UID')}"
 		  f"&redirect_uri={quote(os.getenv('OAUTH_FALLBACK'))}&response_type=code"),
 	}, title='Authentification')
+
+@require_GET
+def profiles(request: HttpRequest, username: str):
+	target = User.objects.filter(username=username)
+	if not target.exists():
+		return JsonResponse({'error': 'User unknown'}, status=404)
+	target = target.first()
+	games = Pong.objects.filter(Q(user1=target) | Q(user2=target))
+	win = 0
+	for game in games:
+		if (target.id is game.user1.id and game.score1 > game.score2) or (target.id is game.user2.id and game.score2 > game.score1):
+			win += 1
+	return create_response(request, 'profiles.html', {'target': target, 'games': games, 'wins': win}, title=f"{target.username} Profile")

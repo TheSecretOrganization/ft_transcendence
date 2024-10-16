@@ -1,0 +1,19 @@
+{% extends "./extends/base.html" %}
+
+{% block content %}
+<div>
+	<h3>{{ target.username }}</h3>
+	{% if games.count == 0 %}
+	<p>Nerver played a game!</p>
+	{% else %}
+	<h2>Games history</h2>
+	<p>Wins: {{ wins }} on {{ games.count }}</p>
+	{% for game in games %}
+	<div>
+		<p>{{ game.user1.username }} vs {{ game.user2.username }}</p>
+		<p>{{ game.score1 }} @ {{ game.score2 }}</p>
+	</div>
+	{% endfor %}
+	{% endif %}
+</div>
+{% endblock %}
