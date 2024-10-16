@@ -1,26 +1,41 @@
 {% extends "./extends/base.html" %}
 
 {% block content %}
-<div class="container">
-	<div game-menu="main">
-		<a class="btn btn-primary text-decoration-none" data-route href="/pong/local">Local Game</a>
-		<button class="btn btn-danger" menu-id="online">Online Play</button>
-	</div>
+<div class="container-fluid">
+	<div class="row justify-content-center align-items-center w-35 h-100">
+		<div class="col-12 col-md-3" id="main-pong-column">
+			<div game-menu="main" class="row">
+				<a class="btn pong-selection-buttons pong-btn-scnd-color text-decoration-none mb-4 w-100 fw-bold"
+					data-route href="/pong/local">Local Game</a>
+				<button class="btn pong-selection-buttons mt-4 w-100 fw-bold" menu-id="online">Online Play</button>
+			</div>
 
-	<div game-menu="online">
-		<a class="btn btn-primary text-decoration-none" data-route href="/pong/online">Create a Room</a>
-		<button class="btn btn-danger text-decoration-none" menu-id="join">Join a Room</button>
-		<a class="btn btn-warning text-decoration-none" data-route href="/tournament/pong">Join a Tournament</a>
-	</div>
+			<div game-menu="online" class="row">
+				<a class="btn pong-selection-buttons pong-btn-scnd-color text-decoration-none mb-2 w-100 fw-bold"
+					data-route href="/pong/online">Create a
+					Room</a>
+				<button class="btn pong-selection-buttons text-decoration-none mt-2 mb-4 w-100 fw-bold"
+					menu-id="join">Join a Room</button>
+				<hr class="row-divider">
+				<a class="btn pong-selection-buttons pong-btn-scnd-color text-decoration-none my-4 w-100 fw-bold"
+					data-route href="/tournament/pong">Join a Tournament</a>
+			</div>
 
-	<div game-menu="join">
-		<form class="form-group" id="join-form">
-			<input class="form-control" type="text" id="join-id" placeholder="Room Id">
-			<button type="submit" class="btn btn-primary">Join</button>
-		</form>
-	</div>
+			<div game-menu="join" class="row w-100">
+				<form class="form-group my-4 w-100" id="join-form">
+					<div class="form-floating w-100 room-input-container mb-4">
+						<input class="form-control w-100 room-input" type="text" id="join-id" placeholder="Room Id">
+						<label for="join-id" class="w-100 room-input">Room ID</label>
+					</div>
+					<button type="submit"
+						class="btn pong-selection-buttons pong-btn-scnd-color text-decoration-none mb-4 w-100 fw-bold">Join</button>
+				</form>
+			</div>
 
-	<button class="btn btn-success" id="back-btn" menu-id="main">Back</button>
+			<button class="btn pong-selection-buttons px-3 w-90 h-90 mx-auto fw-bold" id="back-btn"
+				menu-id="main">Back</button>
+		</div>
+	</div>
 </div>
 
 <script>

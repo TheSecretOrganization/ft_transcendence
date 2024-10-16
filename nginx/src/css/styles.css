@@ -2,6 +2,7 @@
 
 :root {
 	--base-clr: #f3e2f0;
+	--secondary-base-clr: #dac3d6;
 	--line-clr: #b21313;
 	--hover-clr: #dfbac8;
 	--text-clr: #000;
@@ -43,7 +44,7 @@ body {
 }
 
 .hidden {
-	display: none;
+	display: none !important;
 }
 
 #content-wrapper {
