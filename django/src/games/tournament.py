@@ -77,18 +77,24 @@ class Tournament(AsyncWebsocketConsumer):
         await self.send_message("group", {"type": "join"})
 
     async def disconnect(self, close_code):
-        creator_encoded = await self.redis.get(f"pong_{self.name}_creator")
-        creator = creator_encoded.decode("utf-8")
+        try:
+            creator_encoded = await self.redis.get(f"pong_{self.name}_creator")
+            creator = creator_encoded.decode("utf-8")
 
-        if hasattr(self, "end_tournament") and creator == self.user.username:
-            await self.redis.delete(f"pong_{self.name}_lock")
-            await self.redis.delete(f"pong_{self.name}_ready")
-            await self.redis.delete(f"pong_{self.name}_creator")
-            await self.redis.delete(f"pong_{self.name}_players")
-            await self.redis.delete(f"pong_{self.name}_usernames")
-            await self.redis.delete(f"pong_{self.name}_current_games")
-            await self.redis.delete(f"pong_{self.name}_history")
-            await self.redis.delete(f"pong_{self.name}_history_ids")
+            if (
+                hasattr(self, "end_tournament")
+                and creator == self.user.username
+            ):
+                await self.redis.delete(f"pong_{self.name}_lock")
+                await self.redis.delete(f"pong_{self.name}_ready")
+                await self.redis.delete(f"pong_{self.name}_creator")
+                await self.redis.delete(f"pong_{self.name}_players")
+                await self.redis.delete(f"pong_{self.name}_usernames")
+                await self.redis.delete(f"pong_{self.name}_current_games")
+                await self.redis.delete(f"pong_{self.name}_history")
+                await self.redis.delete(f"pong_{self.name}_history_ids")
+        except AttributeError as e:
+            logger.debug(str(e))
 
         await self.channel_layer.group_discard(self.name, self.channel_name)
         await self.redis.close()
