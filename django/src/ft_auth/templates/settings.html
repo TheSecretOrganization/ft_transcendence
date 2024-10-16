@@ -47,7 +47,7 @@
 	</div>
 </div>
 
-<div id="avatarModal" class="modal-overlay" style="display:none;">
+<div id="avatarModal" class="modal-overlay hidden">
 	<div class="modal-content">
 		<button type="button" class="close-button" id="closeModalBtn">&times;</button>
 		<h2 class="form-title">Upload New Avatar</h2>
@@ -66,12 +66,12 @@
 <script>
 	function showModal() {
 		const modal = document.getElementById('avatarModal');
-		modal.style.display = 'block';
+		modal.classList.remove("hidden");
 	}
 
 	function hideModal() {
 		const modal = document.getElementById('avatarModal');
-		modal.style.display = 'none';
+		modal.classList.add("hidden");
 	}
 
 	function validate() {

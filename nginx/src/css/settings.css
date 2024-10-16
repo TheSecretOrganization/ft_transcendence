@@ -163,7 +163,7 @@
 	justify-content: center;
 	align-items: center;
 	z-index: 1000;
-	display: none;
+	display: hidden;
 }
 
 .modal-content {
@@ -242,14 +242,11 @@
 .file-name {
 	display: inline-block;
 	max-width: 200px;
-	/* Adjust this width as needed */
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	vertical-align: middle;
 	margin-left: 10px;
-	/* Add space between the label and the file name */
 	font-size: 0.9em;
 	color: #555;
-	/* Optional: adjust the text color */
 }
