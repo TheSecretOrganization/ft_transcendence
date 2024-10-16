@@ -30,29 +30,32 @@
 	</table>
 
 	<button id="lock-btn" class="btn btn-primary hidden" disabled>Lock</button>
+	<button id="ready-btn" class="btn btn-primary hidden" disabled>Ready</button>
 	<button id="mix-btn" class="btn btn-success hidden" disabled>Mix</button>
 </div>
 
 <script>
 	const socket = wsConnect(wsCreateUrl("pong_tournament", { "name": "{{ name }}" }), onMessage, exit);
 	const lockBtn = document.getElementById("lock-btn");
+	const readyBtn = document.getElementById("ready-btn");
 	const mixBtn = document.getElementById("mix-btn");
 	const playersTbl = document.getElementById("players");
-	let gameWatchers = []
 
 	function onMessage(data) {
+		console.log(data);
 		if (data?.type === undefined) {
 			console.error("Invalid message from server ignored.");
 			return;
 		}
 
 		switch (data.type) {
+			case "unlock_lock": showBtn(lockBtn); break;
+			case "unlock_ready": showBtn(readyBtn); break;
+			case "unlock_mix": showBtn(mixBtn); break;
 			case "join": handleJoin(data.players); break;
-			case "creator": handleCreator(); break;
 			case "mix": handleMix(data.player_pairs); break;
 			case "next_round_id": route(`/pong/online/${data.id}/{{ name }}`); break;
 			case "bye": displayToast("You have received a bye for this round. Enjoy the break!"); break;
-			case "current_games": handleCurrentGames(data.current_games); break;
 			case "history": handleHistory(data.history); break;
 			default: console.error("Invalid message from server ignored."); break;
 		}
@@ -71,9 +74,14 @@
 		});
 	}
 
-	function handleCreator() {
-		lockBtn.classList.remove("hidden");
-		lockBtn.disabled = false;
+	function showBtn(btn) {
+		btn.classList.remove("hidden");
+		btn.disabled = false;
+	}
+
+	function hideBtn(btn) {
+		btn.classList.add("hidden");
+		btn.disabled = true;
 	}
 
 	function handleMix(playerPairs) {
@@ -92,18 +100,6 @@
 		});
 	}
 
-	function handleCurrentGames(currentGames) {
-		closeWatchers();
-		currentGames.forEach(id => {
-			watcher = wsConnect(wsCreateUrl("pong", {
-				"room_id": id,
-				"watch": true,
-			}), onWactherMessage, onWatcherError);
-			watcher.id = id;
-			gameWatchers.push(watcher);
-		});
-	}
-
 	function handleHistory(history) {
 		const tableBody = document.querySelector("#history tbody");
 		tableBody.innerHTML = '';
@@ -117,47 +113,7 @@
 		});
 	}
 
-	function closeWatchers() {
-		while (gameWatchers.length > 0) {
-			watcher = gameWatchers.pop();
-			watcher.close()
-		}
-	}
-
-	function onWatcherError(e) {
-		console.log(e);
-		socket.send(JSON.stringify({ type: "close_game", "id": e.target.id }));
-	}
-
-	function onWactherMessage(data) {
-		console.log(data);
-		if (data?.type === undefined) {
-			console.error("Invalid message from watcher ignored.");
-			return;
-		}
-
-		switch (data.type) {
-			case "game_state": handleGameState(); break;
-			case "watcher_stop": handleWatcherStop(data.id); break;
-			default: console.error("Invalid message from watcher ignored."); break;
-		}
-	}
-
-	function handleGameState() {
-
-	}
-
-	function handleWatcherStop(id) {
-		const index = gameWatchers.findIndex(watcher => watcher.id === id);
-		if (index !== -1) {
-			watcher = gameWatchers.splice(index, 1)[0];
-			watcher.close();
-			socket.send(JSON.stringify({"type": "archive", "id": id}));
-		}
-	}
-
 	function exit(reroute = true) {
-		closeWatchers();
 		if (socket)
 			socket.close();
 		if (reroute)
@@ -176,16 +132,17 @@
 			displayToast("You are alone in the tournament...");
 			return;
 		}
-		lockBtn.classList.add("hidden");
-		lockBtn.disabled = true;
+		hideBtn(lockBtn);
 		socket.send(JSON.stringify({ type: "lock" }));
-		mixBtn.classList.remove("hidden");
-		mixBtn.disabled = false;
+	}
+
+	readyBtn.onclick = () => {
+		hideBtn(readyBtn);
+		socket.send(JSON.stringify({ type: "ready" }));
 	}
 
 	mixBtn.onclick = () => {
-		mixBtn.classList.add("hidden");
-		mixBtn.disabled = true;
+		hideBtn(mixBtn);
 		socket.send(JSON.stringify({ type: "mix" }));
 	}
 
