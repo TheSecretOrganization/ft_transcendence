@@ -62,7 +62,9 @@ class Tournament(AsyncWebsocketConsumer):
                 await self.archive()
 
         await self.send_history()
-        await self.check_current_games_state()
+
+        if lock:
+            await self.check_current_games_state()
 
         if self.user.username not in players:
             await self.redis.rpush(
@@ -217,26 +219,28 @@ class Tournament(AsyncWebsocketConsumer):
         for uuid in current_games:
             try:
                 game = await sync_to_async(pong.objects.get)(uuid=uuid)
-                await self.redis.lrem(
-                    f"pong_{self.name}_current_games", 1, uuid
-                )
-                await self.redis.rpush(
-                    f"pong_{self.name}_history",
-                    json.dumps(
-                        {
-                            "user1": await sync_to_async(
-                                lambda: game.user1.username
-                            )(),
-                            "user2": await sync_to_async(
-                                lambda: game.user2.username
-                            )(),
-                            "score1": game.score1,
-                            "score2": game.score2,
-                        }
-                    ),
-                )
             except pong.DoesNotExist:
                 continue
+
+            user1 = await sync_to_async(lambda: game.user1.username)()
+            user2 = await sync_to_async(lambda: game.user2.username)()
+            loser = user2 if game.score1 > game.score2 else user1
+            await self.redis.lrem(f"pong_{self.name}_current_games", 1, uuid)
+            await self.redis.lrem(f"pong_{self.name}_players", 1, loser)
+            logger.warning(
+                await self.get_decoded_list(f"pong_{self.name}_players")
+            )
+            await self.redis.rpush(
+                f"pong_{self.name}_history",
+                json.dumps(
+                    {
+                        "user1": user1,
+                        "user2": user2,
+                        "score1": game.score1,
+                        "score2": game.score2,
+                    }
+                ),
+            )
 
     async def send_history(self):
         await self.send(
