@@ -15,7 +15,7 @@
 				</button>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
 					<li><a class="dropdown-item" data-route href="#">Profile</a></li>
-					<li><a class="dropdown-item" data-route href="#">Settings</a></li>
+					<li><a class="dropdown-item" data-route href="/settings">Settings</a></li>
 					<li>
 						<hr class="dropdown-divider">
 					</li>
@@ -139,13 +139,6 @@
 			ul.previousElementSibling.classList.remove('rotate')
 		})
 	}
-
-	document.querySelectorAll('[data-route]').forEach((element) => {
-		element.addEventListener("click", (event) => {
-			event.preventDefault();
-			route(event.target.getAttribute('href'));
-		});
-	});
 
 	document.getElementById("logout-button-navbar")?.addEventListener("click", function (e) {
 		logout();
