@@ -4,9 +4,9 @@
 <div>
 	<h3>{{ target.username }}</h3>
 	{% if games.count == 0 %}
-	<p>Nerver played a game!</p>
+	<p>{% trans "Nerver played a game!" %}</p>
 	{% else %}
-	<h2>Games history</h2>
+	<h2>{% trans "Games history" %}Games history</h2>
 	<p>Wins: {{ wins }} on {{ games.count }}</p>
 	{% for game in games %}
 	<div>

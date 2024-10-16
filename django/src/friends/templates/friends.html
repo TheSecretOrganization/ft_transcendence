@@ -1,29 +1,29 @@
 {% extends './extends/base.html' %}
 
 {% block content %}
-<h1>Friends</h1>
+<h1>{% trans "Friends" %}</h1>
 <form id="invite-form" data-url="/api/friends/invite/">
 	<div>
 		<div id="invite-error"></div>
-		<label for="target">Target</label>
+		<label for="target">{% trans "Target" %}</label>
 		<input id="target" type="text" name="target">
 	</div>
-	<button id="invite-btn" type="submit">Invite</button>
+	<button id="invite-btn" type="submit">{% trans "Invite" %}</button>
 </form>
 {% if friends.count == 0 %}
-<p>You don't have any friend :/</p>
+<p>{% trans "You don't have any friend :/" %}</p>
 {% else %}
 <div id="show-error"></div>
 {% for friend in friends %}
 <div>
 	<h4>{{ friend.other_user.username }}</h4>
-	<p>Status: {{ friend.get_status_display }}</p>
+	<p>{% trans "Status: " %}{{ friend.get_status_display }}</p>
 	<div>
 		{% if friend.status == 1 and friend.target == user %}
-		<button id="accept-btn" data-invite="{{ friend.id }}">Accept</button>
-		<button id="deny-btn" data-invite="{{ friend.id }}">Deny</button>
+		<button id="accept-btn" data-invite="{{ friend.id }}">{% trans "Accept" %}</button>
+		<button id="deny-btn" data-invite="{{ friend.id }}">{% trans "Deny" %}</button>
 		{% else %}
-		<button id="delete-btn" data-invite="{{ friend.id }}">Delete</button>
+		<button id="delete-btn" data-invite="{{ friend.id }}">{% trans "Delete" %}</button>
 		{% endif %}
 	</div>
 </div>
@@ -33,14 +33,14 @@
 <script>
 	function registerBtn(id, route) {
 		let el = document.getElementById(id);
-		if (el == null) return ;
+		if (el == null) return;
 		if (!('invite' in el.dataset)) {
 			console.error(`Any invite data in ${el}`);
-			return ;
+			return;
 		}
 		let inviteId = el.dataset.invite;
 		el.onclick = function (e) {
-			postFetch(`/api/friends/${route}/`, {'invite_id': inviteId})
+			postFetch(`/api/friends/${route}/`, { 'invite_id': inviteId })
 				.then(response => {
 					if (response.status == 200)
 						handleLocation();
@@ -55,7 +55,7 @@
 	registerBtn('deny-btn', 'deny');
 	registerBtn('delete-btn', 'delete');
 
-	document.getElementById('invite-btn').onclick = function(e) {
+	document.getElementById('invite-btn').onclick = function (e) {
 		e.preventDefault();
 		let divError = document.getElementById('invite-error');
 		divError.textContent = '';
