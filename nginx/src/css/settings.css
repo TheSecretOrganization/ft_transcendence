@@ -1,0 +1,251 @@
+.profile-container {
+	font-family: 'Poppins', sans-serif;
+	text-align: center;
+	background-color: var(--base-clr);
+	box-shadow: 0 4px 5px var(--accent-clr);
+	border: 3px solid var(--line-clr);
+	border-radius: 15px;
+	padding: 0rem 3rem;
+	max-width: 400px;
+	min-width: 200px;
+	max-height: 650px;
+	min-height: 650px;
+	margin: 5rem auto 0 auto;
+}
+
+.profile-header {
+	display: flex;
+	background-color: var(--base-clr);
+	padding: 2rem;
+	justify-content: center;
+}
+
+.profile-title {
+	display: flex;
+	font-size: 2rem;
+	padding: 2rem 0.5rem;
+	margin-right: 2rem;
+	justify-content: center;
+	align-items: center;
+}
+
+.profile-image-wrapper {
+	position: relative;
+	display: inline-block;
+}
+
+.profile-image-container {
+	overflow: hidden;
+	width: 200px;
+	height: 200px;
+	border: 1px solid var(--accent-clr);
+	border-radius: 50%;
+	box-shadow: 0 4px 5px var(--accent-clr);
+}
+
+.profile-image-container img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.edit-icon {
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+	padding: 5px;
+	cursor: pointer;
+	z-index: 1;
+}
+
+.profile-divider {
+	border: 1px solid var(--line-clr);
+	width: 75%;
+	margin: 0.5rem auto;
+}
+
+.profile-content {
+	display: flex;
+	flex-direction: column;
+	align-items: space-between;
+	gap: 1rem;
+	padding: 1rem 0.5rem;
+}
+
+.form-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 1rem;
+	padding: 0.5rem;
+}
+
+.password-container {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	border: 1px solid var(--line-clr);
+	background-color: var(--light-base-clr);
+	padding: 2rem;
+	border-radius: 5px;
+	width: 95%;
+}
+
+
+.username {
+	font-size: 3rem;
+}
+
+.password {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	max-width: 100%;
+	padding: 0.5rem;
+	font-family: 'Poppins', sans-serif;
+	font-size: 1rem;
+}
+
+.edit-button {
+	background-color: var(--base-clr);
+	color: var(--accent-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 50%;
+	width: 3rem;
+	height: 3rem;
+	padding: 0;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.edit-button:hover {
+	background-color: var(--hover-clr);
+	color: var(--base-clr);
+}
+
+.confirm-btn {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--hover-clr);
+	color: var(--text-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	height: 3.5rem;
+	width: 80%;
+	cursor: pointer;
+	margin-left: 2.3rem;
+	font-weight: 500;
+}
+
+.confirm-btn:hover {
+	background-color: var(--dark-hover-clr);
+}
+
+.username,
+.password {
+	padding: 0.5rem;
+}
+
+.modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.modal-content {
+	display: flex;
+	justify-content: space-evenly;
+	top: 40%;
+	left: 36%;
+	background-color: var(--base-clr);
+	padding: 20px;
+	border-radius: 5px;
+	border: 1px solid var(--line-clr);
+	box-shadow: var(--accent-clr);
+	height: 9rem;
+	width: 500px;
+	max-width: 90%;
+}
+
+.close-button {
+	background: none;
+	border: none;
+	font-size: 3rem;
+	cursor: pointer;
+	position: absolute;
+	top: -5px;
+	right: 10px;
+	color: var(--text-clr);
+}
+
+.avatar-form {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	padding-top: 1rem;
+	width: 100%;
+}
+
+.upload-btn {
+	background-color: var(--hover-clr);
+	color: var(--accent-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	padding: 0.7rem;
+	cursor: pointer;
+	display: flex;
+	align-items: baseline;
+	justify-content: flex-end;
+}
+
+.upload-btn:hover {
+	background-color: var(--dark-hover-clr);
+}
+
+.custom-file-label {
+	background-color: var(--hover-clr);
+	color: var(--accent-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	padding: 0.7rem;
+	cursor: pointer;
+	display: flex;
+	align-items: baseline;
+	justify-content: flex-start;
+	margin-right: 10px;
+}
+
+.custom-file-label:hover {
+	background-color: var(--primary-clr-dark);
+}
+
+.form-title {
+	display: flex;
+	justify-content: center;
+	padding-bottom: 1rem;
+}
+
+.file-name {
+	display: inline-block;
+	max-width: 200px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	vertical-align: middle;
+	margin-left: 10px;
+	font-size: 0.9em;
+	color: #555;
+}

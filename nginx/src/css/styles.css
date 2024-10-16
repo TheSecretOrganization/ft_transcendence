@@ -5,10 +5,12 @@
 	--secondary-base-clr: #dac3d6;
 	--line-clr: #b21313;
 	--hover-clr: #dfbac8;
+	--dark-hover-clr: #b78d9d;
 	--text-clr: #000;
 	--accent-clr: #470d0d;
 	--secondary-text-clr: #000;
 	--selection-clr: #257AFD;
+	--light-base-clr: #faf4f9;
 
 	--navbar-height: 4.5rem;
 	--sidebar-width: 6rem;
@@ -40,11 +42,21 @@ body {
 }
 
 #page-container-wrapper {
+	width: 100%;
+	flex-grow: 1;
+	display: flex;
 	position: relative;
+	justify-content: center;
 }
 
 .hidden {
 	display: none !important;
+}
+
+#content {
+	width: 100%;
+	min-height: 100%;
+	display: flexbox;
 }
 
 #content-wrapper {
@@ -59,6 +71,7 @@ body {
 	overflow-y: auto;
 	display: flex;
 	width: 100%;
+	justify-content: center;
 }
 
 a:focus {

@@ -114,3 +114,8 @@ def profiles(request: HttpRequest, username: str):
 		if (target.id is game.user1.id and game.score1 > game.score2) or (target.id is game.user2.id and game.score2 > game.score1):
 			win += 1
 	return create_response(request, 'profiles.html', {'target': target, 'games': games, 'wins': win}, title=f"{target.username} Profile")
+
+@require_GET
+def settings(request: HttpRequest):
+	return create_response(request, 'settings.html', title="Settings", need_authentication=True)
+ 
