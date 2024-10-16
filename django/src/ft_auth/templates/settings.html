@@ -1,0 +1,160 @@
+{% extends "./extends/base.html" %}
+
+{% block content %}
+
+<div class="profile-container">
+	<div class="profile-header">
+		<div class="profile-image-wrapper">
+			<div class="profile-image-container">
+				<img src="{{ user.avatar.url }}" alt="User Profile Picture">
+			</div>
+			<div class="edit-icon">
+				<button id="edit-avatar-button" class="edit-button">
+					<i class="fas fa-pen"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+	<hr class="profile-divider">
+	<div class="profile-content">
+		<div class="username-container">
+			<span class="username">{{ user.username }}</span>
+		</div>
+		<hr class="profile-divider">
+		<form id="password-form" data-url="/api/auth/password/update/" class="form-container">
+			<div class="row text-center text-wrap text-danger">
+				<p id="password-error"></p>
+			</div>
+			<div class="form-floating row">
+				<input type="password" class="form-control password-container" id="current_password"
+					placeholder="Current password" value="">
+				<label for="current_password">Current Password</label>
+			</div>
+			<div class="form-floating row">
+				<input type="password" class="form-control password-container" id="new_password"
+					placeholder="New password" value="">
+				<label for="new_password">New Password</label>
+			</div>
+			<div class="form-floating row">
+				<input type="password" class="form-control password-container" id="confirm_password"
+					placeholder="Confirm new password" value="">
+				<label for="confirm_password">Confirm New Password</label>
+			</div>
+			<button id="password-btn" class="confirm-btn">
+				Confirm changes
+			</button>
+		</form>
+	</div>
+</div>
+
+<div id="avatarModal" class="modal-overlay hidden">
+	<div class="modal-content">
+		<button type="button" class="close-button" id="closeModalBtn">&times;</button>
+		<h2 class="form-title">Upload New Avatar</h2>
+		<hr class="profile-divider">
+		<form id="avatarForm" enctype="multipart/form-data" class="avatar-form">
+			{% csrf_token %}
+			<input type="file" name="avatar" id="avatarInput" accept="image/*" required style="display: none;">
+			<label for="avatarInput" class="custom-file-label">Choose File</label>
+			<span id="file-name" class="file-name">No file chosen</span>
+			<small>Max file size: 2MB</small>
+			<button id="upload-avatar-btn" type="submit" class="upload-btn">Upload</button>
+		</form>
+	</div>
+</div>
+
+<script>
+	function showModal() {
+		const modal = document.getElementById('avatarModal');
+		modal.classList.remove("hidden");
+	}
+
+	function hideModal() {
+		const modal = document.getElementById('avatarModal');
+		modal.classList.add("hidden");
+	}
+
+	function validate() {
+		let password = document.getElementById('new_password').value;
+		let passwordcfrm = document.getElementById('confirm_password').value;
+
+		return password == passwordcfrm;
+	}
+
+	function emptyPasswords() {
+		const passwordFields = document.querySelectorAll('input[type="password"]');
+		passwordFields.forEach((field) => {
+			field.value = '';
+		});
+	}
+
+	document.getElementById('password-btn').onclick = function (e) {
+		document.getElementById('password-error').textContent = '';
+		e.preventDefault();
+
+		if (!validate()) {
+			document.getElementById('password-error').textContent = 'Passwords don\'t match';
+			emptyPasswords();
+			return;
+		}
+
+		submitForm('password-form', () => {
+			route('/settings');
+			displayToast("Password changed successfully.");
+		}, (json) => {
+			document.getElementById('password-error').textContent = json.error;
+			emptyPasswords();
+		});
+	};
+
+	document.getElementById('avatarInput').onchange = function () {
+		const fileInput = document.getElementById('avatarInput');
+		const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file chosen';
+		document.getElementById('file-name').textContent = fileName;
+	};
+
+	document.getElementById('upload-avatar-btn').onclick = function (e) {
+		e.preventDefault();
+
+		const avatarInput = document.getElementById('avatarInput').files[0];
+
+		const maxSize = 2 * 1024 * 1024;
+
+		if (avatarInput && avatarInput.size > maxSize) {
+			alert("File is too large. Maximum size is 2MB.");
+			return;
+		}
+
+		const formData = new FormData();
+
+		if (avatarInput) {
+			console.log("test")
+			formData.append('avatar', avatarInput);
+
+			fetch('/api/auth/upload-avatar/', {
+				method: 'POST',
+				body: formData,
+				headers: {
+					'X-CSRFToken': getCookie('csrftoken')
+				},
+			})
+				.then(response => response.json())
+				.then(data => {
+					if (data.avatar_url) {
+						const avatarImg = document.querySelector('.profile-image-container img');
+						avatarImg.src = data.avatar_url;
+						hideModal();
+						displayToast("Avatar updated successfully.");
+					} else {
+						alert('Error uploading avatar');
+					}
+				})
+				.catch(error => console.error('Error:', error));
+		}
+	};
+
+	document.getElementById('edit-avatar-button').onclick = showModal;
+	document.getElementById('closeModalBtn').onclick = hideModal;
+</script>
+
+{% endblock %}
