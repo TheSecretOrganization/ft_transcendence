@@ -309,6 +309,7 @@ class Pong(AsyncWebsocketConsumer):
                 ),
                 score1=self.info.score[0],
                 score2=self.info.score[1],
+                uuid=self.room_id,
             )
             logger.debug(f"Game {self.room_id} saved to db.")
         except Exception as e:
