@@ -55,16 +55,8 @@ class Tournament(AsyncWebsocketConsumer):
 
         creator = creator_encoded.decode("utf-8")
 
-        if creator == self.user.username:
-            if lock == None:
-                await self.send_message("client", {"type": "unlock_lock"})
-            else:
-                await self.archive()
-        else:
-            await self.send_history()
-
-        if lock:
-            await self.check_current_games_state()
+        if creator == self.user.username and lock == None:
+            await self.send_message("client", {"type": "unlock_lock"})
 
         if self.user.username not in players:
             await self.redis.rpush(
@@ -75,6 +67,10 @@ class Tournament(AsyncWebsocketConsumer):
             )
 
         await self.send_message("group", {"type": "join"})
+
+        if lock:
+            await self.archive()
+            await self.check_current_games_state()
 
     async def disconnect(self, close_code):
         try:

@@ -43,7 +43,8 @@
 	const readyBtn = document.getElementById("ready-btn");
 	const mixBtn = document.getElementById("mix-btn");
 	const playersTbl = document.getElementById("players");
-	let socket = wsConnect(wsCreateUrl("pong_tournament", { "name": "{{ name }}" }), onMessage, exit);
+	const resultsOnly = "{{ results_only }}" === "True";
+	let socket = resultsOnly ? undefined : wsConnect(wsCreateUrl("pong_tournament", { "name": "{{ name }}" }), onMessage, exit);
 
 	function onMessage(data) {
 		if (data?.type === undefined) {
@@ -96,6 +97,8 @@
 	}
 
 	function handleHistory(history) {
+		const nextRoundBody = document.querySelector("#next-round tbody");
+		nextRoundBody.innerHTML = '';
 		const tableBody = document.querySelector("#history tbody");
 		tableBody.innerHTML = '';
 
@@ -163,6 +166,45 @@
 	mixBtn.onclick = () => {
 		hideBtn(mixBtn);
 		socket.send(JSON.stringify({ type: "mix" }));
+	}
+
+	if (resultsOnly) {
+		(async () => {
+			fetch(`/api/games/tournaments/json/{{ name }}/`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': getCookie('csrftoken')
+				},
+				credentials: 'include'
+			}).then(response => {
+				if (!response.ok) {
+					return response.json().then(errorData => {
+						throw new Error(errorData.error);
+					});
+				}
+				return response.json();
+			}).then(data => {
+				usernames = [];
+				games = [];
+
+				data.participants.forEach(participant => {
+					usernames.push(participant.username);
+				});
+
+				data.games.forEach(game => {
+					game.user1 = game.user1.username
+					game.user2 = game.user2.username
+					games.push(JSON.stringify(game));
+				});
+
+				handleEnd(data.winner.username);
+				handleJoin(usernames);
+				handleHistory(games);
+			}).catch(error => {
+				console.error("Error fetching tournament data:", error.message);
+			});
+		})();
 	}
 
 	document.getElementById('content').addEventListener('pagechange', onPageChange);
