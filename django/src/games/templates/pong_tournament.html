@@ -23,7 +23,10 @@
 	<table id="history" class="table table-striped table-bordered">
 		<thead>
 			<tr>
-				<th>ID</th>
+				<th>Player 1</th>
+				<th>Player 2</th>
+				<th>Score 1</th>
+				<th>Score 2</th>
 			</tr>
 		</thead>
 		<tbody></tbody>
@@ -42,7 +45,6 @@
 	const playersTbl = document.getElementById("players");
 
 	function onMessage(data) {
-		console.log(data);
 		if (data?.type === undefined) {
 			console.error("Invalid message from server ignored.");
 			return;
@@ -65,11 +67,46 @@
 		const tableBody = document.querySelector("#players tbody");
 		tableBody.innerHTML = '';
 
-		players.forEach(element => {
+		players.forEach(playerName => {
 			const row = document.createElement('tr');
 			const player = document.createElement('td');
-			player.textContent = element;
+			player.textContent = playerName;
 			row.appendChild(player);
+			tableBody.appendChild(row);
+		});
+	}
+
+	function handleMix(playerPairs) {
+		const tableBody = document.querySelector("#next-round tbody");
+		tableBody.innerHTML = '';
+
+		playerPairs.forEach(([player1, player2]) => {
+			const row = document.createElement('tr');
+
+			[player1, player2].forEach(player => {
+				const cell = document.createElement('td');
+				cell.textContent = player;
+				row.appendChild(cell);
+			});
+
+			tableBody.appendChild(row);
+		});
+	}
+
+	function handleHistory(history) {
+		const tableBody = document.querySelector("#history tbody");
+		tableBody.innerHTML = '';
+
+		history.forEach(element => {
+			const game = JSON.parse(element);
+			const row = document.createElement('tr');
+
+			['user1', 'user2', 'score1', 'score2'].forEach(key => {
+				const cell = document.createElement('td');
+				cell.textContent = game[key];
+				row.appendChild(cell);
+			});
+
 			tableBody.appendChild(row);
 		});
 	}
@@ -82,35 +119,6 @@
 	function hideBtn(btn) {
 		btn.classList.add("hidden");
 		btn.disabled = true;
-	}
-
-	function handleMix(playerPairs) {
-		const tableBody = document.querySelector("#next-round tbody");
-		tableBody.innerHTML = '';
-
-		playerPairs.forEach(element => {
-			const row = document.createElement('tr');
-			const player1 = document.createElement('td');
-			const player2 = document.createElement('td');
-			player1.textContent = element[0];
-			player2.textContent = element[1];
-			row.appendChild(player1);
-			row.appendChild(player2);
-			tableBody.appendChild(row);
-		});
-	}
-
-	function handleHistory(history) {
-		const tableBody = document.querySelector("#history tbody");
-		tableBody.innerHTML = '';
-
-		history.forEach(element => {
-			const row = document.createElement('tr');
-			const id = document.createElement('td');
-			id.textContent = element;
-			row.appendChild(id);
-			tableBody.appendChild(row);
-		});
 	}
 
 	function exit(reroute = true) {
