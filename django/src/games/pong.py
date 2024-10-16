@@ -34,21 +34,14 @@ class Pong(AsyncWebsocketConsumer):
             return
 
         await self.accept()
+        await self.channel_layer.group_add(self.room_id, self.channel_name)
+        self.valid = True
         logger.info(
             f"User {self.user.id} successfully connected to room {self.room_id}."
         )
-
-        if self.watch:
-            await self.channel_layer.group_add(
-                f"{self.room_id}_watcher", self.channel_name
-            )
-            return
-
-        self.valid = True
-        await self.channel_layer.group_add(self.room_id, self.channel_name)
         await self.send_message("group", "game_join", {"user": self.user.id})
         await self.send_message("client", "game_pad", {"game_pad": self.pad_n})
-        if self.tournament_name != "":
+        if self.tournament_name != "0":
             await self.send_message(
                 "client",
                 "tournament_name",
@@ -58,11 +51,6 @@ class Pong(AsyncWebsocketConsumer):
     async def initialize_game(self):
         query_params = parse_qs(self.scope["query_string"].decode())
         self.room_id = self.check_missing_param(query_params, "room_id")
-        self.watch = query_params.get("watch", [None])[0] != None
-
-        if self.watch:
-            return
-
         self.mode = self.check_missing_param(query_params, "mode")
         player_needed = self.check_missing_param(query_params, "player_needed")
         self.tournament_name = self.check_missing_param(
@@ -124,11 +112,6 @@ class Pong(AsyncWebsocketConsumer):
             )
             await self.channel_layer.group_discard(
                 self.room_id, self.channel_name
-            )
-
-        if self.watch:
-            await self.channel_layer.group_discard(
-                f"{self.room_id}_watcher", self.channel_name
             )
 
         await self.redis.close()
@@ -207,10 +190,6 @@ class Pong(AsyncWebsocketConsumer):
         await self.send_message("client", args=event)
         await self.close()
 
-    async def watcher_stop(self, event):
-        await self.send_message("client", args=event)
-        await self.close()
-
     def punish_coward(self, coward):
         if not coward:
             return
@@ -223,7 +202,6 @@ class Pong(AsyncWebsocketConsumer):
     async def loop(self):
         fps = 0.033
         self.reset_game()
-        await self.send_game_state("watch")
         while True:
             try:
                 self.ball.move()
@@ -291,7 +269,6 @@ class Pong(AsyncWebsocketConsumer):
     async def score_point(self, winner: int):
         self.info.score[winner] += 1
         self.reset_game()
-        await self.send_game_state("watch")
 
     def reset_game(self):
         self.ball.reset()
@@ -302,19 +279,15 @@ class Pong(AsyncWebsocketConsumer):
         message = {"type": msg_type, "content": args} if msg_type else args
         if destination == "group":
             await self.channel_layer.group_send(self.room_id, message)
-        elif destination == "watch":
-            await self.channel_layer.group_send(
-                f"{self.room_id}_watcher", message
-            )
         elif destination == "client":
             await self.send(text_data=json.dumps(message))
 
     async def send_error(self, error: str):
         await self.send_message("client", "game_error", {"error": error})
 
-    async def send_game_state(self, destination="group"):
+    async def send_game_state(self):
         await self.send_message(
-            destination,
+            "group",
             "game_state",
             {
                 "score": self.info.score,
