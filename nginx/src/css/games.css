@@ -12,7 +12,6 @@
 	color: var(--secondary-text-clr);
     padding: 1.5rem;
     border-radius: 5px;
-    /* width: 95%; */
 	font-size: large;
 	box-sizing: border-box;
 }
