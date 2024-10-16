@@ -19,6 +19,7 @@ class Pong(models.Model):
     score2 = models.PositiveSmallIntegerField()
     uuid = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.user1.username} vs {self.user2.username} - {self.score1}:{self.score2}"
@@ -26,14 +27,18 @@ class Pong(models.Model):
 
 class PongTournament(models.Model):
     name = models.CharField(max_length=255)
+    winner = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="winner",
+    )
     participants = models.ManyToManyField(
         get_user_model(), related_name="tournaments"
     )
     games = models.ManyToManyField(Pong, related_name="tournaments")
-    current_round = models.PositiveSmallIntegerField(default=1)
-    max_rounds = models.PositiveSmallIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Tournament: {self.name} (Round {self.current_round}/{self.max_rounds})"
+        return f"Tournament: {self.name} - Winner: {self.winner}"
