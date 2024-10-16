@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'ft_auth',
     'games',
     'pages',
+    'chat',
 ]
 
 MIDDLEWARE = [

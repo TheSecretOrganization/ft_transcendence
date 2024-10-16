@@ -2,6 +2,7 @@
 
 :root {
 	--base-clr: #f3e2f0;
+	--secondary-base-clr: #dac3d6;
 	--line-clr: #b21313;
 	--hover-clr: #dfbac8;
 	--dark-hover-clr: #b78d9d;
@@ -11,7 +12,7 @@
 	--selection-clr: #257AFD;
 	--light-base-clr: #faf4f9;
 
-	--navbar-height: 4.2rem;
+	--navbar-height: 4.5rem;
 	--sidebar-width: 6rem;
 }
 
@@ -49,7 +50,7 @@ body {
 }
 
 .hidden {
-	display: none;
+	display: none !important;
 }
 
 #content {
@@ -61,7 +62,7 @@ body {
 #content-wrapper {
 	display: flex;
 	width: calc(100vw - 60px);
-	min-height: calc(100vh - 4.2rem);
+	min-height: calc(100vh - var(--navbar-height));
 	padding-left: 60px;
 }
 
