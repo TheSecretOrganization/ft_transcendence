@@ -185,8 +185,8 @@
 				}
 				return response.json();
 			}).then(data => {
-				usernames = [];
-				games = [];
+				const usernames = [];
+				const games = [];
 
 				data.participants.forEach(participant => {
 					usernames.push(participant.username);

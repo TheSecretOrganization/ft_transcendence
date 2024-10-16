@@ -181,9 +181,9 @@ class Tournament(AsyncWebsocketConsumer):
 
         for i in range(0, len(players), 2):
             player_pairs.append((players[i], players[i + 1]))
-            id = str(uuid4())
-            uuid_list.append(id)
-            await self.redis.rpush(f"pong_{self.name}_current_games", id)
+            game_id = str(uuid4())
+            uuid_list.append(game_id)
+            await self.redis.rpush(f"pong_{self.name}_current_games", game_id)
 
         if last_player:
             player_pairs.append((last_player, "-"))
@@ -227,27 +227,28 @@ class Tournament(AsyncWebsocketConsumer):
         for uuid in current_games:
             try:
                 game = await sync_to_async(pong.objects.get)(uuid=uuid)
+                broadcast = True
+                user1 = await sync_to_async(lambda: game.user1.username)()
+                user2 = await sync_to_async(lambda: game.user2.username)()
+                loser = user2 if game.score1 > game.score2 else user1
+                await self.redis.lrem(
+                    f"pong_{self.name}_current_games", 1, uuid
+                )
+                await self.redis.rpush(
+                    f"pong_{self.name}_history",
+                    json.dumps(
+                        {
+                            "user1": user1,
+                            "user2": user2,
+                            "score1": game.score1,
+                            "score2": game.score2,
+                        }
+                    ),
+                )
+                await self.redis.rpush(f"pong_{self.name}_history_ids", uuid)
+                await self.redis.lrem(f"pong_{self.name}_players", 1, loser)
             except pong.DoesNotExist:
                 continue
-
-            broadcast = True
-            user1 = await sync_to_async(lambda: game.user1.username)()
-            user2 = await sync_to_async(lambda: game.user2.username)()
-            loser = user2 if game.score1 > game.score2 else user1
-            await self.redis.lrem(f"pong_{self.name}_current_games", 1, uuid)
-            await self.redis.rpush(
-                f"pong_{self.name}_history",
-                json.dumps(
-                    {
-                        "user1": user1,
-                        "user2": user2,
-                        "score1": game.score1,
-                        "score2": game.score2,
-                    }
-                ),
-            )
-            await self.redis.rpush(f"pong_{self.name}_history_ids", uuid)
-            await self.redis.lrem(f"pong_{self.name}_players", 1, loser)
 
         await self.redis.copy(
             f"pong_{self.name}_players", f"pong_{self.name}_ready_players"
