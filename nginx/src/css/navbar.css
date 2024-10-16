@@ -1,7 +1,7 @@
 .navbar {
 	background-color: #424242;
 	height: var(--navbar-height);
-	min-height: 3.75rem;
+	min-height: var(--navbar-height);
 	display: flex;
 	flex-direction: row;
 	padding: 0;
@@ -11,7 +11,7 @@
 	color: white;
 	margin-left: 5rem;
 	font-size: 1.25em;
-}	
+}
 
 .div-navbar-profile {
 	display: inline;
@@ -22,6 +22,15 @@
 	list-style-type: none;
 	justify-content: center;
 	padding-right: 1.5rem;
+}
+
+.navbar-profile-img {
+	height: 40%;
+	border-radius: 50%;
+	object-fit: cover;
+	max-height: 30px;
+	width: auto;
+	margin-left: 10px;
 }
 
 .navbar-profile-button {
@@ -44,10 +53,10 @@
 
 #notif-button {
 	margin: auto;
-    background-color: transparent;
+	background-color: transparent;
 	font-size: 20px;
 	border: none;
-	color:#f3e2f0;
+	color: #f3e2f0;
 }
 
 .notif-hidden {
@@ -55,11 +64,11 @@
 }
 
 #notification-area {
-    border: 1px solid #ccc;
-    padding: 10px;
-    background-color: #f9f9f9;
-    width: 200px;
-    position: absolute;
-    top: 50px;
-    right: 20px;
+	border: 1px solid #ccc;
+	padding: 10px;
+	background-color: #f9f9f9;
+	width: 200px;
+	position: absolute;
+	top: 50px;
+	right: 20px;
 }
