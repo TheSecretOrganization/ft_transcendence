@@ -1,0 +1,40 @@
+.ft-form-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+}
+
+.ft-input-wrapper {
+	display: flex;
+	align-items: center;
+	border: 1px solid var(--line-clr);
+	background-color: var(--base-clr);
+	padding: 3rem;
+	border-radius: 5px;
+	box-shadow: 0 4px 5px var(--accent-clr);
+}
+
+.ft-username {
+	padding: 2rem;
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	margin-right: 3rem;
+	font-size: 2rem;
+}
+
+.ft-button {
+	background-color: var(--hover-clr);
+	color: var(--text-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	padding: 2rem;
+	cursor: pointer;
+	font-size: 2rem;
+}
+
+.ft-button:hover {
+	background-color: var(--dark-hover-clr);
+	color: var(--text-clr);
+}
