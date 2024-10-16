@@ -4,9 +4,11 @@ from django.contrib.auth import authenticate, login as dlogin, logout as dlogout
 from django.contrib.auth.password_validation import validate_password
 from django.db.utils import IntegrityError
 from django.core.exceptions import ValidationError
+from django.contrib.auth.decorators import login_required
 from logging import getLogger
 from .oauth import get_token, ft_oauth, ft_register, RequestError
 from .models import FtOauth
+from .models import User
 import json
 
 logger = getLogger(__name__)
@@ -67,6 +69,19 @@ def password_update(request: HttpRequest):
 	request.user.save()
 	logger.info(f"Updated password of {request.user.username}.")
 	return HttpResponse(status=200)
+
+@require_POST
+def upload_avatar(request):
+	max_file_size = 2 * 1024 * 1024
+	if request.FILES.get('avatar'):
+		avatar_file = request.FILES['avatar']
+		if avatar_file.size > max_file_size:
+			return JsonResponse({'error': 'File size exceeds 2MB limit.'}, status=400)
+		user = request.user
+		user.avatar.save(avatar_file.name, avatar_file)
+		user.save()
+		return JsonResponse({'avatar_url': user.avatar.url}, status=200)
+	return JsonResponse({'error': 'Invalid request'}, status=400)
 
 @require_POST
 def authorize(request: HttpRequest):

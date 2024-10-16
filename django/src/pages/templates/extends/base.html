@@ -1,27 +1,30 @@
 <div id="navbar-wrapper">
 	<nav class="navbar">
-		<a class="navbar-brand nav navbar-nav navbar-left link-info text-decoration-none" data-route href="/">Johnny Depp</a>
+		<a class="navbar-brand nav navbar-nav navbar-left link-info text-decoration-none" data-route href="/">Johnny
+			Depp</a>
 		{% if user.is_authenticated %}
 		<button id="notif-button">
 			<i id="icon-notif" class="fa-solid fa-bell"></i>
 		</button>
-		<div id="notification-area" class = "notif-hidden"></div>
+		<div id="notification-area" class="notif-hidden"></div>
 		<div class="container-dropdown">
 			<div class="dropdown">
 				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-				data-bs-toggle="dropdown" aria-expanded="false">
-				{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
+					data-bs-toggle="dropdown" aria-expanded="false">
+					{{ user.username }}
+					<img src="{{ user.avatar.url }}" alt="Profile" class="navbar-profile-img">
 				</button>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
 					<li><a class="dropdown-item" data-route href="#">Profile</a></li>
-					<li><a class="dropdown-item" data-route href="#">Settings</a></li>
+					<li><a class="dropdown-item" data-route href="/settings">Settings <span
+								class="glyphicon glyphicon-cog"></span></a></li>
 					<li>
 						<hr class="dropdown-divider">
 					</li>
 					<li><button id="logout-button-navbar" class="dropdown-item fw-bold">Log out <span
 								class="glyphicon glyphicon-log-out"></span></button></li>
-							</ul>
-						</div>
+				</ul>
+			</div>
 		</div>
 		{% else %}
 		<ul id="navbar-list"
@@ -45,13 +48,13 @@
 		<li class="active">
 			<a data-route href="/">
 				<img draggable="false" src="/assets/home.svg" alt="home icon">
-				<span>HOME</span>
+				<span class="fw-bold">HOME</span>
 			</a>
 		</li>
 		<li>
 			<button onclick=toggleSubMenu(this) class="dropdown-btn">
 				<img draggable="false" src="/assets/controller.svg" alt="controller icon">
-				<span>GAMES</span>
+				<span class="fw-bold">GAMES</span>
 				<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
 			</button>
 			<ul class="sub-menu">
@@ -59,13 +62,13 @@
 					<li>
 						<a data-route href="/pong" tabindex="-1">
 							<img draggable="false" src="/assets/pong-racket.svg" alt="racket icon">
-							<span>PONG</span>
+							<span class="fw-bold">PONG</span>
 						</a>
 					</li>
 					<li>
 						<a data-route href="/tournaments" tabindex="-1">
 							<img draggable="false" src="/assets/trophy.svg" alt="trophy icon">
-							<span>TOURNAMENTS</span>
+							<span class="fw-bold">TOURNAMENTS</span>
 						</a>
 					</li>
 				</div>
@@ -74,7 +77,7 @@
 		<li>
 			<button onclick=toggleSubMenu(this) class="dropdown-btn">
 				<img draggable="false" src="/assets/community.svg" alt="community icon">
-				<span>COMMUNITY</span>
+				<span class="fw-bold">COMMUNITY</span>
 				<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
 			</button>
 			<ul class="sub-menu">
@@ -82,13 +85,13 @@
 					<li>
 						<a data-route href="/chat" tabindex="-1">
 							<img draggable="false" src="/assets/chat.svg" alt="chat icon">
-							<span>CHAT</span>
+							<span class="fw-bold">CHAT</span>
 						</a>
 					</li>
 					<li>
 						<a data-route href="/friends" tabindex="-1">
 							<img draggable="false" src="/assets/group.svg" alt="group icon">
-							<span>FRIENDS</span>
+							<span class="fw-bold">FRIENDS</span>
 						</a>
 					</li>
 				</div>
@@ -111,7 +114,7 @@
 		<div id="chat-title">Room: <span id="room-name">General</span></div>
 		<div id="chat-log"></div>
 		<form id="chat-form">
-			<input id="chat-input" type="text" placeholder="Type your message here..." autocomplete="off"/>
+			<input id="chat-input" type="text" placeholder="Type your message here..." autocomplete="off" />
 			<button type="submit" id="chat-send-btn">Send</button>
 		</form>
 		<div id="users-wrapper">
@@ -243,8 +246,8 @@
 			userItem.classList.add('user-item');
 
 			const usernameLink = document.createElement('a');
-        	usernameLink.textContent = user;
-        	usernameLink.href = `/profiles/${user}`;
+			usernameLink.textContent = user;
+			usernameLink.href = `/profiles/${user}`;
 			usernameLink.target = "_blank";
 			userItem.appendChild(usernameLink);
 
@@ -301,10 +304,10 @@
 			return;
 		}
 		const notifIcon = document.getElementById('icon-notif');
-    	notifIcon.classList.remove('fa-solid', 'fa-bell');
-    	notifIcon.classList.add('fa-solid', 'fa-bell', 'fa-spin-pulse'); 
+		notifIcon.classList.remove('fa-solid', 'fa-bell');
+		notifIcon.classList.add('fa-solid', 'fa-bell', 'fa-spin-pulse');
 		const notificationArea = document.getElementById('notification-area');
-		document.getElementById('notif-button').addEventListener('click', function() {
+		document.getElementById('notif-button').addEventListener('click', function () {
 			notifIcon.classList.remove('fa-solid', 'fa-bell', 'fa-spin-pulse');
 			notifIcon.classList.add('fa-solid', 'fa-bell');
 			notificationArea.classList.toggle('notif-hidden');
@@ -323,9 +326,9 @@
 		const newMessageDiv = document.createElement('div');
 		newMessageDiv.classList.add('message', data.username === "{{ user }}" ? 'self' : 'other');
 		const linkRegex = /https?:\/\/[a-zA-Z0-9.-]+(?::\d+)?(?:\/[^\s]*)?/g;
-    	const formattedMessage = data.message.replace(linkRegex, (url) => {
-        return `<a href="${url}" target="_blank">${url}</a>`;
-    	});
+		const formattedMessage = data.message.replace(linkRegex, (url) => {
+			return `<a href="${url}" target="_blank">${url}</a>`;
+		});
 		newMessageDiv.innerHTML = `<strong>${data.username}:</strong> ${formattedMessage}`;
 		chatLog.appendChild(newMessageDiv);
 		chatLog.scrollTop = chatLog.scrollHeight;
@@ -353,10 +356,10 @@
 		const messageInput = document.getElementById('chat-input');
 		const message = messageInput.value.trim();
 		const otherUsername = currentChatRoom.split('private_chat_')[1];
-    	if (otherUsername && blockedUsers.includes(otherUsername)) {
-        	alert(`You have blocked ${otherUsername}. Unblock them to send messages.`);
-        	return;
-    }
+		if (otherUsername && blockedUsers.includes(otherUsername)) {
+			alert(`You have blocked ${otherUsername}. Unblock them to send messages.`);
+			return;
+		}
 		if (window.chatSocket && window.chatSocket.readyState === WebSocket.OPEN && message) {
 			window.chatSocket.send(JSON.stringify({
 				'message': message,
