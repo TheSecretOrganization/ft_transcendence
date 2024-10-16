@@ -95,8 +95,8 @@ def authentification(request: HttpRequest):
 	}, title='Authentification')
 
 @require_GET
-def profile(request: HttpRequest):
+def settings(request: HttpRequest):
 	if not request.user.is_authenticated:
 		return JsonResponse({'redirect': '/'}, status=403)
-	return create_response(request, 'profile.html', title="Profile", need_authentication=True)
+	return create_response(request, 'settings.html', title="Settings", need_authentication=True)
  

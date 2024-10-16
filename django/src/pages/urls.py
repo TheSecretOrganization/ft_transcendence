@@ -12,5 +12,5 @@ urlpatterns = [
 	path('authorize/', views.authorize),
 	path('friends/', views.friends),
 	path('404/', views.error_404),
-	path('profile/', views.profile),
+	path('settings/', views.settings),
 ]

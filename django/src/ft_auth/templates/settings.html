@@ -99,7 +99,7 @@
 		}
 
 		submitForm('password-form', () => {
-			route('/profile');
+			route('/settings');
 			displayToast("Password changed successfully.");
 		}, (json) => {
 			document.getElementById('password-error').textContent = json.error;

@@ -71,14 +71,10 @@ def password_update(request: HttpRequest):
 	return HttpResponse(status=200)
 
 def upload_avatar(request):
-	max_file_size = 2 * 1024 * 1024
  
 	if request.FILES.get('avatar'):
 		avatar_file = request.FILES['avatar']
-  
 		user = request.user
-		if avatar_file.size > max_file_size:
-				return JsonResponse({'error': 'File size exceeds 2MB limit.'}, status=400)
 		user.avatar = avatar_file
 		user.avatar.save(avatar_file.name, avatar_file)
 		user.save()
