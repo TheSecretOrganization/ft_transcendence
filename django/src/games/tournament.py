@@ -89,6 +89,7 @@ class Tournament(AsyncWebsocketConsumer):
                 await self.redis.delete(f"pong_{self.name}_current_games")
                 await self.redis.delete(f"pong_{self.name}_history")
                 await self.redis.delete(f"pong_{self.name}_history_ids")
+                await self.redis.delete(f"pong_{self.name}_ready_players")
         except AttributeError as e:
             logger.debug(str(e))
 
@@ -137,12 +138,22 @@ class Tournament(AsyncWebsocketConsumer):
 
     async def lock(self):
         await self.redis.set(f"pong_{self.name}_lock", 1)
+        await self.redis.copy(
+            f"pong_{self.name}_players", f"pong_{self.name}_ready_players"
+        )
         await self.send_message("group", {"type": "unlock_ready"})
 
     async def unlock_ready(self, event):
-        await self.send_message("client", {"type": "unlock_ready"})
+        ready_players = await self.get_decoded_list(
+            f"pong_{self.name}_ready_players"
+        )
+        if self.user.username in ready_players:
+            await self.send_message("client", {"type": "unlock_ready"})
 
     async def ready(self):
+        await self.redis.lrem(
+            f"pong_{self.name}_ready_players", 1, self.user.username
+        )
         players = await self.get_decoded_list(f"pong_{self.name}_players")
         await self.redis.incr(f"pong_{self.name}_ready")
         ready_encoded = await self.redis.get(f"pong_{self.name}_ready")
@@ -150,7 +161,7 @@ class Tournament(AsyncWebsocketConsumer):
 
         if ready >= len(players):
             await self.send_message("group", {"type": "unlock_mix"})
-            self.redis.set(f"pong_{self.name}_ready", 0)
+            await self.redis.set(f"pong_{self.name}_ready", 0)
 
     async def unlock_mix(self, event):
         if await self.redis.get(
@@ -237,6 +248,10 @@ class Tournament(AsyncWebsocketConsumer):
             )
             await self.redis.rpush(f"pong_{self.name}_history_ids", uuid)
             await self.redis.lrem(f"pong_{self.name}_players", 1, loser)
+
+        await self.redis.copy(
+            f"pong_{self.name}_players", f"pong_{self.name}_ready_players"
+        )
 
         if broadcast:
             await self.send_message("group", {"type": "broadcast_history"})
