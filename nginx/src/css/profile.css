@@ -170,16 +170,16 @@
 
 .modal-content {
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-evenly;
 	top: 40%;
-	left: 39%;
+	left: 36%;
 	background-color: var(--base-clr);
 	padding: 20px;
 	border-radius: 5px;
 	border: 1px solid var(--line-clr);
 	box-shadow: var(--accent-clr);
 	height: 9rem;
-	width: 400px;
+	width: 500px;
 	max-width: 90%;
 }
 
@@ -228,6 +228,7 @@
 	display: flex;
 	align-items: baseline;
 	justify-content: flex-start;
+	margin-right: 10px;
 }
 
 .custom-file-label:hover {
@@ -241,7 +242,16 @@
 }
 
 .file-name {
-	margin-left: -30px;
-	font-size: 14px;
+	display: inline-block;
+	max-width: 200px;
+	/* Adjust this width as needed */
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	vertical-align: middle;
+	margin-left: 10px;
+	/* Add space between the label and the file name */
+	font-size: 0.9em;
 	color: #555;
+	/* Optional: adjust the text color */
 }
