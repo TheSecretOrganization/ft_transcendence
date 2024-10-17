@@ -130,16 +130,6 @@
 		title.classList.remove("hidden");
 	}
 
-	function showBtn(btn) {
-		btn.classList.remove("hidden");
-		btn.disabled = false;
-	}
-
-	function hideBtn(btn) {
-		btn.classList.add("hidden");
-		btn.disabled = true;
-	}
-
 	function exit(reroute = true) {
 		if (socket)
 			socket.close();

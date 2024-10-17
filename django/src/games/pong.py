@@ -40,7 +40,9 @@ class Pong(AsyncWebsocketConsumer):
             f"User {self.user.id} successfully connected to room {self.room_id}."
         )
         await self.send_message("group", "game_join", {"user": self.user.id})
-        await self.send_message("client", "game_pad", {"game_pad": self.pad_n})
+        await self.send_message(
+            "client", "game_pad", {"game_pad": self.pad_n, "host": self.host}
+        )
         if self.tournament_name != "0":
             await self.send_message(
                 "client",
@@ -59,6 +61,7 @@ class Pong(AsyncWebsocketConsumer):
         self.host = await self.redis.get(self.room_id) == None
         self.pad_n = "pad_1" if self.host else "pad_2"
         players = await self.redis.lrange(f"pong_{self.room_id}_id", 0, -1)
+        self.power = False
 
         if self.host:
             await self.redis.set(self.room_id, 1)
@@ -67,9 +70,9 @@ class Pong(AsyncWebsocketConsumer):
                 room_id=self.room_id,
                 player_needed=int(player_needed),
             )
-            self.ball = self.Ball()
-            self.pad_1 = self.Pad(True)
-            self.pad_2 = self.Pad(False)
+            self.ball = self.Ball(color="black", power_on=self.power)
+            self.pad_1 = self.Pad(True, color="#FECACA")
+            self.pad_2 = self.Pad(False, color="#00beef")
             logger.info(
                 f"User {self.user.id} is the host for room {self.room_id}."
             )
@@ -137,6 +140,8 @@ class Pong(AsyncWebsocketConsumer):
                     await self.send_message("group", args=data)
                 case "game_move":
                     await self.send_message("group", args=data)
+                case "toggle_power":
+                    self.power = data["content"]["power"]
                 case _:
                     raise ValueError("Unknown 'type' in data")
         except Exception as e:
@@ -260,11 +265,22 @@ class Pong(AsyncWebsocketConsumer):
     def check_pad_collision(self):
         if self.ball.x - self.ball.radius <= self.pad_1.width:
             if self.pad_1.y <= self.ball.y <= self.pad_1.y + self.pad_1.height:
+                self.check_power_up(self.pad_1)
                 return True
         if self.ball.x + self.ball.radius >= 1 - self.pad_2.width:
             if self.pad_2.y <= self.ball.y <= self.pad_2.y + self.pad_2.height:
+                self.check_power_up(self.pad_2)
                 return True
         return False
+
+    def check_power_up(self, pad):
+        if self.power == False:
+            return
+
+        pad.combo += 1
+
+        if pad.combo >= 2 and pad.height < 0.4:
+            pad.height += 0.05
 
     async def score_point(self, winner: int):
         self.info.score[winner] += 1
@@ -339,19 +355,22 @@ class Pong(AsyncWebsocketConsumer):
             self.score = [0, 0]
 
     class Ball:
-        def __init__(self, radius=0.015, color="white"):
-            self.reset(radius=radius, color=color)
+        def __init__(self, radius=0.015, color="white", power_on=False):
+            self.color = color
+            self.limit = 250 if power_on else 50
+            self.reset(radius=radius)
 
-        def reset(self, radius=0.015, color="white"):
+        def reset(self, radius=0.015):
             self.x = 0.5
             self.y = random.uniform(0.2, 0.8)
             self.radius = radius
             self.velocity = self.randomize_velocity()
-            self.color = color
             self.step = 0.05
+            self.combo = 0
 
         def randomize_velocity(self) -> List[float]:
-            velocity = [0.01, 0.01]
+            speed = 0.01
+            velocity = [speed, speed]
             if random.randint(0, 1):
                 velocity[0] *= -1
             if random.randint(0, 1):
@@ -360,6 +379,10 @@ class Pong(AsyncWebsocketConsumer):
 
         def revert_velocity(self, index):
             self.velocity[index] = -self.velocity[index]
+            self.combo += 1
+
+            if self.combo < self.limit:
+                self.velocity[index] *= 1.05
 
         def move(self):
             self.x += self.velocity[0]
@@ -368,13 +391,14 @@ class Pong(AsyncWebsocketConsumer):
     class Pad:
         def __init__(self, left, width=0.02, height=0.2, color="white"):
             self.left = left
-            self.reset(width=width, height=height, color=color)
+            self.color = color
+            self.reset(width=width, height=height)
 
-        def reset(self, width=0.02, height=0.2, color="white"):
+        def reset(self, width=0.02, height=0.2):
             self.width = width
             self.height = height
-            self.color = color
             self.x = 0 if self.left else 1 - self.width
             self.y = 0.4
             self.step = 0.05
             self.move = 0
+            self.combo = 0

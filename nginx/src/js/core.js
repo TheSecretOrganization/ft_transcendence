@@ -1,4 +1,3 @@
-
 function submitForm(id, oncomplete, onerror) {
 	let form = document.querySelector(`form#${id}`);
 	let inputs = document.querySelectorAll(`form#${id} input`);
@@ -12,8 +11,8 @@ function submitForm(id, oncomplete, onerror) {
 	let url = form.dataset.url;
 
 	for (let input of inputs) {
-		if (input.type == 'hidden') continue ;
-		if ('ignore' in input.dataset) continue ;
+		if (input.type == 'hidden') continue;
+		if ('ignore' in input.dataset) continue;
 		values[input.id] = input.value
 	}
 
@@ -68,4 +67,8 @@ function displayToast(message) {
 	const toastElement = document.getElementById('toast');
 	const toast = new bootstrap.Toast(toastElement);
 	toast.show();
+}
+
+function getFont() {
+	return "Poppins";
 }
