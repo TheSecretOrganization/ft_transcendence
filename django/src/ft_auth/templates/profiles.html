@@ -22,7 +22,7 @@
 		<h2>Games history</h2>
 		<p>Wins: <span id="wins">{{ wins }}</span></p>
 		<p>Games Played: <span id="games-played">{{ games.count }}</span></p>
-		<p>Win Percentage: <span id="win-percentage"></span></p>
+		<p>Win Percentage: {{ win_percentage}}%<span id="win-percentage"></span></p>
 
 
 		<div class="pr-game-scroll-container">
@@ -39,18 +39,4 @@
 	</div>
 </div>
 
-<script>
-	// Get values from the HTML
-	const wins = parseInt(document.getElementById('wins').textContent, 10);
-	const gamesPlayed = parseInt(document.getElementById('games-played').textContent, 10);
-
-	// Calculate win percentage
-	let winPercentage = 0;
-	if (gamesPlayed > 0) {
-		winPercentage = (wins / gamesPlayed) * 100;
-	}
-
-	// Display win percentage
-	document.getElementById('win-percentage').textContent = winPercentage.toFixed(2) + '%';
-</script>
 {% endblock %}
