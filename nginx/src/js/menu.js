@@ -14,3 +14,13 @@ function addBtnToMenusEvents(menuClass, backBtn=undefined) {
 		});
 	});
 }
+
+function showBtn(btn) {
+	btn.classList.remove("hidden");
+	btn.disabled = false;
+}
+
+function hideBtn(btn) {
+	btn.classList.add("hidden");
+	btn.disabled = true;
+}
