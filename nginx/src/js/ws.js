@@ -3,16 +3,20 @@ function wsCreateUrl(url, args = {}) {
 	return `wss://${window.location.host}/ws/${url}?${queryParams}`;
 }
 
-function wsConnect(url, onMessageCallBack, onErrorCallBack) {
+function wsConnect(url, onMessageCallBack=undefined, onErrorCallBack=undefined) {
 	let socket = new WebSocket(url);
 
-	socket.onerror = (e) => {
-        onErrorCallBack();
+	if (onErrorCallBack) {
+		socket.onerror = (e) => {
+			onErrorCallBack(e);
+		}
 	}
 
-	socket.onmessage = (e) => {
-		onMessageCallBack(JSON.parse(e.data));
-	};
+	if (onMessageCallBack) {
+		socket.onmessage = (e) => {
+			onMessageCallBack(JSON.parse(e.data));
+		};
+	}
 
 	return socket;
 }

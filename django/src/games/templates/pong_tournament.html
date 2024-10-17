@@ -1,0 +1,217 @@
+{% extends "./extends/base.html" %}
+
+{% block content %}
+<div class="container">
+	<h1 class="text-center fw-bold">{{ name }}</h1>
+	<h1 class="text-center fw-bold hidden" id="winner"></h1>
+	<h2 class="text-start fs-4 fw-bold mb-3">Players</h2>
+	<table id="players" class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>Players</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+
+	<h2 class="text-start fs-4 fw-bold mb-3">Next Round</h2>
+	<table id="next-round" class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>Player 1</th>
+				<th>Player 2</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+
+	<h2 class="text-start fs-4 fw-bold mb-3">History</h2>
+	<table id="history" class="table table-striped table-bordered">
+		<thead>
+			<tr>
+				<th>Player 1</th>
+				<th>Player 2</th>
+				<th>Score 1</th>
+				<th>Score 2</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+
+	<button id="lock-btn" class="btn btn-primary hidden" disabled>Lock</button>
+	<button id="ready-btn" class="btn btn-primary hidden" disabled>Ready</button>
+	<button id="mix-btn" class="btn btn-success hidden" disabled>Mix</button>
+</div>
+
+<script>
+	const lockBtn = document.getElementById("lock-btn");
+	const readyBtn = document.getElementById("ready-btn");
+	const mixBtn = document.getElementById("mix-btn");
+	const playersTbl = document.getElementById("players");
+	const resultsOnly = "{{ results_only }}" === "True";
+	let socket = resultsOnly ? undefined : wsConnect(wsCreateUrl("pong_tournament", { "name": "{{ name }}" }), onMessage, exit);
+
+	function onMessage(data) {
+		if (data?.type === undefined) {
+			console.error("Invalid message from server ignored.");
+			return;
+		}
+
+		switch (data.type) {
+			case "unlock_lock": showBtn(lockBtn); break;
+			case "unlock_ready": showBtn(readyBtn); break;
+			case "unlock_mix": showBtn(mixBtn); break;
+			case "join": handleJoin(data.players); break;
+			case "mix": handleMix(data.player_pairs); break;
+			case "next_round_id": route(`/pong/online/${data.id}/{{ name }}`); break;
+			case "bye": displayToast("You have received a bye for this round. Enjoy the break!"); break;
+			case "history": handleHistory(data.history); break;
+			case "end": handleEnd(data.winner); break;
+			default: console.error("Invalid message from server ignored."); break;
+		}
+	}
+
+	function handleJoin(players) {
+		const tableBody = document.querySelector("#players tbody");
+		tableBody.innerHTML = '';
+
+		players.forEach(playerName => {
+			const row = document.createElement('tr');
+			const player = document.createElement('td');
+			player.textContent = playerName;
+			row.appendChild(player);
+			tableBody.appendChild(row);
+		});
+	}
+
+	function handleMix(playerPairs) {
+		const tableBody = document.querySelector("#next-round tbody");
+		tableBody.innerHTML = '';
+
+		playerPairs.forEach(([player1, player2]) => {
+			const row = document.createElement('tr');
+
+			[player1, player2].forEach(player => {
+				const cell = document.createElement('td');
+				cell.textContent = player;
+				row.appendChild(cell);
+			});
+
+			tableBody.appendChild(row);
+		});
+	}
+
+	function handleHistory(history) {
+		const nextRoundBody = document.querySelector("#next-round tbody");
+		nextRoundBody.innerHTML = '';
+		const tableBody = document.querySelector("#history tbody");
+		tableBody.innerHTML = '';
+
+		history.forEach(element => {
+			const game = JSON.parse(element);
+			const row = document.createElement('tr');
+
+			['user1', 'user2', 'score1', 'score2'].forEach(key => {
+				const cell = document.createElement('td');
+				cell.textContent = game[key];
+				row.appendChild(cell);
+			});
+
+			tableBody.appendChild(row);
+		});
+	}
+
+	function handleEnd(winner) {
+		if (socket)
+			socket.close();
+		socket = undefined;
+		const title = document.getElementById("winner");
+		title.innerHTML = `Congratulations to ${winner}!`;
+		title.classList.remove("hidden");
+	}
+
+	function showBtn(btn) {
+		btn.classList.remove("hidden");
+		btn.disabled = false;
+	}
+
+	function hideBtn(btn) {
+		btn.classList.add("hidden");
+		btn.disabled = true;
+	}
+
+	function exit(reroute = true) {
+		if (socket)
+			socket.close();
+		if (reroute)
+			route("/tournament");
+	}
+
+	function onPageChange(e) {
+		exit(false);
+		e.srcElement.removeEventListener('pagechange', onPageChange);
+	}
+
+	lockBtn.onclick = () => {
+		const tableBody = document.querySelector("#players tbody");
+		const rowCount = tableBody.rows.length;
+		if (rowCount < 2) {
+			displayToast("You are alone in the tournament...");
+			return;
+		}
+		hideBtn(lockBtn);
+		socket.send(JSON.stringify({ type: "lock" }));
+	}
+
+	readyBtn.onclick = () => {
+		hideBtn(readyBtn);
+		socket.send(JSON.stringify({ type: "ready" }));
+	}
+
+	mixBtn.onclick = () => {
+		hideBtn(mixBtn);
+		socket.send(JSON.stringify({ type: "mix" }));
+	}
+
+	if (resultsOnly) {
+		(async () => {
+			fetch(`/api/games/tournaments/json/{{ name }}/`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': getCookie('csrftoken')
+				},
+				credentials: 'include'
+			}).then(response => {
+				if (!response.ok) {
+					return response.json().then(errorData => {
+						throw new Error(errorData.error);
+					});
+				}
+				return response.json();
+			}).then(data => {
+				const usernames = [];
+				const games = [];
+
+				data.participants.forEach(participant => {
+					usernames.push(participant.username);
+				});
+
+				data.games.forEach(game => {
+					game.user1 = game.user1.username
+					game.user2 = game.user2.username
+					games.push(JSON.stringify(game));
+				});
+
+				handleEnd(data.winner.username);
+				handleJoin(usernames);
+				handleHistory(games);
+			}).catch(error => {
+				console.error("Error fetching tournament data:", error.message);
+			});
+		})();
+	}
+
+	document.getElementById('content').addEventListener('pagechange', onPageChange);
+</script>
+{% endblock %}

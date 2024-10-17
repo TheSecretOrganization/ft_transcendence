@@ -1,0 +1,19 @@
+{% extends "./extends/base.html" %}
+
+{% block content %}
+<div class="container">
+	<form class="form-group" id="tournament-form">
+		<input class="form-control" type="text" pattern="^[A-Za-z]+$" title="letters only" tournament-name
+			placeholder="Name" required>
+		<button type="submit" class="btn btn-primary">Rumble</button>
+	</form>
+</div>
+
+<script>
+	document.getElementById('tournament-form').onsubmit = (e) => {
+		e.preventDefault();
+		const name = e.target.querySelector('[tournament-name]')?.value;
+		route(`/tournaments/pong/${name}`);
+	};
+</script>
+{% endblock %}
