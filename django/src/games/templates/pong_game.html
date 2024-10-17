@@ -127,13 +127,13 @@
 		ctx.fillRect(pad.x * canvas.width, pad.y * canvas.height, pad.width * canvas.width, pad.height * canvas.height);
 	}
 
-	function drawText(text, x, y, color = "white", font = "20px Arial") {
+	function drawText(text, x, y, color = "black", font = "20px Arial") {
 		ctx.fillStyle = color;
 		ctx.font = font;
 		ctx.fillText(text, x, y);
 	}
 
-	function drawCenteredText(text, color = "white", font = "20px Arial") {
+	function drawCenteredText(text, color = "black", font = "20px Arial") {
 		ctx.font = font;
 		const textWidth = ctx.measureText(text).width;
 		const x = (canvas.width - textWidth) / 2;

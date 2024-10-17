@@ -70,9 +70,9 @@ class Pong(AsyncWebsocketConsumer):
                 room_id=self.room_id,
                 player_needed=int(player_needed),
             )
-            self.ball = self.Ball()
-            self.pad_1 = self.Pad(True)
-            self.pad_2 = self.Pad(False)
+            self.ball = self.Ball(color="black", power_on=self.power)
+            self.pad_1 = self.Pad(True, color="#FECACA")
+            self.pad_2 = self.Pad(False, color="#00beef")
             logger.info(
                 f"User {self.user.id} is the host for room {self.room_id}."
             )
