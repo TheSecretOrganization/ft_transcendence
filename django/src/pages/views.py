@@ -146,10 +146,17 @@ def profiles(request: HttpRequest, username: str):
 	target = target.first()
 	games = Pong.objects.filter(Q(user1=target) | Q(user2=target))
 	win = 0
+	win_percentage = 0
+
 	for game in games:
 		if (target.id is game.user1.id and game.score1 > game.score2) or (target.id is game.user2.id and game.score2 > game.score1):
 			win += 1
-	return create_response(request, 'profiles.html', {'target': target, 'games': games, 'wins': win}, title=f"{target.username} Profile")
+
+	if games.count() > 0:
+		win_percentage = round(((win / games.count()) * 100), 2)
+	else:
+		win_percentage = 0
+	return create_response(request, 'profiles.html', {'target': target, 'games': games, 'wins': win, 'win_percentage': win_percentage}, title=f"{target.username} Profile")
 
 @require_GET
 def settings(request: HttpRequest):
