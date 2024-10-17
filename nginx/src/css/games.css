@@ -59,3 +59,19 @@
 .room-input {
     background-color: var(--light-base-clr);
 }
+
+.room-input:focus {
+    background-color: var(--light-base-clr);
+}
+
+#join-label {
+    box-sizing: border-box;
+    width: auto;
+    height: auto;
+    padding-top: 0rem;
+    margin-top: 1rem;
+}
+
+#join-label::after {
+    background-color: var(--light-base-clr);
+}
