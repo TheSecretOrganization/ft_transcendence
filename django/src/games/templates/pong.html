@@ -42,6 +42,10 @@
 	const menuClass = "game-menu";
 	const backBtn = document.getElementById("back-btn");
 
+	backBtn.addEventListener("click", () => {
+		document.getElementById("join-id").value = '';
+	});
+
 	document.getElementById("join-form").addEventListener("submit", e => {
 		e.preventDefault();
 		const roomId = document.getElementById('join-id').value.trim();
