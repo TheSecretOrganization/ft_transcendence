@@ -125,10 +125,6 @@
 </div>
 {% endif %}
 <script>
-	document.getElementById("toggle-btn").onclick = function (e) {
-		toggleSidebar();
-	}
-
 	const toggleButton = document.getElementById('toggle-btn')
 	const sidebar = document.getElementById('sidebar')
 
@@ -142,10 +138,17 @@
 		})
 	}
 
+	document.getElementById("toggle-btn").onclick = function (e) {
+		toggleSidebar();
+	};
+
+	document.getElementById("main-content").onclick = e => {
+		if (!sidebar.classList.contains('close')) toggleSidebar();
+	};
+
 	document.getElementById("logout-button-navbar")?.addEventListener("click", function (e) {
 		logout();
 	})
-
 </script>
 
 {% if user.is_authenticated %}
