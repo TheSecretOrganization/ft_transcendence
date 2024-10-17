@@ -265,11 +265,22 @@ class Pong(AsyncWebsocketConsumer):
     def check_pad_collision(self):
         if self.ball.x - self.ball.radius <= self.pad_1.width:
             if self.pad_1.y <= self.ball.y <= self.pad_1.y + self.pad_1.height:
+                self.check_power_up(self.pad_1)
                 return True
         if self.ball.x + self.ball.radius >= 1 - self.pad_2.width:
             if self.pad_2.y <= self.ball.y <= self.pad_2.y + self.pad_2.height:
+                self.check_power_up(self.pad_2)
                 return True
         return False
+
+    def check_power_up(self, pad):
+        if self.power == False:
+            return
+
+        pad.combo += 1
+
+        if pad.combo >= 2 and pad.height < 0.4:
+            pad.height += 0.05
 
     async def score_point(self, winner: int):
         self.info.score[winner] += 1
