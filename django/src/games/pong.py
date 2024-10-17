@@ -40,7 +40,9 @@ class Pong(AsyncWebsocketConsumer):
             f"User {self.user.id} successfully connected to room {self.room_id}."
         )
         await self.send_message("group", "game_join", {"user": self.user.id})
-        await self.send_message("client", "game_pad", {"game_pad": self.pad_n})
+        await self.send_message(
+            "client", "game_pad", {"game_pad": self.pad_n, "host": self.host}
+        )
         if self.tournament_name != "0":
             await self.send_message(
                 "client",
@@ -59,6 +61,7 @@ class Pong(AsyncWebsocketConsumer):
         self.host = await self.redis.get(self.room_id) == None
         self.pad_n = "pad_1" if self.host else "pad_2"
         players = await self.redis.lrange(f"pong_{self.room_id}_id", 0, -1)
+        self.power = False
 
         if self.host:
             await self.redis.set(self.room_id, 1)
@@ -137,6 +140,8 @@ class Pong(AsyncWebsocketConsumer):
                     await self.send_message("group", args=data)
                 case "game_move":
                     await self.send_message("group", args=data)
+                case "toggle_power":
+                    self.power = data["content"]["power"]
                 case _:
                     raise ValueError("Unknown 'type' in data")
         except Exception as e:

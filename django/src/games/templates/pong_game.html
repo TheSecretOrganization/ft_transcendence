@@ -9,12 +9,14 @@
 
 	<button class="btn btn-primary" id="ready-btn">Ready</button>
 	<button class="btn btn-success" id="back-btn">Back</button>
+	<button class="btn btn-warning" id="power-btn">Power-Up</button>
 </div>
 
 <script>
 	const canvas = document.getElementById('pong-canvas');
 	const ctx = canvas.getContext('2d');
 	const readyBtn = document.getElementById('ready-btn');
+	const powerBtn = document.getElementById('power-btn');
 	const mode = "{{mode}}";
 	const localGame = mode === "local";
 	let socket = wsConnect(wsCreateUrl("pong", {
@@ -33,6 +35,7 @@
 	let pointerLock = false;
 	const mouseSensitivity = 1;
 	let exitRoute = "/pong"
+	let host = false;
 
 	function exit(goBack = true) {
 		if (socket) {
@@ -62,6 +65,8 @@
 
 	function handleGamePad(data) {
 		padN = data.content.game_pad
+		host = data.content.host
+		if (host) showBtn(powerBtn);
 		canvasResize(canvas);
 		if (!localGame)
 			drawCenteredText("Waiting for second player");
@@ -164,9 +169,17 @@
 	}
 
 	function initializeEvents() {
+		powerBtn.onclick = e => {
+			e.preventDefault();
+			if (!host) return;
+			const attr = "power-toggle";
+			powerBtn.toggleAttribute(attr);
+			sendToWebSocket("toggle_power", { power: powerBtn.hasAttribute(attr) });
+		};
+
 		readyBtn.addEventListener("click", e => {
-			readyBtn.classList.add("hidden");
-			readyBtn.disabled = true;
+			hideBtn(readyBtn);
+			hideBtn(powerBtn);
 			sendToWebSocket("game_ready", {
 				"pad_n": padN,
 			});
@@ -224,5 +237,6 @@
 
 	initializeEvents();
 	checkAndUpdateUrl();
+	hideBtn(powerBtn);
 </script>
 {% endblock %}
