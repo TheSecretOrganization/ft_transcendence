@@ -1,0 +1,91 @@
+.fr-friends-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 2rem auto;
+	max-width: 800px;
+	width: 100%;
+	background-color: var(--base-clr);
+	box-shadow: 0 4px 5px var(--accent-clr);
+	border: 3px solid var(--line-clr);
+	border-radius: 15px;
+}
+
+.fr-friends-content {
+	display: flex;
+	width: 90%;
+	height: 80%;
+	justify-content: space-between;
+	padding-top: 1rem;
+	gap: 1rem;
+}
+
+.fr-invite-container {
+	width: 50%;
+	padding: 1rem;
+	border: 1px solid var(--line-clr);
+	background-color: var(--light-base-clr);
+	border-radius: 5px;
+	box-shadow: 0 4px 5px var(--accent-clr);
+}
+
+.fr-invite-form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+}
+
+.fr-friends-list-container {
+	width: 50%;
+	padding: 1rem;
+	border: 1px solid var(--line-clr);
+	background-color: var(--light-base-clr);
+	border-radius: 5px;
+	box-shadow: 0 4px 5px var(--accent-clr);
+}
+
+.fr-friend-card {
+	margin: 1rem 0;
+	padding: 0.5rem;
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	background-color: var(--light-base-clr);
+}
+
+#invite-error {
+	color: var(--accent-clr);
+	margin-bottom: 1rem;
+}
+
+#invite-btn {
+	margin-top: 1rem;
+	background-color: var(--accent-clr);
+	color: white;
+	padding: 0.5rem 1rem;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#invite-btn:hover {
+	background-color: var(--hover-clr);
+}
+
+#accept-btn,
+#deny-btn,
+#delete-btn {
+	margin-left: 0.5rem;
+	background-color: var(--accent-clr);
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#accept-btn:hover,
+#deny-btn:hover,
+#delete-btn:hover {
+	background-color: var(--hover-clr);
+}
