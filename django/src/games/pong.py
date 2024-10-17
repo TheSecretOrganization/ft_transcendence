@@ -356,15 +356,16 @@ class Pong(AsyncWebsocketConsumer):
 
     class Ball:
         def __init__(self, radius=0.015, color="white"):
-            self.reset(radius=radius, color=color)
+            self.color = color
+            self.reset(radius=radius)
 
-        def reset(self, radius=0.015, color="white"):
+        def reset(self, radius=0.015):
             self.x = 0.5
             self.y = random.uniform(0.2, 0.8)
             self.radius = radius
             self.velocity = self.randomize_velocity()
-            self.color = color
             self.step = 0.05
+            self.combo = 0
 
         def randomize_velocity(self) -> List[float]:
             velocity = [0.01, 0.01]
@@ -376,6 +377,10 @@ class Pong(AsyncWebsocketConsumer):
 
         def revert_velocity(self, index):
             self.velocity[index] = -self.velocity[index]
+            self.combo += 1
+
+            if self.combo < 40:
+                self.velocity[index] *= 1.05
 
         def move(self):
             self.x += self.velocity[0]
@@ -384,13 +389,14 @@ class Pong(AsyncWebsocketConsumer):
     class Pad:
         def __init__(self, left, width=0.02, height=0.2, color="white"):
             self.left = left
-            self.reset(width=width, height=height, color=color)
+            self.color = color
+            self.reset(width=width, height=height)
 
-        def reset(self, width=0.02, height=0.2, color="white"):
+        def reset(self, width=0.02, height=0.2):
             self.width = width
             self.height = height
-            self.color = color
             self.x = 0 if self.left else 1 - self.width
             self.y = 0.4
             self.step = 0.05
             self.move = 0
+            self.combo = 0
