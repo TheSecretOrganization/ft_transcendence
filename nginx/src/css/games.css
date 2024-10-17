@@ -58,6 +58,7 @@
 
 .room-input {
     background-color: var(--light-base-clr);
+    font-size: large;
 }
 
 .room-input:focus {
@@ -69,6 +70,7 @@
     width: auto;
     height: auto;
     padding-top: 0rem;
+    padding-bottom: 0rem;
     margin-top: 1rem;
 }
 
