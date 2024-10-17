@@ -1,0 +1,108 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-17 16:42+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: pages/templates/404.html:9
+msgid "Error 404: Page not found"
+msgstr ""
+
+#: pages/templates/404.html:15
+msgid "Home Page"
+msgstr ""
+
+#: pages/templates/extends/base.html:29
+msgid "Profile"
+msgstr ""
+
+#: pages/templates/extends/base.html:30
+msgid "Settings"
+msgstr ""
+
+#: pages/templates/extends/base.html:34
+msgid "Log out"
+msgstr ""
+
+#: pages/templates/extends/base.html:43 pages/templates/index.html:20
+msgid "Login"
+msgstr ""
+
+#: pages/templates/extends/base.html:45
+msgid "Register"
+msgstr ""
+
+#: pages/templates/extends/base.html:61
+msgid "HOME"
+msgstr ""
+
+#: pages/templates/extends/base.html:67
+msgid "GAMES"
+msgstr ""
+
+#: pages/templates/extends/base.html:75
+msgid "PONG"
+msgstr ""
+
+#: pages/templates/extends/base.html:81
+msgid "TOURNAMENTS"
+msgstr ""
+
+#: pages/templates/extends/base.html:90
+msgid "COMMUNITY"
+msgstr ""
+
+#: pages/templates/extends/base.html:98
+msgid "CHAT"
+msgstr ""
+
+#: pages/templates/extends/base.html:104
+msgid "FRIENDS"
+msgstr ""
+
+#: pages/templates/extends/base.html:124
+msgid "Room: "
+msgstr ""
+
+#: pages/templates/extends/base.html:124
+msgid "General"
+msgstr ""
+
+#: pages/templates/extends/base.html:127
+msgid "Type your message here..."
+msgstr ""
+
+#: pages/templates/extends/base.html:129
+msgid "Send"
+msgstr ""
+
+#: pages/templates/extends/base.html:132
+msgid "Users Online"
+msgstr ""
+
+#: pages/templates/extends/base.html:363
+#, python-brace-format
+msgid " Private message from ${fromUser} "
+msgstr ""
+
+#: pages/templates/extends/base.html:364
+msgid "Show"
+msgstr ""
+
+#: pages/templates/index.html:16
+msgid "Play"
+msgstr ""

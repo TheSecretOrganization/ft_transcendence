@@ -1,13 +1,13 @@
 {% extends "./extends/base.html" %}
-
+{% load i18n %}
 {% block content %}
 <div>
 	<h3>{{ target.username }}</h3>
 	{% if games.count == 0 %}
 	<p>{% trans "Nerver played a game!" %}</p>
 	{% else %}
-	<h2>{% trans "Games history" %}Games history</h2>
-	<p>Wins: {{ wins }} on {{ games.count }}</p>
+	<h2>{% trans "Games history" %}</h2>
+	<p> {% blocktrans %}Wins: {{ wins }} on {{ games.count }}{% endblocktrans %}</p>
 	{% for game in games %}
 	<div>
 		<p>{{ game.user1.username }} vs {{ game.user2.username }}</p>

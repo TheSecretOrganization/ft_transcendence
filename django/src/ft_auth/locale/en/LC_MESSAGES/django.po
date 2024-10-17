@@ -1,0 +1,137 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-17 16:42+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ft_auth/manager.py:8 ft_auth/manager.py:17
+msgid "No username provided"
+msgstr ""
+
+#: ft_auth/manager.py:19
+msgid "No password provided"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:9
+msgid "Register"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:18
+#: ft_auth/templates/authentification.html:64
+msgid "Username"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:23
+#: ft_auth/templates/authentification.html:69
+msgid "Password"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:29
+msgid "Confirm Password"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:33
+msgid "Create account"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:38
+msgid "Already have an account ? Try "
+msgstr ""
+
+#: ft_auth/templates/authentification.html:40
+msgid "logging in"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:43
+#: ft_auth/templates/authentification.html:83
+msgid "or"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:45
+#: ft_auth/templates/authentification.html:85
+msgid "Login with"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:55
+#: ft_auth/templates/authentification.html:72
+msgid "Login"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:78
+msgid "Don't have an account yet ? Try"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:79
+msgid "registering"
+msgstr ""
+
+#: ft_auth/templates/authorize.html:2
+msgid "Loading"
+msgstr ""
+
+#: ft_auth/templates/authorize.html:7
+msgid "Register with 42"
+msgstr ""
+
+#: ft_auth/templates/profiles.html:7
+msgid "Nerver played a game!"
+msgstr ""
+
+#: ft_auth/templates/profiles.html:9
+msgid "Games history"
+msgstr ""
+
+#: ft_auth/templates/profiles.html:10
+#, python-format
+msgid "Wins: %(wins)s on %(games.count)s"
+msgstr ""
+
+#: ft_auth/templates/settings.html:31
+msgid "Current Password"
+msgstr ""
+
+#: ft_auth/templates/settings.html:36
+msgid "New Password"
+msgstr ""
+
+#: ft_auth/templates/settings.html:41
+msgid "Confirm New Password"
+msgstr ""
+
+#: ft_auth/templates/settings.html:44
+msgid "Confirm changes"
+msgstr ""
+
+#: ft_auth/templates/settings.html:53
+msgid "Upload New Avatar"
+msgstr ""
+
+#: ft_auth/templates/settings.html:58
+msgid "Choose File"
+msgstr ""
+
+#: ft_auth/templates/settings.html:59
+msgid "No file chosen"
+msgstr ""
+
+#: ft_auth/templates/settings.html:60
+msgid "Max file size"
+msgstr ""
+
+#: ft_auth/templates/settings.html:61
+msgid "Upload"
+msgstr ""

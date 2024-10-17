@@ -1,5 +1,5 @@
 {% extends "./extends/base.html" %}
-
+{% load i18n %}
 {% block content %}
 <div class="container-fluid d-flex vh-70">
 	<div class="row justify-content-center align-items-center w-100">
@@ -13,11 +13,11 @@
 				<div class="col text-center">
 					{% if user.is_authenticated %}
 					<a class="btn btn-lg btn-info rounded-pill rounded-5" data-route href="/pong" tabindex="1">
-						<span>Play</span>
+						<span>{% trans "Play" %}</span>
 					</a>
 					{% else %}
 					<a class="btn btn-lg btn-success rounded-pill rounded-5" data-route href="/login" tabindex="1"><span
-							class="glyphicon glyphicon-log-in"></span> Login</a>
+							class="glyphicon glyphicon-log-in"></span> {% trans "Login" %}</a>
 					{% endif %}
 				</div>
 			</div>

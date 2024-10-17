@@ -1,17 +1,17 @@
 {% extends './extends/base.html' %}
-
+{% load i18n %}
 {% block content %}
 <h1>{% trans "Friends" %}</h1>
 <form id="invite-form" data-url="/api/friends/invite/">
 	<div>
 		<div id="invite-error"></div>
-		<label for="target">{% trans "Target" %}</label>
+		<label for="target">{% trans "Target" %} </label>
 		<input id="target" type="text" name="target">
 	</div>
 	<button id="invite-btn" type="submit">{% trans "Invite" %}</button>
 </form>
 {% if friends.count == 0 %}
-<p>{% trans "You don't have any friend :/" %}</p>
+<p> {% trans "You don't have any friend :/" %}</p>
 {% else %}
 <div id="show-error"></div>
 {% for friend in friends %}

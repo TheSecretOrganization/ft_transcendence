@@ -1,7 +1,19 @@
+{% load i18n %}
 <div id="navbar-wrapper">
 	<nav class="navbar">
 		<a class="navbar-brand nav navbar-nav navbar-left link-info text-decoration-none" data-route href="/">Johnny
 			Depp</a>
+		<button id="language-button">
+			<i id="icon-lang" class="fa-solid fa-language"></i>
+		</button>
+		<div id="language-menu" style="display: none;">
+			<ul>
+				<li><a href="#" data-lang="en">English</a></li>
+				<li><a href="#" data-lang="fr">French</a></li>
+				<li><a href="#" data-lang="bs">Bosnian</a></li>
+				<li><a href="#" data-lang="pt-br">Brazilian</a></li>
+			</ul>
+		</div>
 		{% if user.is_authenticated %}
 		<button id="notif-button">
 			<i id="icon-notif" class="fa-solid fa-bell"></i>
@@ -14,12 +26,12 @@
 					{{ user.username }} <span class="glyphicon glyphicon-picture"></span>
 				</button>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-					<li><a class="dropdown-item" data-route href="#">Profile</a></li>
-					<li><a class="dropdown-item" data-route href="/settings">Settings</a></li>
+					<li><a class="dropdown-item" data-route href="#">{% trans "Profile" %}</a></li>
+					<li><a class="dropdown-item" data-route href="/settings">{% trans "Settings" %}</a></li>
 					<li>
 						<hr class="dropdown-divider">
 					</li>
-					<li><button id="logout-button-navbar" class="dropdown-item fw-bold">Log out <span
+					<li><button id="logout-button-navbar" class="dropdown-item fw-bold">{% trans "Log out" %}<span
 								class="glyphicon glyphicon-log-out"></span></button></li>
 				</ul>
 			</div>
@@ -28,9 +40,9 @@
 		<ul id="navbar-list"
 			class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
 			<li class="m-2"><a class="btn btn btn-success rounded-pill rounded-5" data-route href="/login"><span
-						class="glyphicon glyphicon-log-in"></span> Login</a></li>
+						class="glyphicon glyphicon-log-in"></span> {% trans "Login" %}</a></li>
 			<li class="m-2"><a class="btn btn btn-outline-success rounded-pill rounded-5" data-route
-					href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+					href="/register"><span class="glyphicon glyphicon-user"></span> {% trans "Register" %}</a></li>
 		</ul>
 		{% endif %}
 	</nav>
@@ -46,13 +58,13 @@
 		<li class="active">
 			<a data-route href="/">
 				<img draggable="false" src="/assets/home.svg" alt="home icon">
-				<span>HOME</span>
+				<span>{% trans "HOME" %}</span>
 			</a>
 		</li>
 		<li>
 			<button onclick=toggleSubMenu(this) class="dropdown-btn">
 				<img draggable="false" src="/assets/controller.svg" alt="controller icon">
-				<span>GAMES</span>
+				<span>{% trans "GAMES" %}</span>
 				<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
 			</button>
 			<ul class="sub-menu">
@@ -60,13 +72,13 @@
 					<li>
 						<a data-route href="/pong" tabindex="-1">
 							<img draggable="false" src="/assets/pong-racket.svg" alt="racket icon">
-							<span>PONG</span>
+							<span>{% trans "PONG" %}</span>
 						</a>
 					</li>
 					<li>
 						<a data-route href="/tournaments" tabindex="-1">
 							<img draggable="false" src="/assets/trophy.svg" alt="trophy icon">
-							<span>TOURNAMENTS</span>
+							<span>{% trans "TOURNAMENTS" %}</span>
 						</a>
 					</li>
 				</div>
@@ -75,7 +87,7 @@
 		<li>
 			<button onclick=toggleSubMenu(this) class="dropdown-btn">
 				<img draggable="false" src="/assets/community.svg" alt="community icon">
-				<span>COMMUNITY</span>
+				<span>{% trans "COMMUNITY" %}</span>
 				<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
 			</button>
 			<ul class="sub-menu">
@@ -83,13 +95,13 @@
 					<li>
 						<a data-route href="/chat" tabindex="-1">
 							<img draggable="false" src="/assets/chat.svg" alt="chat icon">
-							<span>CHAT</span>
+							<span>{% trans "CHAT" %}</span>
 						</a>
 					</li>
 					<li>
 						<a data-route href="/friends" tabindex="-1">
 							<img draggable="false" src="/assets/group.svg" alt="group icon">
-							<span>FRIENDS</span>
+							<span>{% trans "FRIENDS" %}</span>
 						</a>
 					</li>
 				</div>
@@ -109,14 +121,15 @@
 		<i class="fa-solid fa-message icon-msg" style="font-size: 40px;"></i>
 	</button>
 	<div id="chat-container" class="toggled">
-		<div id="chat-title">Room: <span id="room-name">General</span></div>
+		<div id="chat-title">{% trans "Room: " %}<span id="room-name">{% trans "General" %}</span></div>
 		<div id="chat-log"></div>
 		<form id="chat-form">
-			<input id="chat-input" type="text" placeholder="Type your message here..." autocomplete="off" />
-			<button type="submit" id="chat-send-btn">Send</button>
+			<input id="chat-input" type="text" placeholder="{% trans 'Type your message here...' %}"
+				autocomplete="off" />
+			<button type="submit" id="chat-send-btn">{% trans "Send" %}</button>
 		</form>
 		<div id="users-wrapper">
-			<h6>Users Online</h6>
+			<h6>{% trans "Users Online" %}</h6>
 			<ul id="user-list"></ul>
 		</div>
 	</div>
@@ -143,7 +156,41 @@
 	document.getElementById("logout-button-navbar")?.addEventListener("click", function (e) {
 		logout();
 	})
+</script>
 
+<script>
+	const languageButton = document.getElementById('language-button');
+	const languageMenu = document.getElementById('language-menu');
+
+	languageButton.addEventListener('click', function () {
+		const isVisible = languageMenu.style.display === 'block';
+		languageMenu.style.display = isVisible ? 'none' : 'block';
+	});
+
+	function changeLanguage(lang) {
+		fetch(`/api/pages/translate/?lang=${lang}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+			.then(response => response.json())
+			.then(data => {
+				location.reload();
+			})
+			.catch(error => {
+				console.error('Error changing language:', error);
+			});
+	}
+
+	document.querySelectorAll('#language-menu a').forEach(item => {
+		item.addEventListener('click', function (event) {
+			event.preventDefault();
+			const lang = this.getAttribute('data-lang');
+			changeLanguage(lang)
+			languageMenu.style.display = 'none';
+		});
+	})
 </script>
 
 {% if user.is_authenticated %}
@@ -313,8 +360,8 @@
 		const notificationDiv = document.createElement('div');
 		notificationDiv.classList.add('notification');
 		notificationDiv.innerHTML = `
-			<p>Private message from ${fromUser}</p>
-			<button onclick="joinPrivateChat('${fromUser}')">Show</button>
+			<p>{% blocktrans %} Private message from ${fromUser} {% endblocktrans %}</p>
+			<button onclick="joinPrivateChat('${fromUser}')">{% trans "Show" %}</button>
 		`;
 		notificationArea.appendChild(notificationDiv);
 	}

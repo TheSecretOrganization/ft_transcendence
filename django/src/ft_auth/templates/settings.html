@@ -1,5 +1,5 @@
 {% extends "./extends/base.html" %}
-
+{% load i18n %}
 {% block content %}
 
 <div class="profile-container">
@@ -28,20 +28,20 @@
 			<div class="form-floating row">
 				<input type="password" class="form-control password-container" id="current_password"
 					placeholder="Current password" value="">
-				<label for="current_password">Current Password</label>
+				<label for="current_password">{% trans "Current Password" %}</label>
 			</div>
 			<div class="form-floating row">
 				<input type="password" class="form-control password-container" id="new_password"
 					placeholder="New password" value="">
-				<label for="new_password">New Password</label>
+				<label for="new_password">{% trans "New Password" %}</label>
 			</div>
 			<div class="form-floating row">
 				<input type="password" class="form-control password-container" id="confirm_password"
 					placeholder="Confirm new password" value="">
-				<label for="confirm_password">Confirm New Password</label>
+				<label for="confirm_password">{% trans "Confirm New Password" %}</label>
 			</div>
 			<button id="password-btn" class="confirm-btn">
-				Confirm changes
+				{% trans "Confirm changes" %}
 			</button>
 		</form>
 	</div>
@@ -50,15 +50,15 @@
 <div id="avatarModal" class="modal-overlay hidden">
 	<div class="modal-content">
 		<button type="button" class="close-button" id="closeModalBtn">&times;</button>
-		<h2 class="form-title">Upload New Avatar</h2>
+		<h2 class="form-title">{% trans "Upload New Avatar" %}</h2>
 		<hr class="profile-divider">
 		<form id="avatarForm" enctype="multipart/form-data" class="avatar-form">
 			{% csrf_token %}
 			<input type="file" name="avatar" id="avatarInput" accept="image/*" required style="display: none;">
-			<label for="avatarInput" class="custom-file-label">Choose File</label>
-			<span id="file-name" class="file-name">No file chosen</span>
-			<small>Max file size: 2MB</small>
-			<button id="upload-avatar-btn" type="submit" class="upload-btn">Upload</button>
+			<label for="avatarInput" class="custom-file-label">{% trans "Choose File" %}</label>
+			<span id="file-name" class="file-name">{% trans "No file chosen" %}</span>
+			<small>{% trans "Max file size" %}: 2MB</small>
+			<button id="upload-avatar-btn" type="submit" class="upload-btn">{% trans "Upload" %}</button>
 		</form>
 	</div>
 </div>
