@@ -33,7 +33,7 @@
 	let gameState;
 	let keyInterval = null;
 	let pointerLock = false;
-	const mouseSensitivity = 1;
+	const mouseSensitivity = 0.25;
 	let exitRoute = "/pong"
 	let host = false;
 
@@ -194,6 +194,7 @@
 		};
 
 		document.onkeydown = e => {
+			if (!socket) return;
 			if (run && (e.key === upKey || e.key === downKey)) {
 				e.preventDefault();
 				if (!keyInterval) {
@@ -222,6 +223,7 @@
 			}
 
 			document.onmousemove = e => {
+				if (!socket) return;
 				if (run && pointerLock) {
 					let direction = e.movementY < 0 ? "up" : "down";
 					if (Math.abs(e.movementY) * mouseSensitivity >= 1)
