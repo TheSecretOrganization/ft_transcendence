@@ -355,8 +355,9 @@ class Pong(AsyncWebsocketConsumer):
             self.score = [0, 0]
 
     class Ball:
-        def __init__(self, radius=0.015, color="white"):
+        def __init__(self, radius=0.015, color="white", power_on=False):
             self.color = color
+            self.limit = 250 if power_on else 50
             self.reset(radius=radius)
 
         def reset(self, radius=0.015):
@@ -368,7 +369,8 @@ class Pong(AsyncWebsocketConsumer):
             self.combo = 0
 
         def randomize_velocity(self) -> List[float]:
-            velocity = [0.01, 0.01]
+            speed = 0.01
+            velocity = [speed, speed]
             if random.randint(0, 1):
                 velocity[0] *= -1
             if random.randint(0, 1):
@@ -379,7 +381,7 @@ class Pong(AsyncWebsocketConsumer):
             self.velocity[index] = -self.velocity[index]
             self.combo += 1
 
-            if self.combo < 40:
+            if self.combo < self.limit:
                 self.velocity[index] *= 1.05
 
         def move(self):
