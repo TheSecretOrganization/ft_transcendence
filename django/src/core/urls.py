@@ -24,4 +24,5 @@ urlpatterns = [
 	path('friends/', include('friends.urls')),
 	path('auth/', include('ft_auth.urls')),
 	path('pages/', include('pages.urls')),
+	path('games/', include('games.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

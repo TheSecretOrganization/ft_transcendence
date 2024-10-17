@@ -1,19 +1,42 @@
 {% extends "./extends/base.html" %}
 {% load i18n %}
 {% block content %}
-<div>
-	<h3>{{ target.username }}</h3>
-	{% if games.count == 0 %}
-	<p>{% trans "Nerver played a game!" %}</p>
-	{% else %}
-	<h2>{% trans "Games history" %}</h2>
-	<p> {% blocktrans %}Wins: {{ wins }} on {{ games.count }}{% endblocktrans %}</p>
-	{% for game in games %}
-	<div>
-		<p>{{ game.user1.username }} vs {{ game.user2.username }}</p>
-		<p>{{ game.score1 }} @ {{ game.score2 }}</p>
+<div class="pr-profile-container">
+	<div class="pr-header">
+		<div class="pr-profile-header-content">
+			<div class="pr-profile-image-container">
+				<img src="{{ target.avatar.url }}" alt="Profile Picture" class="pr-profile-image">
+			</div>
+			<div class="pr-profile-username">
+				<h1>{{ target.username }}</h1>
+			</div>
+		</div>
 	</div>
-	{% endfor %}
-	{% endif %}
+
+	<hr class="pr-divider">
+
+	<div class="pr-profile-content">
+		{% if games.count == 0 %}
+		<p class="pr-no-games">Never played a game!</p>
+		{% else %}
+		<h2>Games history</h2>
+		<p>Wins: <span id="wins">{{ wins }}</span></p>
+		<p>Games Played: <span id="games-played">{{ games.count }}</span></p>
+		<p>Win Percentage: {{ win_percentage}}%<span id="win-percentage"></span></p>
+
+
+		<div class="pr-game-scroll-container">
+			<div class="pr-game-list">
+				{% for game in games %}
+				<div class="pr-game-card">
+					<p>{{ game.user1.username }} vs {{ game.user2.username }}</p>
+					<p>{{ game.score1 }} @ {{ game.score2 }}</p>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+		{% endif %}
+	</div>
 </div>
+
 {% endblock %}

@@ -1,0 +1,100 @@
+.pr-profile-container {
+	font-family: 'Poppins', sans-serif;
+	text-align: center;
+	background-color: var(--base-clr);
+	border: 3px solid var(--line-clr);
+	border-radius: 15px;
+	padding: 2rem;
+	max-width: 500px;
+	width: 100%;
+	min-width: 300px;
+	margin: 5rem auto;
+	max-height: 60rem;
+	min-height: 60rem;
+	box-shadow: 0 4px 5px var(--accent-clr);
+}
+
+.pr-header {
+	display: flex;
+	align-items: center;
+	padding-bottom: 1rem;
+	width: 100%;
+}
+
+.pr-profile-header-content {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 7rem;
+	width: 100%;
+}
+
+.pr-profile-image-container {
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	overflow: hidden;
+	border: 2px solid var(--line-clr);
+	margin-left: -5rem;
+}
+
+.pr-profile-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.pr-profile-username {
+	text-align: left;
+}
+
+.pr-profile-username h1 {
+	font-size: 2.5rem;
+	margin: 0;
+}
+
+.pr-divider {
+	border: 1px solid var(--line-clr);
+	margin: 1rem 0;
+}
+
+.pr-profile-content {
+	position: relative;
+	padding: 1rem;
+	background-color: var(--base-clr);
+}
+
+.pr-no-games {
+	font-size: 1.5rem;
+	color: var(--accent-clr);
+	padding: 2rem 0;
+}
+
+.pr-game-scroll-container {
+	display: flex;
+	justify-content: center;
+	max-height: 300px;
+	overflow-y: auto;
+	margin-top: 3rem;
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	background-color: var(--hover-clr);
+	box-shadow: 0 4px 5px var(--accent-clr);
+}
+
+.pr-game-list {
+	display: flex;
+	flex-direction: column;
+	align-content: center;
+	gap: 1rem;
+	border-radius: 5px;
+	width: 90%;
+}
+
+.pr-game-card {
+	background-color: var(--light-base-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 10px;
+	padding: 1rem;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

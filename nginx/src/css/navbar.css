@@ -1,7 +1,7 @@
 .navbar {
 	background-color: #424242;
 	height: var(--navbar-height);
-	min-height: 3.75rem;
+	min-height: var(--navbar-height);
 	display: flex;
 	flex-direction: row;
 	padding: 0;
@@ -24,6 +24,15 @@
 	padding-right: 1.5rem;
 }
 
+.navbar-profile-img {
+	height: 40%;
+	border-radius: 50%;
+	object-fit: cover;
+	max-height: 30px;
+	width: auto;
+	margin-left: 10px;
+}
+
 .navbar-profile-button {
 	padding: 0.5rem 0.75rem;
 }
@@ -35,6 +44,7 @@
 
 .dropdown-item {
 	margin: 0;
+	width: inherit;
 }
 
 .dropdown-toggle::after {

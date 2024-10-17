@@ -18,14 +18,14 @@
 					menu-id="join">Join a Room</button>
 				<hr class="row-divider">
 				<a class="btn pong-selection-buttons pong-btn-scnd-color text-decoration-none my-4 w-100 fw-bold"
-					data-route href="/tournament/pong">Join a Tournament</a>
+					data-route href="/tournaments">Join a Tournament</a>
 			</div>
 
 			<div game-menu="join" class="row w-100">
 				<form class="form-group my-4 w-100" id="join-form">
 					<div class="form-floating w-100 room-input-container mb-4">
-						<input class="form-control w-100 room-input" type="text" id="join-id" placeholder="Room Id">
-						<label for="join-id" class="w-100 room-input">Room ID</label>
+						<input class="form-control w-100 room-input font" type="text" id="join-id" placeholder="Room Id" autocomplete="off">
+						<label id="join-label" for="join-id" class="room-input">Room ID</label>
 					</div>
 					<button type="submit"
 						class="btn pong-selection-buttons pong-btn-scnd-color text-decoration-none mb-4 w-100 fw-bold">Join</button>
@@ -39,21 +39,11 @@
 </div>
 
 <script>
-	const url = "pong"
+	const menuClass = "game-menu";
 	const backBtn = document.getElementById("back-btn");
 
-	function showMenu(menuId) {
-		document.querySelectorAll("[game-menu]").forEach(menu => {
-			menu.style.display = menu.getAttribute("game-menu") === menuId ? "block" : "none";
-		});
-		menuId === "main" ? backBtn.classList.add("hidden") : backBtn.classList.remove("hidden");
-	}
-
-	document.querySelectorAll('[menu-id]').forEach(element => {
-		element.addEventListener("click", (e) => {
-			e.preventDefault();
-			showMenu(element.getAttribute("menu-id"));
-		});
+	backBtn.addEventListener("click", () => {
+		document.getElementById("join-id").value = '';
 	});
 
 	document.getElementById("join-form").addEventListener("submit", e => {
@@ -66,6 +56,7 @@
 			console.error('Room ID cannot be empty.');
 	});
 
-	showMenu("main");
+	showMenu("main", menuClass, backBtn);
+	addBtnToMenusEvents(menuClass, backBtn);
 </script>
 {% endblock %}

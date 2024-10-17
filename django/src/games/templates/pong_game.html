@@ -9,19 +9,21 @@
 
 	<button class="btn btn-primary" id="ready-btn">Ready</button>
 	<button class="btn btn-success" id="back-btn">Back</button>
+	<button class="btn btn-warning" id="power-btn">Power-Up</button>
 </div>
 
 <script>
 	const canvas = document.getElementById('pong-canvas');
 	const ctx = canvas.getContext('2d');
 	const readyBtn = document.getElementById('ready-btn');
+	const powerBtn = document.getElementById('power-btn');
 	const mode = "{{mode}}";
 	const localGame = mode === "local";
 	let socket = wsConnect(wsCreateUrl("pong", {
-			"mode": mode,
-			"room_id": "{{room_id}}",
-			"host": "{{host}}",
-			"player_needed": mode === "online" ? 2 : 1,
+		"mode": mode,
+		"room_id": "{{room_id}}",
+		"player_needed": mode === "online" ? 2 : 1,
+		"tournament_name": "{{ tournament_name }}",
 	}), onMessage, exit);
 	let upKey = "w";
 	let downKey = "s";
@@ -31,7 +33,9 @@
 	let gameState;
 	let keyInterval = null;
 	let pointerLock = false;
-	const mouseSensitivity = 1;
+	const mouseSensitivity = 0.25;
+	let exitRoute = "/pong"
+	let host = false;
 
 	function exit(goBack = true) {
 		if (socket) {
@@ -41,7 +45,7 @@
 		}
 		document.exitPointerLock();
 		if (goBack)
-			route("/pong");
+			route(exitRoute);
 	}
 
 	function sendToWebSocket(type, args = {}) {
@@ -55,11 +59,14 @@
 			case 'game_state': handleGameState(data); break;
 			case 'game_stop': handleGameStop(data); break;
 			case 'game_error': handleGameError(data); break;
+			case 'tournament_name': exitRoute = `/tournaments/pong/${data.content.tournament_name}`; break;
 		}
 	}
 
 	function handleGamePad(data) {
 		padN = data.content.game_pad
+		host = data.content.host
+		if (host) showBtn(powerBtn);
 		canvasResize(canvas);
 		if (!localGame)
 			drawCenteredText("Waiting for second player");
@@ -120,13 +127,13 @@
 		ctx.fillRect(pad.x * canvas.width, pad.y * canvas.height, pad.width * canvas.width, pad.height * canvas.height);
 	}
 
-	function drawText(text, x, y, color = "white", font = "20px Arial") {
+	function drawText(text, x, y, color = "black", font = `20px ${getFont()}`) {
 		ctx.fillStyle = color;
 		ctx.font = font;
 		ctx.fillText(text, x, y);
 	}
 
-	function drawCenteredText(text, color = "white", font = "20px Arial") {
+	function drawCenteredText(text, color = "black", font = `20px ${getFont()}`) {
 		ctx.font = font;
 		const textWidth = ctx.measureText(text).width;
 		const x = (canvas.width - textWidth) / 2;
@@ -162,9 +169,17 @@
 	}
 
 	function initializeEvents() {
+		powerBtn.onclick = e => {
+			e.preventDefault();
+			if (!host) return;
+			const attr = "power-toggle";
+			powerBtn.toggleAttribute(attr);
+			sendToWebSocket("toggle_power", { power: powerBtn.hasAttribute(attr) });
+		};
+
 		readyBtn.addEventListener("click", e => {
-			readyBtn.classList.add("hidden");
-			readyBtn.disabled = true;
+			hideBtn(readyBtn);
+			hideBtn(powerBtn);
 			sendToWebSocket("game_ready", {
 				"pad_n": padN,
 			});
@@ -179,6 +194,7 @@
 		};
 
 		document.onkeydown = e => {
+			if (!socket) return;
 			if (run && (e.key === upKey || e.key === downKey)) {
 				e.preventDefault();
 				if (!keyInterval) {
@@ -207,10 +223,11 @@
 			}
 
 			document.onmousemove = e => {
+				if (!socket) return;
 				if (run && pointerLock) {
 					let direction = e.movementY < 0 ? "up" : "down";
 					if (Math.abs(e.movementY) * mouseSensitivity >= 1)
-					sendToWebSocket("game_move", { "pad_n": "pad_2", "direction": direction });
+						sendToWebSocket("game_move", { "pad_n": "pad_2", "direction": direction });
 				}
 			};
 
@@ -222,5 +239,6 @@
 
 	initializeEvents();
 	checkAndUpdateUrl();
+	hideBtn(powerBtn);
 </script>
 {% endblock %}
