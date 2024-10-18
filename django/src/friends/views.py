@@ -23,7 +23,7 @@ def invite(request: HttpRequest):
 	except IntegrityError as error:
 		return JsonResponse({'error': f'{error}'}, status=400)
 	except get_user_model().DoesNotExist:
-		return JsonResponse({'error': "Target doesn't exist"}, status=400)
+		return JsonResponse({'error': "This user doesn't exist"}, status=400)
 	return HttpResponse(status=200)
 
 def update_invite_status(request: HttpRequest, status: str):

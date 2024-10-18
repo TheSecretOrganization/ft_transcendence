@@ -15,14 +15,13 @@
 					<input id="target" type="text" name="target" placeholder="Enter username" autocomplete="off">
 				</div>
 				<div>
-					<button id="invite-btn" type="submit">Become Friends</button>
+					<button id="fr-invite-btn" type="submit">Become Friends</button>
 				</div>
 			</form>
 		</div>
-		<!-- <div class="fr-divider"></div> -->
 		<div class="fr-friends-list-container">
 			{% if friends.count == 0 %}
-			<p>You don't have any friends :/</p>
+			<p>You don't have any friends yet !</p>
 			{% else %}
 			<div id="show-error"></div>
 			{% for friend in friends %}
@@ -31,10 +30,10 @@
 				<p>Status: {{ friend.get_status_display }}</p>
 				<div>
 					{% if friend.status == 1 and friend.target == user %}
-					<button id="accept-btn" data-invite="{{ friend.id }}">Accept</button>
-					<button id="deny-btn" data-invite="{{ friend.id }}">Deny</button>
+					<button id="fr-accept-btn" data-invite="{{ friend.id }}">Accept</button>
+					<button id="fr-deny-btn" data-invite="{{ friend.id }}">Deny</button>
 					{% else %}
-					<button id="delete-btn" data-invite="{{ friend.id }}">Delete</button>
+					<button id="fr-delete-btn" data-invite="{{ friend.id }}">Delete</button>
 					{% endif %}
 				</div>
 			</div>
@@ -65,13 +64,13 @@
 		}
 	}
 
-	registerBtn('accept-btn', 'accept');
-	registerBtn('deny-btn', 'deny');
-	registerBtn('delete-btn', 'delete');
+	registerBtn('fr-accept-btn', 'accept');
+	registerBtn('fr-deny-btn', 'deny');
+	registerBtn('fr-delete-btn', 'delete');
 
-	document.getElementById('invite-btn').onclick = function (e) {
+	document.getElementById('fr-invite-btn').onclick = function (e) {
 		e.preventDefault();
-		let divError = document.getElementById('invite-error');
+		let divError = document.getElementById('fr-invite-error');
 		divError.textContent = '';
 		submitForm('invite-form', () => route('/friends'), (json) => {
 			divError.textContent = json.error;

@@ -22,6 +22,7 @@
 
 .fr-invite-container {
 	width: 50%;
+	height: 95%;
 	padding: 1rem;
 	border: 1px solid var(--line-clr);
 	background-color: var(--light-base-clr);
@@ -60,6 +61,12 @@ input#target:focus {
 }
 
 .fr-friends-list-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	/* max-height: 300px; */
+	overflow-y: auto;
+	height: 95%;
 	width: 50%;
 	padding: 1rem;
 	border: 1px solid var(--line-clr);
@@ -69,19 +76,20 @@ input#target:focus {
 }
 
 .fr-friend-card {
-	margin: 1rem 0;
+	width: 80%;
+	margin: 0.5rem 0;
 	padding: 0.5rem;
 	border: 1px solid var(--line-clr);
 	border-radius: 5px;
-	background-color: var(--light-base-clr);
+	background-color: var(--base-clr);
 }
 
-#invite-error {
+#fr-invite-error {
 	color: var(--accent-clr);
 	margin-bottom: 1rem;
 }
 
-#invite-btn {
+#fr-invite-btn {
 	margin-top: 1rem;
 	background-color: var(--hover-clr);
 	color: var(--text-clr);
@@ -91,13 +99,13 @@ input#target:focus {
 	cursor: pointer;
 }
 
-#invite-btn:hover {
+#fr-invite-btn:hover {
 	background-color: var(--dark-hover-clr);
 }
 
-#accept-btn,
-#deny-btn,
-#delete-btn {
+#fr-accept-btn,
+#fr-deny-btn,
+#fr-delete-btn {
 	margin-left: 0.5rem;
 	background-color: var(--accent-clr);
 	color: white;
@@ -106,8 +114,8 @@ input#target:focus {
 	cursor: pointer;
 }
 
-#accept-btn:hover,
-#deny-btn:hover,
-#delete-btn:hover {
+#fr-accept-btn:hover,
+#fr-deny-btn:hover,
+#fr-delete-btn:hover {
 	background-color: var(--hover-clr);
 }
