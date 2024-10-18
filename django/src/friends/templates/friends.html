@@ -67,14 +67,13 @@
 	registerBtn('fr-accept-btn', 'accept');
 	registerBtn('fr-deny-btn', 'deny');
 
-	// Updated event listener for delete buttons
 	document.querySelectorAll('.fr-delete-btn').forEach(el => {
 		el.onclick = function (e) {
-			let inviteId = el.dataset.invite; // Get the invite ID from data attribute
-			postFetch(`/api/friends/delete/`, { 'invite_id': inviteId }) // Call your delete route
+			let inviteId = el.dataset.invite;
+			postFetch(`/api/friends/delete/`, { 'invite_id': inviteId })
 				.then(response => {
 					if (response.status == 200) {
-						handleLocation(); // Update the UI after successful deletion
+						handleLocation();
 					} else return response.json();
 				})
 				.then(json => document.getElementById('show-error').textContent = json.error)
