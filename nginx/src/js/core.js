@@ -77,4 +77,6 @@ function copyElementText(elementId) {
 	const copyText = document.getElementById(elementId);
 
 	navigator.clipboard.writeText(copyText.innerText);
+
+	displayToast("Sucessfully copied game ID to clipboard");
 }
