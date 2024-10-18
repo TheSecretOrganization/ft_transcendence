@@ -105,17 +105,18 @@ input#target:focus {
 
 #fr-accept-btn,
 #fr-deny-btn,
-#fr-delete-btn {
+.fr-delete-btn {
+	padding: 0rem 0.5rem;
 	margin-left: 0.5rem;
-	background-color: var(--accent-clr);
-	color: white;
-	border: none;
+	background-color: var(--hover-clr);
+	color: var(--text-clr);
+	border: 1px solid var(--line-clr);
 	border-radius: 5px;
 	cursor: pointer;
 }
 
 #fr-accept-btn:hover,
 #fr-deny-btn:hover,
-#fr-delete-btn:hover {
-	background-color: var(--hover-clr);
+.fr-delete-btn:hover {
+	background-color: var(--dark-hover-clr);
 }
