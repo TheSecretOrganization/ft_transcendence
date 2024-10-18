@@ -77,3 +77,50 @@
 #join-label::after {
     background-color: var(--light-base-clr);
 }
+
+#game {
+    padding: 0;
+}
+
+.game-params {
+    padding: 0;
+}
+
+.game-btns {
+    border: 1px solid var(--line-clr);
+    background-color: var(--base-clr);
+	color: var(--secondary-text-clr);
+    padding: 1.5rem;
+    border-radius: 5px;
+	font-size: large;
+	box-sizing: border-box;
+    width: 70%;
+    margin-left: 2px;
+}
+
+.game-btns-scnd-clr {
+    background-color: var(--secondary-base-clr) !important;
+}
+
+.game-btns:hover {
+    border: 1px solid var(--base-clr);
+    background-color: var(--hover-clr);
+	color: var(--secondary-text-clr);
+}
+
+.game-btns.active {
+    border: 1px solid var(--base-clr);
+    background-color: var(--hover-clr);
+	color: var(--secondary-text-clr);
+}
+
+.game-btns:focus {
+	border: 3px solid var(--selection-clr) !important;
+	border-radius: 0.5rem !important;
+    background-color: var(--hover-clr);
+	color: var(--secondary-text-clr);
+}
+
+#pong-game-divider {
+    width: 70%;
+}

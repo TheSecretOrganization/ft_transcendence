@@ -1,15 +1,28 @@
 {% extends "./extends/base.html" %}
 
 {% block content %}
-<div class="container">
-	<div id="game">
-		<p>Roomd Id: {{room_id}}</p>
-		<canvas id="pong-canvas" class="game-canvas"></canvas>
-	</div>
+<div class="container-fluid h-100">
+	<div class="row h-100">
+		<div id="game" class="col-9 d-flex align-items-center">
+			<div class="w-100 text-center">
+				<p>Room Id: {{room_id}}</p>
+				<canvas id="pong-canvas" class="game-canvas"></canvas>
+			</div>
+		</div>
 
-	<button class="btn btn-primary" id="ready-btn">Ready</button>
-	<button class="btn btn-success" id="back-btn">Back</button>
-	<button class="btn btn-warning" id="power-btn">Power-Up</button>
+		<div class="col-3 game-params d-flex flex-column justify-content-center">
+			<div class="row mb-2">
+				<button class="btn game-btns mb-4 game-btns-scnd-clr" id="ready-btn">Ready</button>
+			</div>
+			<div class="row mb-2">
+				<button class="btn game-btns mt-4 mb-2" id="power-btn">Power-Up</button>
+			</div>
+			<hr class="row-divider my-2 mx-0" id="pong-game-divider">
+			<div class="row">
+				<button class="btn game-btns mt-2 game-btns-scnd-clr" id="back-btn">Back</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script>
@@ -169,17 +182,26 @@
 	}
 
 	function initializeEvents() {
+		// powerBtn.onclick = e => {
+		// 	e.preventDefault();
+		// 	if (!host) return;
+		// 	const attr = "active";
+		// 	powerBtn.toggleAttribute(attr);
+		// 	sendToWebSocket("toggle_power", { power: powerBtn.hasAttribute(attr) });
+		// };
 		powerBtn.onclick = e => {
 			e.preventDefault();
 			if (!host) return;
-			const attr = "power-toggle";
-			powerBtn.toggleAttribute(attr);
-			sendToWebSocket("toggle_power", { power: powerBtn.hasAttribute(attr) });
+			const activeClass = "active";
+			powerBtn.classList.toggle(activeClass);
+			sendToWebSocket("toggle_power", { power: powerBtn.classList.contains(activeClass) });
 		};
+
 
 		readyBtn.addEventListener("click", e => {
 			hideBtn(readyBtn);
 			hideBtn(powerBtn);
+			document.getElementById("pong-game-divider").classList.toggle("hidden");
 			sendToWebSocket("game_ready", {
 				"pad_n": padN,
 			});
