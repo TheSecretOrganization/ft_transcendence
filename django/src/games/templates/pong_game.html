@@ -5,7 +5,7 @@
 	<div class="row h-100">
 		<div id="game" class="col-9 d-flex align-items-center">
 			<div class="w-100 text-center">
-				<p>Room Id: {{room_id}}</p>
+				<button onclick="copyElementText('room-id-text')">Room Id: <p id="room-id-text">{{room_id}}</p></button>
 				<canvas id="pong-canvas" class="game-canvas"></canvas>
 			</div>
 		</div>
