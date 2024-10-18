@@ -2,10 +2,12 @@
 
 {% block content %}
 <div class="container-fluid h-100">
-	<div class="row h-100">
+	<div class="row h-100" id="pong-row">
 		<div id="game" class="col-9 d-flex align-items-center">
 			<div class="w-100 text-center">
-				<button onclick="copyElementText('room-id-text')">Room Id: <p id="room-id-text">{{room_id}}</p></button>
+				<div class="d-inline-block" id="copy-id-div"><button id="copy-id-btn" class="btn game-btns fw-bold" onclick="copyElementText('room-id-text')">Room
+						Id: <span id="room-id-text" class="text-decoration-underline fw-light">
+							{{room_id}}</span></button></div>
 				<canvas id="pong-canvas" class="game-canvas"></canvas>
 			</div>
 		</div>
