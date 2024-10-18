@@ -72,3 +72,9 @@ function displayToast(message) {
 function getFont() {
 	return "Poppins";
 }
+
+function copyElementText(elementId) {
+	const copyText = document.getElementById(elementId);
+
+	navigator.clipboard.writeText(copyText.innerText);
+}
