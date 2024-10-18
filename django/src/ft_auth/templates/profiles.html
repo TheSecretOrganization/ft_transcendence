@@ -17,12 +17,12 @@
 
 	<div class="pr-profile-content">
 		{% if games.count == 0 %}
-		<p class="pr-no-games">Never played a game!</p>
+		<p class="pr-no-games">{% trans "Never played a game!" %}</p>
 		{% else %}
-		<h2>Games history</h2>
-		<p>Wins: <span id="wins">{{ wins }}</span></p>
-		<p>Games Played: <span id="games-played">{{ games.count }}</span></p>
-		<p>Win Percentage: {{ win_percentage}}%<span id="win-percentage"></span></p>
+		<h2>{% trans "Games history" %}</h2>
+		<p>{% trans "Wins:" %} <span id="wins">{{ wins }}</span></p>
+		<p>{% trans "Games Played:" %} <span id="games-played">{{ games.count }}</span></p>
+		<p>{% trans "Win Percentage:" %} {{ win_percentage}}%<span id="win-percentage"></span></p>
 
 
 		<div class="pr-game-scroll-container">

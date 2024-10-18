@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-17 16:42+0200\n"
+"POT-Creation-Date: 2024-10-18 12:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,109 +31,99 @@ msgid "Register"
 msgstr "Registrar"
 
 #: ft_auth/templates/authentification.html:18
-#: ft_auth/templates/authentification.html:64
+#: ft_auth/templates/authentification.html:65
 msgid "Username"
 msgstr "Nome de usuário"
 
-#: ft_auth/templates/authentification.html:23
-#: ft_auth/templates/authentification.html:69
+#: ft_auth/templates/authentification.html:24
+#: ft_auth/templates/authentification.html:71
 msgid "Password"
 msgstr "Senha"
 
-#: ft_auth/templates/authentification.html:29
+#: ft_auth/templates/authentification.html:30
 msgid "Confirm Password"
 msgstr "Confirmar senha"
 
-#: ft_auth/templates/authentification.html:33
+#: ft_auth/templates/authentification.html:34
 msgid "Create account"
 msgstr "Criar conta"
 
-#: ft_auth/templates/authentification.html:38
-#, fuzzy
-#| msgid "Already have an account ? Try"
+#: ft_auth/templates/authentification.html:39
 msgid "Already have an account ? Try "
 msgstr "Já tem uma conta? Tente"
 
-#: ft_auth/templates/authentification.html:40
+#: ft_auth/templates/authentification.html:41
 msgid "logging in"
 msgstr "entrar"
 
-#: ft_auth/templates/authentification.html:43
-#: ft_auth/templates/authentification.html:83
+#: ft_auth/templates/authentification.html:44
+#: ft_auth/templates/authentification.html:85
 msgid "or"
 msgstr "ou"
 
-#: ft_auth/templates/authentification.html:45
-#: ft_auth/templates/authentification.html:85
+#: ft_auth/templates/authentification.html:46
+#: ft_auth/templates/authentification.html:87
 msgid "Login with"
 msgstr "Entrar com"
 
-#: ft_auth/templates/authentification.html:55
-#: ft_auth/templates/authentification.html:72
+#: ft_auth/templates/authentification.html:56
+#: ft_auth/templates/authentification.html:74
 msgid "Login"
 msgstr "Entrar"
 
-#: ft_auth/templates/authentification.html:78
+#: ft_auth/templates/authentification.html:80
 msgid "Don't have an account yet ? Try"
 msgstr "Ainda não tem uma conta? Tente"
 
-#: ft_auth/templates/authentification.html:79
+#: ft_auth/templates/authentification.html:81
 msgid "registering"
 msgstr "registrar"
 
-#: ft_auth/templates/authorize.html:2
-msgid "Loading"
-msgstr "Carregando"
+#: ft_auth/templates/authentification.html:129
+msgid "Passwords do not match"
+msgstr "A senha não corresponde"
+
+#: ft_auth/templates/authorize.html:6
+msgid "Enter your username"
+msgstr "Digite seu nome de usuário"
 
 #: ft_auth/templates/authorize.html:7
-#, fuzzy
-#| msgid "Register"
 msgid "Register with 42"
-msgstr "Registrar"
+msgstr "Registrar com 42"
 
-#: ft_auth/templates/profiles.html:7
-#, fuzzy
-#| msgid "Never played a game!"
-msgid "Nerver played a game!"
+#: ft_auth/templates/profiles.html:20
+msgid "Never played a game!"
 msgstr "Nunca jogou um jogo!"
 
-#: ft_auth/templates/profiles.html:9
+#: ft_auth/templates/profiles.html:22
 msgid "Games history"
 msgstr "Histórico de jogos"
 
-#: ft_auth/templates/profiles.html:10
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "\t\tWins: %(wins)s on %(games.count)s\n"
-#| "\t\t"
-msgid "Wins: %(wins)s on %(games.count)s"
-msgstr ""
-"\n"
-"\t\tVitórias: %(wins)s em %(games.count)s jogos\n"
-"\t\t"
+#: ft_auth/templates/profiles.html:23
+msgid "Wins:"
+msgstr "Vitórias:"
+
+#: ft_auth/templates/profiles.html:24
+msgid "Games Played:"
+msgstr "Jogos jogados:"
+
+#: ft_auth/templates/profiles.html:25
+msgid "Win Percentage:"
+msgstr "Percentual de vitórias:"
 
 #: ft_auth/templates/settings.html:31
-#, fuzzy
-#| msgid "Confirm Password"
 msgid "Current Password"
 msgstr "Senha atual"
 
 #: ft_auth/templates/settings.html:36
-#, fuzzy
-#| msgid "Password"
 msgid "New Password"
 msgstr "Nova senha"
 
 #: ft_auth/templates/settings.html:41
-#, fuzzy
-#| msgid "Confirm Password"
 msgid "Confirm New Password"
 msgstr "Confirmar nova senha"
 
 #: ft_auth/templates/settings.html:44
-#, fuzzy
-#| msgid "Confirm Password"
 msgid "Confirm changes"
 msgstr "Confirmar alterações"
 
@@ -156,3 +146,46 @@ msgstr "Tamanho máximo do arquivo"
 #: ft_auth/templates/settings.html:61
 msgid "Upload"
 msgstr "Carregar"
+
+#: ft_auth/views.py:21
+msgid "Missing fields (required username and password)"
+msgstr "Campos ausentes (nome de usuário e senha obrigatórios)"
+
+#: ft_auth/views.py:25
+msgid "Wrong credentials"
+msgstr "Identificadores incorretos"
+
+#: ft_auth/views.py:38
+msgid "You are not logged in"
+msgstr "Você não está conectado"
+
+#: ft_auth/views.py:44 ft_auth/views.py:59
+msgid "Missing fields"
+msgstr "Campos ausentes"
+
+#: ft_auth/views.py:50
+msgid "Username already exist"
+msgstr "O nome de usuário já existe"
+
+#: ft_auth/views.py:61
+msgid "You must be authenticated to update password"
+msgstr "Você deve estar autenticado para atualizar a senha"
+
+#: ft_auth/views.py:64
+msgid "Invalid current password"
+msgstr "Senha atual inválida"
+
+#: ft_auth/views.py:80
+msgid "File size exceeds 2MB limit."
+msgstr "O tamanho do arquivo excede o limite de 2 MB."
+
+#: ft_auth/views.py:85
+msgid "Invalid request"
+msgstr "Solicitação inválida"
+
+#~ msgid "Loading"
+#~ msgstr "Carregando"
+
+#, fuzzy, python-format
+#~ msgid "Wins: %(wins)s on %(games.count)s"
+#~ msgstr "Vitórias: %(wins)s em %(games.count)s jogos"

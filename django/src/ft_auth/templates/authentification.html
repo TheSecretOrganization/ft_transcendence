@@ -21,13 +21,13 @@
 			<div class="form-floating mb-3 row">
 				<input register-input type="password" class="form-control fs-3 fw-bold" id="password"
 					placeholder="Password">
-				<label for="password">Password</label>
+				<label for="password">{% trans "Password" %}</label>
 			</div>
 
 			<div class="form-floating  mb-3 row">
 				<input register-input type="password" class="form-control fs-3 fw-bold" id="password-confirm"
 					placeholder="Password" data-ignore="true">
-				<label for="password-confirm">Confirm Password</label>
+				<label for="password-confirm">{% trans "Confirm Password" %}</label>
 			</div>
 
 			<button register-input id="register-btn" type="submit" class="btn btn-success row w-100 m-0">
@@ -68,7 +68,7 @@
 			<div class="form-floating mb-3 row">
 				<input login-input type="password" class="form-control fs-3 fw-bold" id="password"
 					placeholder="Password">
-				<label for="password">Password</label>
+				<label for="password">{% trans "Password" %}</label>
 			</div>
 
 			<button login-input id="login-btn" type="submit" class="btn btn-success row w-100 m-0">{% trans "Login" %}
@@ -126,7 +126,7 @@
 		e.preventDefault();
 
 		if (!validate()) {
-			document.getElementById('register-error').textContent = 'Passwords don\'t match';
+			document.getElementById('register-error').textContent = "{% trans 'Passwords do not match' %}";
 			emptyPasswords();
 			return;
 		}

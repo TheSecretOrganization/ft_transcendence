@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-17 16:42+0200\n"
+"POT-Creation-Date: 2024-10-18 09:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,80 +27,80 @@ msgstr "Greška 404: Stranica nije pronađena"
 msgid "Home Page"
 msgstr "Početna stranica"
 
-#: pages/templates/extends/base.html:29
+#: pages/templates/extends/base.html:31
 msgid "Profile"
 msgstr "Profil"
 
-#: pages/templates/extends/base.html:30
+#: pages/templates/extends/base.html:32
 msgid "Settings"
 msgstr "Postavke"
 
-#: pages/templates/extends/base.html:34
+#: pages/templates/extends/base.html:37
 msgid "Log out"
 msgstr "Odjava"
 
-#: pages/templates/extends/base.html:43 pages/templates/index.html:20
+#: pages/templates/extends/base.html:46 pages/templates/index.html:20
 msgid "Login"
 msgstr "Prijava"
 
-#: pages/templates/extends/base.html:45
+#: pages/templates/extends/base.html:48
 msgid "Register"
 msgstr "Registracija"
 
-#: pages/templates/extends/base.html:61
+#: pages/templates/extends/base.html:64
 msgid "HOME"
 msgstr "POČETNA"
 
-#: pages/templates/extends/base.html:67
+#: pages/templates/extends/base.html:70
 msgid "GAMES"
 msgstr "IGRE"
 
-#: pages/templates/extends/base.html:75
+#: pages/templates/extends/base.html:78
 msgid "PONG"
 msgstr "PONG"
 
-#: pages/templates/extends/base.html:81
+#: pages/templates/extends/base.html:84
 msgid "TOURNAMENTS"
 msgstr "TURNIRI"
 
-#: pages/templates/extends/base.html:90
+#: pages/templates/extends/base.html:93
 msgid "COMMUNITY"
 msgstr "ZAJEDNICA"
 
-#: pages/templates/extends/base.html:98
+#: pages/templates/extends/base.html:101
 msgid "CHAT"
 msgstr "ĆASKANJE"
 
-#: pages/templates/extends/base.html:104
+#: pages/templates/extends/base.html:107
 msgid "FRIENDS"
 msgstr "PRIJATELJI"
 
-#: pages/templates/extends/base.html:124
+#: pages/templates/extends/base.html:127
 msgid "Room: "
 msgstr "Soba: "
 
-#: pages/templates/extends/base.html:124
+#: pages/templates/extends/base.html:127
 msgid "General"
 msgstr "Opšta soba"
 
-#: pages/templates/extends/base.html:127
+#: pages/templates/extends/base.html:130
 msgid "Type your message here..."
 msgstr "Upišite svoju poruku ovdje..."
 
-#: pages/templates/extends/base.html:129
+#: pages/templates/extends/base.html:132
 msgid "Send"
 msgstr "Pošalji"
 
-#: pages/templates/extends/base.html:132
+#: pages/templates/extends/base.html:135
 msgid "Users Online"
 msgstr "Korisnici na mreži"
 
-#: pages/templates/extends/base.html:363
+#: pages/templates/extends/base.html:370
 #, python-brace-format
 msgid " Private message from ${fromUser} "
 msgstr " Privatna poruka od ${fromUser} "
 
-#: pages/templates/extends/base.html:364
+#: pages/templates/extends/base.html:371
 msgid "Show"
 msgstr "Prikaži"
 

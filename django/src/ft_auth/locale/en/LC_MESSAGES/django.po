@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-17 16:42+0200\n"
+"POT-Creation-Date: 2024-10-18 12:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,73 +31,84 @@ msgid "Register"
 msgstr ""
 
 #: ft_auth/templates/authentification.html:18
-#: ft_auth/templates/authentification.html:64
+#: ft_auth/templates/authentification.html:65
 msgid "Username"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:23
-#: ft_auth/templates/authentification.html:69
+#: ft_auth/templates/authentification.html:24
+#: ft_auth/templates/authentification.html:71
 msgid "Password"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:29
+#: ft_auth/templates/authentification.html:30
 msgid "Confirm Password"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:33
+#: ft_auth/templates/authentification.html:34
 msgid "Create account"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:38
+#: ft_auth/templates/authentification.html:39
 msgid "Already have an account ? Try "
 msgstr ""
 
-#: ft_auth/templates/authentification.html:40
+#: ft_auth/templates/authentification.html:41
 msgid "logging in"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:43
-#: ft_auth/templates/authentification.html:83
+#: ft_auth/templates/authentification.html:44
+#: ft_auth/templates/authentification.html:85
 msgid "or"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:45
-#: ft_auth/templates/authentification.html:85
+#: ft_auth/templates/authentification.html:46
+#: ft_auth/templates/authentification.html:87
 msgid "Login with"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:55
-#: ft_auth/templates/authentification.html:72
+#: ft_auth/templates/authentification.html:56
+#: ft_auth/templates/authentification.html:74
 msgid "Login"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:78
+#: ft_auth/templates/authentification.html:80
 msgid "Don't have an account yet ? Try"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:79
+#: ft_auth/templates/authentification.html:81
 msgid "registering"
 msgstr ""
 
-#: ft_auth/templates/authorize.html:2
-msgid "Loading"
+#: ft_auth/templates/authentification.html:129
+msgid "Passwords do not match"
+msgstr ""
+
+#: ft_auth/templates/authorize.html:6
+msgid "Enter your username"
 msgstr ""
 
 #: ft_auth/templates/authorize.html:7
 msgid "Register with 42"
 msgstr ""
 
-#: ft_auth/templates/profiles.html:7
-msgid "Nerver played a game!"
+#: ft_auth/templates/profiles.html:20
+msgid "Never played a game!"
 msgstr ""
 
-#: ft_auth/templates/profiles.html:9
+#: ft_auth/templates/profiles.html:22
 msgid "Games history"
 msgstr ""
 
-#: ft_auth/templates/profiles.html:10
-#, python-format
-msgid "Wins: %(wins)s on %(games.count)s"
+#: ft_auth/templates/profiles.html:23
+msgid "Wins:"
+msgstr ""
+
+#: ft_auth/templates/profiles.html:24
+msgid "Games Played:"
+msgstr ""
+
+#: ft_auth/templates/profiles.html:25
+msgid "Win Percentage:"
 msgstr ""
 
 #: ft_auth/templates/settings.html:31
@@ -134,4 +145,40 @@ msgstr ""
 
 #: ft_auth/templates/settings.html:61
 msgid "Upload"
+msgstr ""
+
+#: ft_auth/views.py:21
+msgid "Missing fields (required username and password)"
+msgstr ""
+
+#: ft_auth/views.py:25
+msgid "Wrong credentials"
+msgstr ""
+
+#: ft_auth/views.py:38
+msgid "You are not logged in"
+msgstr ""
+
+#: ft_auth/views.py:44 ft_auth/views.py:59
+msgid "Missing fields"
+msgstr ""
+
+#: ft_auth/views.py:50
+msgid "Username already exist"
+msgstr ""
+
+#: ft_auth/views.py:61
+msgid "You must be authenticated to update password"
+msgstr ""
+
+#: ft_auth/views.py:64
+msgid "Invalid current password"
+msgstr ""
+
+#: ft_auth/views.py:80
+msgid "File size exceeds 2MB limit."
+msgstr ""
+
+#: ft_auth/views.py:85
+msgid "Invalid request"
 msgstr ""

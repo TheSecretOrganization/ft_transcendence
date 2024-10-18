@@ -5,6 +5,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.db.utils import IntegrityError
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import gettext as _
 from logging import getLogger
 from .oauth import get_token, ft_oauth, ft_register, RequestError
 from .models import FtOauth
@@ -17,11 +18,11 @@ logger = getLogger(__name__)
 def login(request: HttpRequest):
 	data = json.loads(request.body.decode())
 	if not data or not all(k in data for k in ['username', 'password']):
-		return JsonResponse({'error': 'Missing fields (required username and password)'}, status=400)
+		return JsonResponse({'error': _('Missing fields (required username and password)')}, status=400)
 	user = authenticate(username=data['username'], password=data['password'])
 	if user is None:
 		logger.info(f"Tried to login to user {data['username']}")
-		return JsonResponse({'error': 'Wrong credentials'}, status=401)
+		return JsonResponse({'error': _('Wrong credentials')}, status=401)
 	dlogin(request, user)
 	logger.info(f"{user.username} logged in.")
 	return HttpResponse(status=200)
@@ -34,19 +35,19 @@ def logout(request: HttpRequest):
 		logger.info(f"{username} logged out.")
 		return HttpResponse(status=200)
 	else:
-		return JsonResponse({'error': 'You\'re not logged in'}, status=401)
+		return JsonResponse({'error': _('You are not logged in')}, status=401)
 
 @require_POST
 def register(request: HttpRequest):
 	data = json.loads(request.body.decode())
 	if not data or not all(k in data for k in ['username', 'password']):
-		return JsonResponse({'error': 'Missing fields'}, status=400)
+		return JsonResponse({'error': _('Missing fields')}, status=400)
 	try:
 		validate_password(data['password'])
 		get_user_model().objects.create_user(data['username'], data['password'])
 		logger.info(f"user '{data['username']}' created.")
 	except IntegrityError:
-		return JsonResponse({'error': 'Username already exist'}, status=400)
+		return JsonResponse({'error': _('Username already exist')}, status=400)
 	except ValidationError as error:
 		return JsonResponse({'error': error.messages}, status=400)
 	return HttpResponse(status=200)
@@ -55,12 +56,12 @@ def register(request: HttpRequest):
 def password_update(request: HttpRequest):
 	data = json.loads(request.body.decode())
 	if not data or not all(k in data for k in ['current_password', 'new_password']):
-		return JsonResponse({'error': 'Missing fields'}, status=400)
+		return JsonResponse({'error': _('Missing fields')}, status=400)
 	if not request.user.is_authenticated:
-		return JsonResponse({'error': 'You must be authenticated to update password'}, status=401)
+		return JsonResponse({'error': _('You must be authenticated to update password')}, status=401)
 	if not request.user.check_password(data['current_password']):
 		logger.info(f"Tried to update password of user {request.user.username}.")
-		return JsonResponse({'error': 'Invalid current password'}, status=400)
+		return JsonResponse({'error': _('Invalid current password')}, status=400)
 	try:
 		validate_password(data['new_password'])
 	except ValidationError as error:
@@ -76,12 +77,12 @@ def upload_avatar(request):
 	if request.FILES.get('avatar'):
 		avatar_file = request.FILES['avatar']
 		if avatar_file.size > max_file_size:
-			return JsonResponse({'error': 'File size exceeds 2MB limit.'}, status=400)
+			return JsonResponse({'error': _('File size exceeds 2MB limit.')}, status=400)
 		user = request.user
 		user.avatar.save(avatar_file.name, avatar_file)
 		user.save()
 		return JsonResponse({'avatar_url': user.avatar.url}, status=200)
-	return JsonResponse({'error': 'Invalid request'}, status=400)
+	return JsonResponse({'error': _('Invalid request')}, status=400)
 
 @require_POST
 def authorize(request: HttpRequest):

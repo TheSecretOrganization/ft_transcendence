@@ -27,14 +27,14 @@
 					<img src="{{ user.avatar.url }}" alt="Profile" class="navbar-profile-img">
 				</button>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-					<li><a class="dropdown-item" data-route href="/profiles/{{ user.username }}">{% trans "Profile"
-							%}</a></li>
-					<li><a class="dropdown-item" data-route href="/settings">{% trans "Settings " %}<span
+					<li><a class="dropdown-item" data-route href="/profiles/{{ user.username }}">
+							{% trans "Profile" %}</a></li>
+					<li><a class="dropdown-item" data-route href="/settings">{% trans "Settings" %} <span
 								class="glyphicon glyphicon-cog"></span></a></li>
 					<li>
 						<hr class="dropdown-divider">
 					</li>
-					<li><button id="logout-button-navbar" class="dropdown-item fw-bold">{% trans "Log out" %}<span
+					<li><button id="logout-button-navbar" class="dropdown-item fw-bold">{% trans "Log out" %} <span
 								class="glyphicon glyphicon-log-out"></span></button></li>
 				</ul>
 			</div>
@@ -61,13 +61,13 @@
 		<li class="active">
 			<a data-route href="/">
 				<img draggable="false" src="/assets/home.svg" alt="home icon">
-				<span class="fw-bold">HOME</span>
+				<span class="fw-bold">{% trans "HOME" %}</span>
 			</a>
 		</li>
 		<li>
 			<button onclick=toggleSubMenu(this) class="dropdown-btn">
 				<img draggable="false" src="/assets/controller.svg" alt="controller icon">
-				<span class="fw-bold">GAMES</span>
+				<span class="fw-bold">{% trans "GAMES" %}</span>
 				<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
 			</button>
 			<ul class="sub-menu">
@@ -75,13 +75,13 @@
 					<li>
 						<a data-route href="/pong" tabindex="-1">
 							<img draggable="false" src="/assets/pong-racket.svg" alt="racket icon">
-							<span class="fw-bold">PONG</span>
+							<span class="fw-bold">{% trans "PONG" %}</span>
 						</a>
 					</li>
 					<li>
 						<a data-route href="/tournaments" tabindex="-1">
 							<img draggable="false" src="/assets/trophy.svg" alt="trophy icon">
-							<span class="fw-bold">TOURNAMENTS</span>
+							<span class="fw-bold">{% trans "TOURNAMENTS" %}</span>
 						</a>
 					</li>
 				</div>
@@ -90,7 +90,7 @@
 		<li>
 			<button onclick=toggleSubMenu(this) class="dropdown-btn">
 				<img draggable="false" src="/assets/community.svg" alt="community icon">
-				<span class="fw-bold">COMMUNITY</span>
+				<span class="fw-bold">{% trans "COMMUNITY" %}</span>
 				<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
 			</button>
 			<ul class="sub-menu">
@@ -98,13 +98,13 @@
 					<li>
 						<a data-route href="/chat" tabindex="-1">
 							<img draggable="false" src="/assets/chat.svg" alt="chat icon">
-							<span class="fw-bold">CHAT</span>
+							<span class="fw-bold">{% trans "CHAT" %}</span>
 						</a>
 					</li>
 					<li>
 						<a data-route href="/friends" tabindex="-1">
 							<img draggable="false" src="/assets/group.svg" alt="group icon">
-							<span class="fw-bold">FRIENDS</span>
+							<span class="fw-bold">{% trans "FRIENDS" %}</span>
 						</a>
 					</li>
 				</div>

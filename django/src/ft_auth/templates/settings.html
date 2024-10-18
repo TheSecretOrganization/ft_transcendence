@@ -93,7 +93,7 @@
 		e.preventDefault();
 
 		if (!validate()) {
-			document.getElementById('password-error').textContent = 'Passwords don\'t match';
+			document.getElementById('password-error').textContent = "{% trans 'Passwords do not match' %}";
 			emptyPasswords();
 			return;
 		}
