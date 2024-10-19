@@ -145,3 +145,16 @@
 #pong-row {
     width: inherit;
 }
+
+#tournament-name-label {
+    box-sizing: border-box;
+    width: auto;
+    height: auto;
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+    margin-top: 1rem;
+}
+
+#tournament-name-label::after {
+    background-color: var(--light-base-clr);
+}
