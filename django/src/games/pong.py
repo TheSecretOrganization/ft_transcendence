@@ -293,10 +293,13 @@ class Pong(AsyncWebsocketConsumer):
 
     async def send_message(self, destination="client", msg_type="", args={}):
         message = {"type": msg_type, "content": args} if msg_type else args
-        if destination == "group":
-            await self.channel_layer.group_send(self.room_id, message)
-        elif destination == "client":
-            await self.send(text_data=json.dumps(message))
+        try:
+            if destination == "group":
+                await self.channel_layer.group_send(self.room_id, message)
+            elif destination == "client":
+                await self.send(text_data=json.dumps(message))
+        except Exception as e:
+            logger.error(f"Error when sending message: {str(e)}")
 
     async def send_error(self, error: str):
         await self.send_message("client", "game_error", {"error": error})
