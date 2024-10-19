@@ -39,7 +39,11 @@ class Pong(AsyncWebsocketConsumer):
         logger.info(
             f"User {self.user.id} successfully connected to room {self.room_id}."
         )
-        await self.send_message("group", "game_join", {"user": self.user.id})
+        await self.send_message(
+            "group",
+            "game_join",
+            {"id": self.user.id, "username": self.user.username},
+        )
         await self.send_message(
             "client", "game_pad", {"game_pad": self.pad_n, "host": self.host}
         )
@@ -152,8 +156,17 @@ class Pong(AsyncWebsocketConsumer):
 
     async def game_join(self, event):
         if self.host:
-            self.info.players.append(event["content"]["user"])
-            if len(self.info.players) == self.info.player_needed:
+            self.info.players_ids.append(event["content"]["id"])
+
+            if self.mode == "online":
+                self.info.players_usernames.append(
+                    event["content"]["username"]
+                )
+            else:
+                self.info.players_usernames.append("Player 1")
+                self.info.players_usernames.append("Player 2")
+
+            if len(self.info.players_ids) == self.info.player_needed:
                 await self.redis.set(self.room_id, 1)
 
     async def game_ready(self, event):
@@ -198,7 +211,7 @@ class Pong(AsyncWebsocketConsumer):
     def punish_coward(self, coward):
         if not coward:
             return
-        if coward is self.info.players[0]:
+        if coward is self.info.players_ids[0]:
             self.info.score[1] = self.win_goal
         else:
             self.info.score[0] = self.win_goal
@@ -230,9 +243,9 @@ class Pong(AsyncWebsocketConsumer):
     def get_winner(self):
         if self.mode == "online":
             return (
-                self.info.players[0]
+                self.info.players_ids[0]
                 if self.info.score[0] > self.info.score[1]
-                else self.info.players[1]
+                else self.info.players_ids[1]
             )
         else:
             return (
@@ -313,6 +326,7 @@ class Pong(AsyncWebsocketConsumer):
                 "ball": self.ball.__dict__,
                 "pad_1": self.pad_1.__dict__,
                 "pad_2": self.pad_2.__dict__,
+                "players": self.info.players_usernames,
             },
         )
 
@@ -321,10 +335,10 @@ class Pong(AsyncWebsocketConsumer):
         try:
             await sync_to_async(pong.objects.create)(
                 user1=await sync_to_async(get_user_model().objects.get)(
-                    id=self.info.players[0]
+                    id=self.info.players_ids[0]
                 ),
                 user2=await sync_to_async(get_user_model().objects.get)(
-                    id=self.info.players[1]
+                    id=self.info.players_ids[1]
                 ),
                 score1=self.info.score[0],
                 score2=self.info.score[1],
@@ -352,7 +366,8 @@ class Pong(AsyncWebsocketConsumer):
         ):
             self.creator = creator
             self.room_id = room_id
-            self.players = []
+            self.players_ids = []
+            self.players_usernames = []
             self.player_needed = player_needed
             self.player_ready = 0
             self.score = [0, 0]
