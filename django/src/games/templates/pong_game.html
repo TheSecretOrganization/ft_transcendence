@@ -5,9 +5,12 @@
 	<div class="row h-100" id="pong-row">
 		<div id="game" class="col-9 d-flex align-items-center">
 			<div class="w-100 text-center">
-				<div class="d-inline-block" id="copy-id-div"><button id="copy-id-btn" class="btn game-btns fw-bold" onclick="copyElementText('room-id-text')">Room
+				<div class="d-inline-block" id="copy-id-div">
+					<button id="copy-id-btn" class="btn game-btns fw-bold"
+						onclick="copyElementText('room-id-text')">Room
 						Id: <span id="room-id-text" class="text-decoration-underline fw-light">
-							{{room_id}}</span></button></div>
+							{{room_id}}</span></button>
+				</div>
 				<canvas id="pong-canvas" class="game-canvas"></canvas>
 			</div>
 		</div>
@@ -32,13 +35,14 @@
 	const ctx = canvas.getContext('2d');
 	const readyBtn = document.getElementById('ready-btn');
 	const powerBtn = document.getElementById('power-btn');
-	const mode = "{{mode}}";
+	const mode = "{{ mode }}";
+	const tournamentName = "{{ tournament_name }}";
 	const localGame = mode === "local";
 	let socket = wsConnect(wsCreateUrl("pong", {
 		"mode": mode,
 		"room_id": "{{room_id}}",
 		"player_needed": mode === "online" ? 2 : 1,
-		"tournament_name": "{{ tournament_name }}",
+		"tournament_name": tournamentName,
 	}), onMessage, exit);
 	let upKey = "w";
 	let downKey = "s";
@@ -253,6 +257,8 @@
 			};
 		}
 	}
+
+	if (mode !== "online" || tournamentName !== "0") document.getElementById("copy-id-div").classList.add("hidden");
 
 	initializeEvents();
 	checkAndUpdateUrl();
