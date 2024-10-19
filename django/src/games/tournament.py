@@ -3,7 +3,7 @@ import random
 from uuid import uuid4
 import redis.asyncio as redis
 import logging
-from typing import List, Tuple
+from typing import Final, List, Tuple
 from urllib.parse import parse_qs
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
@@ -14,6 +14,9 @@ logger = logging.getLogger(__name__)
 
 
 class Tournament(AsyncWebsocketConsumer):
+    GROUP: Final[str] = "group"
+    CLIENT: Final[str] = "client"
+
     async def connect(self):
         query_params = parse_qs(self.scope["query_string"].decode())
         self.redis = redis.Redis(host="redis")
@@ -56,7 +59,7 @@ class Tournament(AsyncWebsocketConsumer):
         creator = creator_encoded.decode("utf-8")
 
         if creator == self.user.username and lock == None:
-            await self.send_message("client", {"type": "unlock_lock"})
+            await self.send_message(self.CLIENT, {"type": "unlock_lock"})
 
         if self.user.username not in players:
             await self.redis.rpush(
@@ -66,7 +69,7 @@ class Tournament(AsyncWebsocketConsumer):
                 f"pong_{self.name}_players", self.user.username
             )
 
-        await self.send_message("group", {"type": "join"})
+        await self.send_message(self.GROUP, {"type": "join"})
 
         if lock:
             await self.archive()
@@ -115,19 +118,19 @@ class Tournament(AsyncWebsocketConsumer):
                     await self.lock()
                 case "ready":
                     await self.ready()
-                case "mix":
-                    await self.mix()
+                case "play":
+                    await self.play()
                 case _:
                     raise ValueError("Unknown 'type' in data")
         except Exception as e:
             logger.warning(
                 f"Invalid message received from user {self.scope['user'].id}: {str(e)}"
             )
-            await self.send("client", {"type": "error", "content": str(e)})
+            await self.send(self.CLIENT, {"type": "error", "content": str(e)})
 
     async def join(self, event):
         await self.send_message(
-            "client",
+            self.CLIENT,
             {
                 "type": "join",
                 "players": await self.get_decoded_list(
@@ -141,14 +144,14 @@ class Tournament(AsyncWebsocketConsumer):
         await self.redis.copy(
             f"pong_{self.name}_players", f"pong_{self.name}_ready_players"
         )
-        await self.send_message("group", {"type": "unlock_ready"})
+        await self.send_message(self.GROUP, {"type": "unlock_ready"})
 
     async def unlock_ready(self, event):
         ready_players = await self.get_decoded_list(
             f"pong_{self.name}_ready_players"
         )
         if self.user.username in ready_players:
-            await self.send_message("client", {"type": "unlock_ready"})
+            await self.send_message(self.CLIENT, {"type": "unlock_ready"})
 
     async def ready(self):
         await self.redis.lrem(
@@ -160,50 +163,63 @@ class Tournament(AsyncWebsocketConsumer):
         ready = int(ready_encoded.decode("utf-8"))
 
         if ready >= len(players):
-            await self.send_message("group", {"type": "unlock_mix"})
             await self.redis.set(f"pong_{self.name}_ready", 0)
+            await self.send_message(self.GROUP, {"type": "exec_mix"})
 
-    async def unlock_mix(self, event):
+    async def exec_mix(self, event):
         if await self.redis.get(
             f"pong_{self.name}_creator"
         ) == self.user.username.encode("utf-8"):
-            await self.send_message("client", {"type": "unlock_mix"})
+            await self.mix()
 
     async def mix(self):
         players = await self.get_decoded_list(f"pong_{self.name}_players")
         random.shuffle(players)
-        player_pairs = []
-        uuid_list = []
+        self.player_pairs = []
+        self.uuid_list = []
         last_player = None
 
         if len(players) % 2 != 0:
             last_player = players.pop()
 
         for i in range(0, len(players), 2):
-            player_pairs.append((players[i], players[i + 1]))
+            self.player_pairs.append((players[i], players[i + 1]))
             game_id = str(uuid4())
-            uuid_list.append(game_id)
+            self.uuid_list.append(game_id)
             await self.redis.rpush(f"pong_{self.name}_current_games", game_id)
 
         if last_player:
-            player_pairs.append((last_player, "-"))
+            self.player_pairs.append((last_player, "-"))
             players.append(last_player)
 
         await self.send_message(
-            "group",
+            self.GROUP,
             {
-                "type": "get_next_round_id",
-                "player_pairs": player_pairs,
-                "uuid_list": uuid_list,
+                "type": "send_player_pairs",
+                "player_pairs": self.player_pairs,
+            },
+        )
+        await self.send_message(self.CLIENT, {"type": "unlock_play"})
+
+    async def send_player_pairs(self, event):
+        await self.send_message(
+            self.CLIENT,
+            {"type": "player_pairs", "player_pairs": event["player_pairs"]},
+        )
+
+    async def play(self):
+        await self.send_message(
+            self.GROUP,
+            {
+                "type": "send_next_round_id",
+                "player_pairs": self.player_pairs,
+                "uuid_list": self.uuid_list,
             },
         )
 
-    async def get_next_round_id(self, event):
+    async def send_next_round_id(self, event):
         player_pairs: List[Tuple] = event["player_pairs"]
         uuid_list: List = event["uuid_list"]
-        await self.send_message(
-            "client", {"type": "mix", "player_pairs": player_pairs}
-        )
 
         for i, (player1, player2) in enumerate(player_pairs):
             if self.user.username not in (player1, player2):
@@ -214,7 +230,7 @@ class Tournament(AsyncWebsocketConsumer):
                 if player2 == "-"
                 else {"type": "next_round_id", "id": uuid_list[i]}
             )
-            await self.send_message("client", message)
+            await self.send_message(self.CLIENT, message)
             break
 
     async def archive(self):
@@ -255,7 +271,7 @@ class Tournament(AsyncWebsocketConsumer):
         )
 
         if broadcast:
-            await self.send_message("group", {"type": "broadcast_history"})
+            await self.send_message(self.GROUP, {"type": "broadcast_history"})
         else:
             await self.send_history()
 
@@ -268,7 +284,7 @@ class Tournament(AsyncWebsocketConsumer):
 
     async def send_history(self):
         await self.send_message(
-            "client",
+            self.CLIENT,
             {
                 "type": "history",
                 "history": await self.get_decoded_list(
@@ -321,19 +337,19 @@ class Tournament(AsyncWebsocketConsumer):
         )
 
         await self.send_message(
-            "group", {"type": "end", "winner": winner_name}
+            self.GROUP, {"type": "end", "winner": winner_name}
         )
 
     async def end(self, event):
         await self.send_message(
-            "client", {"type": "end", "winner": event["winner"]}
+            self.CLIENT, {"type": "end", "winner": event["winner"]}
         )
 
-    async def send_message(self, destination="client", args={}):
+    async def send_message(self, destination=CLIENT, args={}):
         try:
-            if destination == "group":
+            if destination == self.GROUP:
                 await self.channel_layer.group_send(self.name, args)
-            elif destination == "client":
+            elif destination == self.CLIENT:
                 await self.send(text_data=json.dumps(args))
         except Exception as e:
             logger.error(str(e))
