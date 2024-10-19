@@ -36,13 +36,14 @@
 	const readyBtn = document.getElementById('ready-btn');
 	const powerBtn = document.getElementById('power-btn');
 	const mode = "{{ mode }}";
-	const tournamentName = "{{ tournament_name }}";
+	const tournamentGame = "{{ tournament_name }}" !== "0";
 	const localGame = mode === "local";
 	let socket = wsConnect(wsCreateUrl("pong", {
 		"mode": mode,
 		"room_id": "{{room_id}}",
 		"player_needed": mode === "online" ? 2 : 1,
-		"tournament_name": tournamentName,
+		"tournament_name": "{{ tournament_name }}",
+		"power": "{{ power }}",
 	}), onMessage, exit);
 	let upKey = "w";
 	let downKey = "s";
@@ -85,7 +86,7 @@
 	function handleGamePad(data) {
 		padN = data.content.game_pad
 		host = data.content.host
-		if (host) showBtn(powerBtn);
+		if (host && !tournamentGame) showBtn(powerBtn);
 		canvasResize(canvas);
 		if (!localGame)
 			drawCenteredText("Waiting for second player");
@@ -258,7 +259,7 @@
 		}
 	}
 
-	if (mode !== "online" || tournamentName !== "0") document.getElementById("copy-id-div").classList.add("hidden");
+	if (mode !== "online" || tournamentGame) document.getElementById("copy-id-div").classList.add("hidden");
 
 	initializeEvents();
 	checkAndUpdateUrl();

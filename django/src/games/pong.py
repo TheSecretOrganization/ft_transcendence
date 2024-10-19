@@ -58,10 +58,10 @@ class Pong(AsyncWebsocketConsumer):
         self.tournament_name = self.check_missing_param(
             query_params, "tournament_name"
         )
+        self.power = query_params.get("power", ["False"])[0] == "True"
         self.host = await self.redis.get(self.room_id) == None
         self.pad_n = "pad_1" if self.host else "pad_2"
         players = await self.redis.lrange(f"pong_{self.room_id}_id", 0, -1)
-        self.power = False
 
         if self.host:
             await self.redis.set(self.room_id, 1)
