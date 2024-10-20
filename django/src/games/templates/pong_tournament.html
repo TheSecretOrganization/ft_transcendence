@@ -62,7 +62,7 @@
 	</div>
 	<div class="row my-4">
 		<div class="col text-center">
-			<button id="mix-btn" class="btn game-btns game-btns-scnd-clr" disabled>{% trans "Mix" %}</button>
+			<button id="play-btn" class="btn game-btns game-btns-scnd-clr" disabled>{% trans "Play" %}</button>
 		</div>
 	</div>
 	<div class="row mt-4">
@@ -75,7 +75,7 @@
 <script>
 	const lockBtn = document.getElementById("lock-btn");
 	const readyBtn = document.getElementById("ready-btn");
-	const mixBtn = document.getElementById("mix-btn");
+	const playBtn = document.getElementById("play-btn");
 	const powerBtn = document.getElementById("power-btn");
 	const playersTbl = document.getElementById("players");
 	const resultsOnly = "{{ results_only }}" === "True";
@@ -91,9 +91,9 @@
 		switch (data.type) {
 			case "unlock_lock": handleUnlockLock(); break;
 			case "unlock_ready": showBtn(readyBtn); break;
-			case "unlock_mix": showBtn(mixBtn); break;
+			case "unlock_play": showBtn(playBtn); break;
 			case "join": handleJoin(data.players); break;
-			case "mix": handleMix(data.player_pairs); break;
+			case "player_pairs": handlePlayerPairs(data.player_pairs); break;
 			case "next_round_id": route(`/pong/online/${data.id}/{{ name }}/${power}`); break;
 			case "bye": displayToast("You have received a bye for this round. Enjoy the break!"); break;
 			case "history": handleHistory(data.history); break;
@@ -120,7 +120,7 @@
 		});
 	}
 
-	function handleMix(playerPairs) {
+	function handlePlayerPairs(playerPairs) {
 		const tableBody = document.querySelector("#next-round tbody");
 		tableBody.innerHTML = '';
 
@@ -195,9 +195,9 @@
 		socket.send(JSON.stringify({ type: "ready" }));
 	}
 
-	mixBtn.onclick = () => {
-		hideBtn(mixBtn);
-		socket.send(JSON.stringify({ type: "mix" }));
+	playBtn.onclick = () => {
+		hideBtn(playBtn);
+		socket.send(JSON.stringify({ type: "play" }));
 	}
 
 	powerBtn.onclick = () => {
@@ -247,7 +247,7 @@
 	document.getElementById('content').addEventListener('pagechange', onPageChange);
 	hideBtn(lockBtn);
 	hideBtn(readyBtn);
-	hideBtn(mixBtn);
+	hideBtn(playBtn);
 	hideBtn(powerBtn);
 </script>
 {% endblock %}
