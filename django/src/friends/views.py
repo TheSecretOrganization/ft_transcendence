@@ -75,7 +75,7 @@ def delete(request: HttpRequest):
 	try:
 		invite = Friend.objects.get(Q(origin=request.user) | Q(target=request.user), id=data['invite_id'])
 		if invite.status not in (Friend.Status.PENDING, Friend.Status.ACCEPTED):
-			return JsonResponse({'error': 'Invite should have status 1 or 2'}, status=400)
+			return JsonResponse({'error': 'Wrong invite status'}, status=400)
 		if invite.status == Friend.Status.PENDING and invite.target == request.user:
 			return JsonResponse({'error': 'You should accept or deny invite not delete it.'}, status=400)
 		invite.status = Friend.Status.DELETED
