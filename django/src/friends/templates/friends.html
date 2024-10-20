@@ -30,10 +30,10 @@
 				<p>Status: {{ friend.get_status_display }}</p>
 				<div>
 					{% if friend.status == 1 and friend.target == user %}
-					<button id="fr-accept-btn" data-invite="{{ friend.id }}">Accept</button>
-					<button id="fr-deny-btn" data-invite="{{ friend.id }}">Deny</button>
+					<button data-type="accept" data-invite="{{ friend.id }}">Accept</button>
+					<button data-type="deny" data-invite="{{ friend.id }}">Deny</button>
 					{% else %}
-					<button class="fr-delete-btn" data-invite="{{ friend.id }}">Delete</button>
+					<button data-type="delete" data-invite="{{ friend.id }}">Delete</button>
 					{% endif %}
 				</div>
 			</div>
@@ -44,39 +44,23 @@
 </div>
 
 <script>
-	function registerBtn(id, route) {
-		let el = document.getElementById(id);
-		if (el == null) return;
-		if (!('invite' in el.dataset)) {
-			console.error(`Any invite data in ${el}`);
-			return;
-		}
-		let inviteId = el.dataset.invite;
-		el.onclick = function (e) {
-			postFetch(`/api/friends/${route}/`, { 'invite_id': inviteId })
+	document.querySelectorAll('[data-type][data-invite]').forEach((element) => {
+		const type = element.dataset.type;
+		const id = element.dataset.invite;
+		element.onclick = function (e) {
+			postFetch(`/api/friends/${type}/`, { 'invite_id': id })
 				.then(response => {
 					if (response.status == 200)
 						handleLocation();
-					else return response.json();
+					else
+					{
+						response.json()
+							.then(json =>
+								json => document.getElementById('show-error').textContent = json.error
+							)
+							.catch(error => console.error(error));
+					}
 				})
-				.then(json => document.getElementById('show-error').textContent = json.error)
-				.catch(error => console.error(error));
-		}
-	}
-
-	registerBtn('fr-accept-btn', 'accept');
-	registerBtn('fr-deny-btn', 'deny');
-
-	document.querySelectorAll('.fr-delete-btn').forEach(el => {
-		el.onclick = function (e) {
-			let inviteId = el.dataset.invite;
-			postFetch(`/api/friends/delete/`, { 'invite_id': inviteId })
-				.then(response => {
-					if (response.status == 200) {
-						handleLocation();
-					} else return response.json();
-				})
-				.then(json => document.getElementById('show-error').textContent = json.error)
 				.catch(error => console.error(error));
 		};
 	});
