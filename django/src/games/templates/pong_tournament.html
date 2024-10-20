@@ -202,6 +202,7 @@
 
 	powerBtn.onclick = () => {
 		power = power === 1 ? 0 : 1;
+		powerBtn.classList.toggle("active");
 	}
 
 	if (resultsOnly) {
