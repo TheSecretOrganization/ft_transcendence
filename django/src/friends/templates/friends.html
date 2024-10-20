@@ -56,7 +56,7 @@
 					{
 						response.json()
 							.then(json =>
-								json => document.getElementById('show-error').textContent = json.error
+								document.getElementById('fr-invite-error').textContent = json.error
 							)
 							.catch(error => console.error(error));
 					}
