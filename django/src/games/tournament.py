@@ -203,6 +203,7 @@ class Tournament(AsyncWebsocketConsumer):
                 "type": "send_play_elements",
             },
         )
+        await self.messages()
 
     async def send_play_elements(self, event=None):
         player_pairs = await self.redis.get(f"pong_{self.name}_player_pairs")
@@ -224,6 +225,35 @@ class Tournament(AsyncWebsocketConsumer):
             and int(play.decode("utf-8")) == 1
         ):
             await self.send_message(self.CLIENT, {"type": "unlock_play"})
+
+    async def messages(self):
+        group_name = "chat_general"
+        player_pairs = json.loads(
+            await self.redis.get(f"pong_{self.name}_player_pairs")
+        )
+        uuid_list = await self.get_decoded_list(
+            f"pong_{self.name}_current_games"
+        )
+
+        for i, (player1, player2) in enumerate(player_pairs):
+            message = f"{self.name}: {player1} | {player2}"
+
+            if player2 != "-":
+                message = f"{message} - {uuid_list[i]}"
+
+            formatted_message = json.dumps(
+                {"message": message, "username": "server"}
+            )
+            await self.redis.rpush(f"chat_{group_name}_messages", formatted_message)
+
+        await self.channel_layer.group_add(group_name, self.channel_name)
+        await self.channel_layer.group_send(
+            group_name, {"type": "send_chat_history"}
+        )
+        await self.channel_layer.group_discard(group_name, self.channel_name)
+
+    async def send_chat_history(self, event=None):
+        return
 
     async def play(self):
         await self.redis.set(f"pong_{self.name}_play", 0)
