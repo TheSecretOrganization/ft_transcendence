@@ -225,7 +225,7 @@
 }
 
 .custom-file-label:hover {
-	background-color: var(--primary-clr-dark);
+	background-color: var(--dark-hover-clr);
 }
 
 .form-title {
