@@ -110,7 +110,7 @@ def authorize(request: HttpRequest):
 			dlogin(request, user)
 			return HttpResponse(status=200)
 		except IntegrityError:
-			return JsonResponse({'error': 'Username already taken', 'code': 2}, status=400)
+			return JsonResponse({'error': _('Username already taken'), 'code': 2}, status=400)
 		except (ValidationError, TypeError) as err:
 			return JsonResponse({'error': err.messages, 'code': 2}, status=400)
 		except RequestError as err:

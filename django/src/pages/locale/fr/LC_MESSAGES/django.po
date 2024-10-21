@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-21 15:03+0200\n"
+"POT-Creation-Date: 2024-10-21 16:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,96 +26,100 @@ msgstr "Erreur 404 : Page non trouvée"
 msgid "Home Page"
 msgstr "Page d'accueil"
 
-#: pages/templates/extends/base.html:31
+#: pages/templates/extends/base.html:20
 msgid "Profile"
 msgstr "Profil"
 
-#: pages/templates/extends/base.html:32
+#: pages/templates/extends/base.html:21
 msgid "Settings"
 msgstr "Paramètres"
 
-#: pages/templates/extends/base.html:37
+#: pages/templates/extends/base.html:26
 msgid "Log out"
 msgstr "Déconnexion"
 
-#: pages/templates/extends/base.html:46 pages/templates/index.html:20
+#: pages/templates/extends/base.html:35 pages/templates/index.html:20
 msgid "Login"
 msgstr "Connexion"
 
-#: pages/templates/extends/base.html:48
+#: pages/templates/extends/base.html:37
 msgid "Register"
 msgstr "Inscription"
 
-#: pages/templates/extends/base.html:64
+#: pages/templates/extends/base.html:53
 msgid "HOME"
 msgstr "ACCUEIL"
 
-#: pages/templates/extends/base.html:70
+#: pages/templates/extends/base.html:59
 msgid "GAMES"
 msgstr "JEUX"
 
-#: pages/templates/extends/base.html:78
+#: pages/templates/extends/base.html:67
 msgid "PONG"
 msgstr "PONG"
 
-#: pages/templates/extends/base.html:84
+#: pages/templates/extends/base.html:73
 msgid "TOURNAMENTS"
 msgstr "TOURNOIS"
 
-#: pages/templates/extends/base.html:94
+#: pages/templates/extends/base.html:82
+msgid "LANGUAGE"
+msgstr "LANGUE"
+
+#: pages/templates/extends/base.html:118
 msgid "COMMUNITY"
 msgstr "COMMUNAUTÉ"
 
-#: pages/templates/extends/base.html:102
+#: pages/templates/extends/base.html:126
 msgid "PROFILE"
 msgstr "PROFIL"
 
-#: pages/templates/extends/base.html:108
+#: pages/templates/extends/base.html:132
 msgid "FRIENDS"
 msgstr "AMIS"
 
-#: pages/templates/extends/base.html:129 pages/templates/extends/base.html:248
+#: pages/templates/extends/base.html:153 pages/templates/extends/base.html:272
 msgid "Room: "
 msgstr "Salle : "
 
-#: pages/templates/extends/base.html:129 pages/templates/extends/base.html:248
+#: pages/templates/extends/base.html:153 pages/templates/extends/base.html:272
 msgid "General"
 msgstr "Général"
 
-#: pages/templates/extends/base.html:132
+#: pages/templates/extends/base.html:156
 msgid "Type your message here..."
 msgstr "Tapez votre message ici..."
 
-#: pages/templates/extends/base.html:134
+#: pages/templates/extends/base.html:158
 msgid "Send"
 msgstr "Envoyer"
 
-#: pages/templates/extends/base.html:137
+#: pages/templates/extends/base.html:161
 msgid "Users Online"
 msgstr "Utilisateurs en ligne"
 
-#: pages/templates/extends/base.html:233
+#: pages/templates/extends/base.html:257
 msgid "Private Chat with"
 msgstr "Chat privé avec"
 
-#: pages/templates/extends/base.html:312 pages/templates/extends/base.html:315
+#: pages/templates/extends/base.html:336 pages/templates/extends/base.html:339
 msgid "Unblock"
 msgstr "Débloquer"
 
-#: pages/templates/extends/base.html:312 pages/templates/extends/base.html:315
+#: pages/templates/extends/base.html:336 pages/templates/extends/base.html:339
 msgid "Block"
 msgstr "Bloquer"
 
-#: pages/templates/extends/base.html:329
+#: pages/templates/extends/base.html:353
 msgid "General Chat"
 msgstr "Discussion Général"
 
-#: pages/templates/extends/base.html:374
+#: pages/templates/extends/base.html:398
 #, python-brace-format
 msgid " Private message from ${fromUser} "
 msgstr " Message privé de ${fromUser} "
 
-#: pages/templates/extends/base.html:375
+#: pages/templates/extends/base.html:399
 msgid "Show"
 msgstr "Afficher"
 

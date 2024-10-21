@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-21 14:35+0200\n"
+"POT-Creation-Date: 2024-10-21 16:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -82,7 +82,7 @@ msgstr "de vous inscrire"
 #: ft_auth/templates/authentification.html:130
 #: ft_auth/templates/settings.html:97
 msgid "Passwords do not match"
-msgstr "Le mot de passe ne correspond pas"
+msgstr "Les mots de passe ne correspondent pas"
 
 #: ft_auth/templates/authentification.html:137
 msgid "Account creation successful."
@@ -195,6 +195,10 @@ msgstr "La taille du fichier dépasse la limite de 2 Mo."
 #: ft_auth/views.py:87
 msgid "Invalid request"
 msgstr "Demande invalide"
+
+#: ft_auth/views.py:113
+msgid "Username already taken"
+msgstr "Le nom d'utilisateur est déjà pris"
 
 #~ msgid "Max file size"
 #~ msgstr "Taille maximale du fichier"

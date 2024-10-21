@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-21 14:35+0200\n"
+"POT-Creation-Date: 2024-10-21 16:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -195,6 +195,10 @@ msgstr "O tamanho do arquivo excede o limite de 2 MB."
 #: ft_auth/views.py:87
 msgid "Invalid request"
 msgstr "Solicitação inválida"
+
+#: ft_auth/views.py:113
+msgid "Username already taken"
+msgstr "Nome de usuário já utilizado"
 
 #~ msgid "Max file size"
 #~ msgstr "Tamanho máximo do arquivo"
