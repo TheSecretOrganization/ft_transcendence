@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-18 12:45+0200\n"
+"POT-Creation-Date: 2024-10-21 14:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,12 +31,12 @@ msgid "Register"
 msgstr "S'inscrire"
 
 #: ft_auth/templates/authentification.html:18
-#: ft_auth/templates/authentification.html:65
+#: ft_auth/templates/authentification.html:66
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
 #: ft_auth/templates/authentification.html:24
-#: ft_auth/templates/authentification.html:71
+#: ft_auth/templates/authentification.html:72
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -49,39 +49,46 @@ msgid "Create account"
 msgstr "Créer un compte"
 
 #: ft_auth/templates/authentification.html:39
-msgid "Already have an account ? Try "
+#, fuzzy
+#| msgid "Already have an account ? Try "
+msgid "Already have an account? Try"
 msgstr "Vous avez déjà un compte ? Essayez"
 
 #: ft_auth/templates/authentification.html:41
 msgid "logging in"
 msgstr "de vous connecter"
 
-#: ft_auth/templates/authentification.html:44
-#: ft_auth/templates/authentification.html:85
+#: ft_auth/templates/authentification.html:45
+#: ft_auth/templates/authentification.html:86
 msgid "or"
 msgstr "ou"
 
-#: ft_auth/templates/authentification.html:46
-#: ft_auth/templates/authentification.html:87
+#: ft_auth/templates/authentification.html:47
+#: ft_auth/templates/authentification.html:88
 msgid "Login with"
 msgstr "Se connecter avec"
 
-#: ft_auth/templates/authentification.html:56
-#: ft_auth/templates/authentification.html:74
+#: ft_auth/templates/authentification.html:57
+#: ft_auth/templates/authentification.html:75
 msgid "Login"
 msgstr "Connexion"
 
-#: ft_auth/templates/authentification.html:80
-msgid "Don't have an account yet ? Try"
+#: ft_auth/templates/authentification.html:81
+msgid "Don't have an account yet? Try"
 msgstr "Vous n'avez pas encore de compte ? Essayez"
 
-#: ft_auth/templates/authentification.html:81
+#: ft_auth/templates/authentification.html:82
 msgid "registering"
 msgstr "de vous inscrire"
 
-#: ft_auth/templates/authentification.html:129
+#: ft_auth/templates/authentification.html:130
+#: ft_auth/templates/settings.html:96
 msgid "Passwords do not match"
 msgstr "Le mot de passe ne correspond pas"
+
+#: ft_auth/templates/authentification.html:137
+msgid "Account creation successful."
+msgstr "Création de compte réussie."
 
 #: ft_auth/templates/authorize.html:6
 msgid "Enter your username"
@@ -147,6 +154,18 @@ msgstr "Taille maximale du fichier"
 msgid "Upload"
 msgstr "Télécharger"
 
+#: ft_auth/templates/settings.html:124
+msgid "File is too large. Maximum size is 2MB."
+msgstr "Le fichier est trop volumineux. La taille maximale est de 2 Mo."
+
+#: ft_auth/templates/settings.html:147
+msgid "Avatar updated successfully."
+msgstr "Avatar mis à jour avec succès."
+
+#: ft_auth/templates/settings.html:149
+msgid "Error uploading avatar"
+msgstr "Erreur lors du téléchargement de l'avatar"
+
 #: ft_auth/views.py:21
 msgid "Missing fields (required username and password)"
 msgstr "Champs manquants (nom d'utilisateur et mot de passe obligatoires)"
@@ -159,7 +178,7 @@ msgstr "Identifiants erronés"
 msgid "You are not logged in"
 msgstr "Vous n'êtes pas connecté"
 
-#: ft_auth/views.py:44 ft_auth/views.py:59
+#: ft_auth/views.py:44 ft_auth/views.py:60
 msgid "Missing fields"
 msgstr "Champs manquants"
 
@@ -167,19 +186,19 @@ msgstr "Champs manquants"
 msgid "Username already exist"
 msgstr "Le nom d'utilisateur existe déjà"
 
-#: ft_auth/views.py:61
+#: ft_auth/views.py:62
 msgid "You must be authenticated to update password"
 msgstr "Vous devez être authentifié pour mettre à jour le mot de passe"
 
-#: ft_auth/views.py:64
+#: ft_auth/views.py:65
 msgid "Invalid current password"
 msgstr "Mot de passe actuel erronés"
 
-#: ft_auth/views.py:80
+#: ft_auth/views.py:82
 msgid "File size exceeds 2MB limit."
 msgstr "La taille du fichier dépasse la limite de 2 Mo."
 
-#: ft_auth/views.py:85
+#: ft_auth/views.py:87
 msgid "Invalid request"
 msgstr "Demande invalide"
 

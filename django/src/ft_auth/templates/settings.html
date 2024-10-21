@@ -121,7 +121,7 @@
 		const maxSize = 2 * 1024 * 1024;
 
 		if (avatarInput && avatarInput.size > maxSize) {
-			alert("File is too large. Maximum size is 2MB.");
+			alert("{% trans 'File is too large. Maximum size is 2MB.' %}");
 			return;
 		}
 
@@ -144,9 +144,9 @@
 						const avatarImg = document.querySelector('.profile-image-container img');
 						avatarImg.src = data.avatar_url;
 						hideModal();
-						displayToast("Avatar updated successfully.");
+						displayToast("{% trans 'Avatar updated successfully.' %}");
 					} else {
-						alert('Error uploading avatar');
+						alert("{% trans 'Error uploading avatar' %}");
 					}
 				})
 				.catch(error => console.error('Error:', error));

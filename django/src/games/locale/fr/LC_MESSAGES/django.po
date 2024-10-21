@@ -1,0 +1,144 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-21 13:52+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: games/templates/pong.html:10
+msgid "Local Game"
+msgstr "Partie locale"
+
+#: games/templates/pong.html:12
+msgid "Online Play"
+msgstr "Jouer en ligne"
+
+#: games/templates/pong.html:19
+msgid "Create a Room"
+msgstr "Créer une salle"
+
+#: games/templates/pong.html:21
+msgid "Join a Room"
+msgstr "Rejoindre une salle"
+
+#: games/templates/pong.html:24
+msgid "Join a Tournament"
+msgstr "Participer à un tournoi"
+
+#: games/templates/pong.html:32
+msgid "Room ID"
+msgstr "ID de la salle"
+
+#: games/templates/pong.html:36
+msgid "Join"
+msgstr "Rejoindre"
+
+#: games/templates/pong.html:42 games/templates/pong_game.html:28
+msgid "Back"
+msgstr "Retour"
+
+#: games/templates/pong_game.html:11
+#, fuzzy
+#| msgid "Room ID"
+msgid "Room ID:"
+msgstr "ID de la salle"
+
+#: games/templates/pong_game.html:21 games/templates/pong_tournament.html:60
+msgid "Ready"
+msgstr "Prêt"
+
+#: games/templates/pong_game.html:24 games/templates/pong_tournament.html:70
+msgid "Power-Up"
+msgstr "Amélioration"
+
+#: games/templates/pong_game.html:94
+msgid "Waiting for second player"
+msgstr "En attente du deuxième joueur"
+
+#: games/templates/pong_game.html:113
+msgid "Winner:"
+msgstr "Vainqueur :"
+
+#: games/templates/pong_game.html:116
+msgid "Sorry, your mate left :("
+msgstr "Désolé, votre coéquipier est parti :("
+
+#: games/templates/pong_tournament.html:16
+#: games/templates/pong_tournament.html:20
+msgid "Players"
+msgstr "Joueurs"
+
+#: games/templates/pong_tournament.html:26
+msgid "Next Round"
+msgstr "Prochaine manche"
+
+#: games/templates/pong_tournament.html:30
+#: games/templates/pong_tournament.html:41
+msgid "Player 1"
+msgstr "Joueur 1"
+
+#: games/templates/pong_tournament.html:31
+#: games/templates/pong_tournament.html:42
+msgid "Player 2"
+msgstr "Joueur 2"
+
+#: games/templates/pong_tournament.html:37
+msgid "Match history"
+msgstr "Historique des matchs"
+
+#: games/templates/pong_tournament.html:43
+msgid "Score 1"
+msgstr "Score 1"
+
+#: games/templates/pong_tournament.html:44
+msgid "Score 2"
+msgstr "Score 2"
+
+#: games/templates/pong_tournament.html:55
+msgid "Lock"
+msgstr "Verrouiller"
+
+#: games/templates/pong_tournament.html:65
+msgid "Play"
+msgstr "Jouer"
+
+#: games/templates/pong_tournament.html:98
+msgid "You have received a bye for this round. Enjoy the break!"
+msgstr "Vous avez passé cette manche automatiquement. Profitez de la pause !"
+
+#: games/templates/pong_tournament.html:165
+msgid "Congratulations to"
+msgstr "Félicitations à"
+
+#: games/templates/pong_tournament.html:186
+msgid "You are alone in the tournament..."
+msgstr "Vous êtes seul dans le tournoi..."
+
+#: games/templates/tournament.html:15
+msgid "Tournament name"
+msgstr "Nom de tournoi invalide."
+
+#: games/templates/tournament.html:19
+msgid "Rumble"
+msgstr "Bagarre"
+
+#: games/views.py:13
+msgid "You must be authenticated to get tournament results"
+msgstr "Vous devez être authentifié pour obtenir les résultats du tournoi"
+
+#: games/views.py:18
+msgid "Invalid tournament name."
+msgstr "Nom de tournoi invalide."

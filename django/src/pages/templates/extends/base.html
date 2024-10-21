@@ -322,7 +322,7 @@
 				privateChatButton.addEventListener('click', () => startPrivateChat(user));
 				userItem.appendChild(privateChatButton);
 			} else {
-				userItem.textContent = 'General Chat';
+				userItem.textContent = "{% trans 'General Chat' %}";
 				const generalChatButton = document.createElement('button');
 				generalChatButton.textContent = "GC";
 				generalChatButton.addEventListener('click', () => joinGeneralChat());

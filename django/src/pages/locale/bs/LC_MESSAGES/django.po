@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-18 09:52+0200\n"
+"POT-Creation-Date: 2024-10-21 13:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,6 +94,12 @@ msgstr "Pošalji"
 #: pages/templates/extends/base.html:135
 msgid "Users Online"
 msgstr "Korisnici na mreži"
+
+#: pages/templates/extends/base.html:325
+#, fuzzy
+#| msgid "General"
+msgid "General Chat"
+msgstr "Opšta soba"
 
 #: pages/templates/extends/base.html:370
 #, python-brace-format

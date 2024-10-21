@@ -7,9 +7,8 @@
 		<div id="game" class="col-9 d-flex align-items-center">
 			<div class="w-100 text-center">
 				<div class="d-inline-block" id="copy-id-div">
-					<button id="copy-id-btn" class="btn game-btns fw-bold"
-						onclick="copyElementText('room-id-text')">{% trans "Room Id:" %}
-						<span id="room-id-text" class="text-decoration-underline fw-light">
+					<button id="copy-id-btn" class="btn game-btns fw-bold" onclick="copyElementText('room-id-text')">
+						{% trans "Room ID:" %} <span id="room-id-text" class="text-decoration-underline fw-light">
 							{{room_id}}</span></button>
 				</div>
 				<canvas id="pong-canvas" class="game-canvas"></canvas>
@@ -18,7 +17,8 @@
 
 		<div class="col-3 game-params d-flex flex-column justify-content-center">
 			<div class="row mb-2">
-				<button class="btn game-btns mb-4 game-btns-scnd-clr fw-bold" id="ready-btn">{% trans "Ready" %}</button>
+				<button class="btn game-btns mb-4 game-btns-scnd-clr fw-bold" id="ready-btn">
+					{% trans "Ready" %}</button>
 			</div>
 			<div class="row mb-2">
 				<button class="btn game-btns mt-4 mb-2 fw-bold" id="power-btn">{% trans "Power-Up" %}</button>
@@ -91,7 +91,7 @@
 		if (host && !tournamentGame) showBtn(powerBtn);
 		canvasResize(canvas);
 		if (!localGame)
-			drawCenteredText("Waiting for second player");
+			drawCenteredText("{% trans 'Waiting for second player' %}");
 	}
 
 	function handleGameStart() {
@@ -109,10 +109,11 @@
 	function handleGameStop(data) {
 		exit(false);
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		if (data?.content?.winner)
-			drawCenteredText(`Winner: ${data.content.winner}`)
-		else
-			drawCenteredText("Sorry, your mate left :'(");
+		if (data?.content?.winner) {
+			const transWinner = ("{% trans 'Winner:' %}");
+			drawCenteredText(`${transWinner} ${data.content.winner}`)
+		} else
+			drawCenteredText("{% trans 'Sorry, your mate left :(' %}");
 	}
 
 	function handleGameError(data) {

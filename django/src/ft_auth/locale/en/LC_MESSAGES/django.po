@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-18 12:45+0200\n"
+"POT-Creation-Date: 2024-10-21 14:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,12 +31,12 @@ msgid "Register"
 msgstr ""
 
 #: ft_auth/templates/authentification.html:18
-#: ft_auth/templates/authentification.html:65
+#: ft_auth/templates/authentification.html:66
 msgid "Username"
 msgstr ""
 
 #: ft_auth/templates/authentification.html:24
-#: ft_auth/templates/authentification.html:71
+#: ft_auth/templates/authentification.html:72
 msgid "Password"
 msgstr ""
 
@@ -49,38 +49,43 @@ msgid "Create account"
 msgstr ""
 
 #: ft_auth/templates/authentification.html:39
-msgid "Already have an account ? Try "
+msgid "Already have an account? Try"
 msgstr ""
 
 #: ft_auth/templates/authentification.html:41
 msgid "logging in"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:44
-#: ft_auth/templates/authentification.html:85
+#: ft_auth/templates/authentification.html:45
+#: ft_auth/templates/authentification.html:86
 msgid "or"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:46
-#: ft_auth/templates/authentification.html:87
+#: ft_auth/templates/authentification.html:47
+#: ft_auth/templates/authentification.html:88
 msgid "Login with"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:56
-#: ft_auth/templates/authentification.html:74
+#: ft_auth/templates/authentification.html:57
+#: ft_auth/templates/authentification.html:75
 msgid "Login"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:80
-msgid "Don't have an account yet ? Try"
+#: ft_auth/templates/authentification.html:81
+msgid "Don't have an account yet? Try"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:81
+#: ft_auth/templates/authentification.html:82
 msgid "registering"
 msgstr ""
 
-#: ft_auth/templates/authentification.html:129
+#: ft_auth/templates/authentification.html:130
+#: ft_auth/templates/settings.html:96
 msgid "Passwords do not match"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:137
+msgid "Account creation successful."
 msgstr ""
 
 #: ft_auth/templates/authorize.html:6
@@ -147,6 +152,18 @@ msgstr ""
 msgid "Upload"
 msgstr ""
 
+#: ft_auth/templates/settings.html:124
+msgid "File is too large. Maximum size is 2MB."
+msgstr ""
+
+#: ft_auth/templates/settings.html:147
+msgid "Avatar updated successfully."
+msgstr ""
+
+#: ft_auth/templates/settings.html:149
+msgid "Error uploading avatar"
+msgstr ""
+
 #: ft_auth/views.py:21
 msgid "Missing fields (required username and password)"
 msgstr ""
@@ -159,7 +176,7 @@ msgstr ""
 msgid "You are not logged in"
 msgstr ""
 
-#: ft_auth/views.py:44 ft_auth/views.py:59
+#: ft_auth/views.py:44 ft_auth/views.py:60
 msgid "Missing fields"
 msgstr ""
 
@@ -167,18 +184,18 @@ msgstr ""
 msgid "Username already exist"
 msgstr ""
 
-#: ft_auth/views.py:61
+#: ft_auth/views.py:62
 msgid "You must be authenticated to update password"
 msgstr ""
 
-#: ft_auth/views.py:64
+#: ft_auth/views.py:65
 msgid "Invalid current password"
 msgstr ""
 
-#: ft_auth/views.py:80
+#: ft_auth/views.py:82
 msgid "File size exceeds 2MB limit."
 msgstr ""
 
-#: ft_auth/views.py:85
+#: ft_auth/views.py:87
 msgid "Invalid request"
 msgstr ""

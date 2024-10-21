@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-18 12:45+0200\n"
+"POT-Creation-Date: 2024-10-21 14:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,12 +32,12 @@ msgid "Register"
 msgstr "Registruj se"
 
 #: ft_auth/templates/authentification.html:18
-#: ft_auth/templates/authentification.html:65
+#: ft_auth/templates/authentification.html:66
 msgid "Username"
 msgstr "Korisničko ime"
 
 #: ft_auth/templates/authentification.html:24
-#: ft_auth/templates/authentification.html:71
+#: ft_auth/templates/authentification.html:72
 msgid "Password"
 msgstr "Lozinka"
 
@@ -50,39 +50,46 @@ msgid "Create account"
 msgstr "Kreiraj nalog"
 
 #: ft_auth/templates/authentification.html:39
-msgid "Already have an account ? Try"
+#, fuzzy
+#| msgid "Already have an account ? Try"
+msgid "Already have an account? Try"
 msgstr "Već imate nalog? Pokušajte"
 
 #: ft_auth/templates/authentification.html:41
 msgid "logging in"
 msgstr "prijava"
 
-#: ft_auth/templates/authentification.html:44
-#: ft_auth/templates/authentification.html:85
+#: ft_auth/templates/authentification.html:45
+#: ft_auth/templates/authentification.html:86
 msgid "or"
 msgstr "ili"
 
-#: ft_auth/templates/authentification.html:46
-#: ft_auth/templates/authentification.html:87
+#: ft_auth/templates/authentification.html:47
+#: ft_auth/templates/authentification.html:88
 msgid "Login with"
 msgstr "Prijavi se sa"
 
-#: ft_auth/templates/authentification.html:56
-#: ft_auth/templates/authentification.html:74
+#: ft_auth/templates/authentification.html:57
+#: ft_auth/templates/authentification.html:75
 msgid "Login"
 msgstr "Prijava"
 
-#: ft_auth/templates/authentification.html:80
-msgid "Don't have an account yet ? Try"
+#: ft_auth/templates/authentification.html:81
+msgid "Don't have an account yet? Try"
 msgstr "Još nemate nalog? Pokušajte"
 
-#: ft_auth/templates/authentification.html:81
+#: ft_auth/templates/authentification.html:82
 msgid "registering"
 msgstr "registracija"
 
-#: ft_auth/templates/authentification.html:129
+#: ft_auth/templates/authentification.html:130
+#: ft_auth/templates/settings.html:96
 msgid "Passwords do not match"
 msgstr "Lozinke se ne podudaraju"
+
+#: ft_auth/templates/authentification.html:137
+msgid "Account creation successful."
+msgstr "Uspješno kreiranje naloga."
 
 #: ft_auth/templates/authorize.html:6
 msgid "Enter your username"
@@ -148,6 +155,18 @@ msgstr "Maksimalna veličina datoteke"
 msgid "Upload"
 msgstr "Otpremi"
 
+#: ft_auth/templates/settings.html:124
+msgid "File is too large. Maximum size is 2MB."
+msgstr "Datoteka je prevelika. Maksimalna veličina je 2MB."
+
+#: ft_auth/templates/settings.html:147
+msgid "Avatar updated successfully."
+msgstr "Avatar je uspješno ažuriran."
+
+#: ft_auth/templates/settings.html:149
+msgid "Error uploading avatar"
+msgstr "Greška prilikom postavljanja avatara"
+
 #: ft_auth/views.py:21
 msgid "Missing fields (required username and password)"
 msgstr "Polja koja nedostaju (obavezno korisničko ime i lozinka)"
@@ -160,7 +179,7 @@ msgstr "Pogrešne vjerodajnice"
 msgid "You are not logged in"
 msgstr "Niste prijavljeni"
 
-#: ft_auth/views.py:44 ft_auth/views.py:59
+#: ft_auth/views.py:44 ft_auth/views.py:60
 msgid "Missing fields"
 msgstr "Nedostajuća polja"
 
@@ -168,19 +187,19 @@ msgstr "Nedostajuća polja"
 msgid "Username already exist"
 msgstr "Korisničko ime već postoji"
 
-#: ft_auth/views.py:61
+#: ft_auth/views.py:62
 msgid "You must be authenticated to update password"
 msgstr "Morate biti autentificirani da ažurirate lozinku"
 
-#: ft_auth/views.py:64
+#: ft_auth/views.py:65
 msgid "Invalid current password"
 msgstr "Nevažeća trenutna lozinka"
 
-#: ft_auth/views.py:80
+#: ft_auth/views.py:82
 msgid "File size exceeds 2MB limit."
 msgstr "Veličina datoteke premašuje ograničenje od 2MB."
 
-#: ft_auth/views.py:85
+#: ft_auth/views.py:87
 msgid "Invalid request"
 msgstr "Nevažeći zahtjev"
 
