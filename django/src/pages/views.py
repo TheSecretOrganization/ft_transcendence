@@ -59,7 +59,7 @@ def pong_local(request):
 
 
 @require_GET
-def pong_online(request, id=None, tournament_name="0"):
+def pong_online(request, id=None, tournament_name="0", power=False):
 	uuid_regex = re.compile(
 		r"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$",
 		re.IGNORECASE,
@@ -76,6 +76,7 @@ def pong_online(request, id=None, tournament_name="0"):
 			"mode": "online",
 			"room_id": str(uuid4()) if id == None else id,
 			"tournament_name": tournament_name,
+			"power": bool(power),
 		},
 		need_authentication=True,
 	)
@@ -161,4 +162,3 @@ def profiles(request: HttpRequest, username: str):
 @require_GET
 def settings(request: HttpRequest):
 	return create_response(request, 'settings.html', title="Settings", need_authentication=True)
- 
