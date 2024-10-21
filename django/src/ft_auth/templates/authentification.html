@@ -13,21 +13,27 @@
 			</div>
 			{% csrf_token %}
 			<div class="form-floating mb-3 row">
-				<input register-input type="text" class="form-control fs-3 fw-bold" id="username" placeholder="Username"
-					autocomplete="username" minlength="3" maxlength="15">
-				<label for="username">Username</label>
+				<input register-input type="text" class="form-control fs-3 fw-bold" id="register-username"
+					placeholder="Username" autocomplete="off" minlength="3" maxlength="15">
+				<label for="register-username">Username</label>
 			</div>
 
 			<div class="form-floating mb-3 row">
 				<input register-input type="password" class="form-control fs-3 fw-bold" id="password"
 					placeholder="Password">
 				<label for="password">Password</label>
+				<input register-input type="password" class="form-control fs-3 fw-bold" id="register-password"
+					placeholder="Password" autocomplete="off">
+				<label for="register-password">Password</label>
 			</div>
 
 			<div class="form-floating  mb-3 row">
 				<input register-input type="password" class="form-control fs-3 fw-bold" id="password-confirm"
 					placeholder="Password" data-ignore="true">
 				<label for="password-confirm">Confirm Password</label>
+				<input register-input type="password" class="form-control fs-3 fw-bold" id="register-password-confirm"
+					placeholder="Confirm Password" data-ignore="true" autocomplete="off">
+				<label for="register-password-confirm">Confirm Password</label>
 			</div>
 
 			<button register-input id="register-btn" type="submit" class="btn btn-success row w-100 m-0">Create
@@ -36,7 +42,7 @@
 		<hr class="row border-bottom border-1 border-dark my-2">
 		</hr>
 		<div class="row">
-			<p class="fw-light" style="margin-bottom: 0px;">Already have an account ? Try <a register-anchor data-route
+			<p class="fw-light" style="margin-bottom: 0px;">Already have an account? Try <a register-anchor data-route
 					href="/login" class="text-decoration-none text-success">logging in</a></p>
 		</div>
 		<div class="row">
@@ -58,15 +64,18 @@
 			</div>
 			{% csrf_token %}
 			<div class="form-floating mb-3 row">
-				<input login-input type="text" class="form-control fs-3 fw-bold" id="username" placeholder="Username"
-					autocomplete="username">
-				<label for="username">Username</label>
+				<input login-input type="text" class="form-control fs-3 fw-bold" id="login-username"
+					placeholder="Username" autocomplete="off">
+				<label for="login-username">Username</label>
 			</div>
 
 			<div class="form-floating mb-3 row">
 				<input login-input type="password" class="form-control fs-3 fw-bold" id="password"
 					placeholder="Password">
 				<label for="password">Password</label>
+				<input login-input type="password" class="form-control fs-3 fw-bold" id="login-password"
+					placeholder="Password" autocomplete="off">
+				<label for="login-password">Password</label>
 			</div>
 
 			<button login-input id="login-btn" type="submit" class="btn btn-success row w-100 m-0">Login</button>
@@ -74,7 +83,7 @@
 		<hr class="row border-bottom border-1 border-dark my-2">
 		</hr>
 		<div class="row">
-			<p class="fw-light" style="margin-bottom: 0px;">Don't have an account yet ? Try <a login-anchor data-route
+			<p class="fw-light" style="margin-bottom: 0px;">Don't have an account yet? Try <a login-anchor data-route
 					href="/register" class="text-decoration-none text-success">registering</a></p>
 		</div>
 		<div class="row">
@@ -87,7 +96,7 @@
 </div>
 <div id="slider-div" class="slider-register-animation">
 	<div class="column">
-		<h1 class="row">Johnny depp</h1>
+		<h1 class="row">Johnny Depp</h1>
 	</div>
 </div>
 
@@ -110,8 +119,8 @@
 	};
 
 	function validate() {
-		let password = document.getElementById('password').value;
-		let passwordcfrm = document.getElementById('password-confirm').value;
+		let password = document.getElementById('register-password').value;
+		let passwordcfrm = document.getElementById('register-password-confirm').value;
 
 		return password == passwordcfrm;
 	}

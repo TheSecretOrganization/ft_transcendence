@@ -16,11 +16,11 @@ logger = getLogger(__name__)
 @require_POST
 def login(request: HttpRequest):
 	data = json.loads(request.body.decode())
-	if not data or not all(k in data for k in ['username', 'password']):
+	if not data or not all(k in data for k in ['login-username', 'login-password']):
 		return JsonResponse({'error': 'Missing fields (required username and password)'}, status=400)
-	user = authenticate(username=data['username'], password=data['password'])
+	user = authenticate(username=data['login-username'], password=data['login-password'])
 	if user is None:
-		logger.info(f"Tried to login to user {data['username']}")
+		logger.info(f"Tried to login to user {data['login-username']}")
 		return JsonResponse({'error': 'Wrong credentials'}, status=401)
 	dlogin(request, user)
 	logger.info(f"{user.username} logged in.")
@@ -39,12 +39,12 @@ def logout(request: HttpRequest):
 @require_POST
 def register(request: HttpRequest):
 	data = json.loads(request.body.decode())
-	if not data or not all(k in data for k in ['username', 'password']):
+	if not data or not all(k in data for k in ['register-username', 'register-password']):
 		return JsonResponse({'error': 'Missing fields'}, status=400)
 	try:
-		validate_password(data['password'])
-		get_user_model().objects.create_user(data['username'], data['password'])
-		logger.info(f"user '{data['username']}' created.")
+		validate_password(data['register-password'])
+		get_user_model().objects.create_user(data['register-username'], data['register-password'])
+		logger.info(f"user '{data['register-username']}' created.")
 	except IntegrityError:
 		return JsonResponse({'error': 'Username already exist'}, status=400)
 	except ValidationError as error:

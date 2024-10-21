@@ -1,55 +1,86 @@
 {% extends "./extends/base.html" %}
 
 {% block content %}
+{% load i18n %}
 <div class="container">
-	<h1 class="text-center fw-bold">{{ name }}</h1>
-	<h1 class="text-center fw-bold hidden" id="winner"></h1>
-	<h2 class="text-start fs-4 fw-bold mb-3">Players</h2>
-	<table id="players" class="table table-striped table-bordered">
-		<thead>
-			<tr>
-				<th>Players</th>
-			</tr>
-		</thead>
-		<tbody></tbody>
-	</table>
+	<div class="row">
+		<div class="col text-center">
+			<h1 class="fw-bold">{{ name }}</h1>
+		</div>
+	</div>
 
-	<h2 class="text-start fs-4 fw-bold mb-3">Next Round</h2>
-	<table id="next-round" class="table table-striped table-bordered">
-		<thead>
-			<tr>
-				<th>Player 1</th>
-				<th>Player 2</th>
-			</tr>
-		</thead>
-		<tbody></tbody>
-	</table>
+	<div class="row">
+		<div class="col">
+			<div class="container-fluid scrollable-tournament-div">
+				<h1 class="text-center fw-bold hidden" id="winner"></h1>
+				<h2 class="text-start fs-4 fw-bold mb-3">{% trans "Players" %}</h2>
+				<table id="players" class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>{% trans "Players" %}</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
 
-	<h2 class="text-start fs-4 fw-bold mb-3">History</h2>
-	<table id="history" class="table table-striped table-bordered">
-		<thead>
-			<tr>
-				<th>Player 1</th>
-				<th>Player 2</th>
-				<th>Score 1</th>
-				<th>Score 2</th>
-			</tr>
-		</thead>
-		<tbody></tbody>
-	</table>
+				<h2 class="text-start fs-4 fw-bold mb-3">{% trans "Next Round" %}</h2>
+				<table id="next-round" class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>{% trans "Player 1" %}</th>
+							<th>{% trans "Player 2" %}</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
 
-	<button id="lock-btn" class="btn btn-primary hidden" disabled>Lock</button>
-	<button id="ready-btn" class="btn btn-primary hidden" disabled>Ready</button>
-	<button id="mix-btn" class="btn btn-success hidden" disabled>Mix</button>
+				<h2 class="text-start fs-4 fw-bold mb-3">{% trans "Match history" %}</h2>
+				<table id="history" class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>{% trans "Player 1" %}</th>
+							<th>{% trans "Player 2" %}</th>
+							<th>Score 1</th>
+							<th>Score 2</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div class="row mt-5 mb-4">
+		<div class="col text-center">
+			<button id="lock-btn" class="btn game-btns game-btns-scnd-clr" disabled>{% trans "Lock" %}</button>
+		</div>
+	</div>
+	<div class="row my-4">
+		<div class="col text-center">
+			<button id="ready-btn" class="btn game-btns" disabled>{% trans "Ready" %}</button>
+		</div>
+	</div>
+	<div class="row my-4">
+		<div class="col text-center">
+			<button id="play-btn" class="btn game-btns game-btns-scnd-clr" disabled>{% trans "Play" %}</button>
+		</div>
+	</div>
+	<div class="row mt-4">
+		<div class="col text-center">
+			<button id="power-btn" class="btn game-btns">{% trans "Power-Up" %}</button>
+		</div>
+	</div>
 </div>
 
 <script>
 	const lockBtn = document.getElementById("lock-btn");
 	const readyBtn = document.getElementById("ready-btn");
-	const mixBtn = document.getElementById("mix-btn");
+	const playBtn = document.getElementById("play-btn");
+	const powerBtn = document.getElementById("power-btn");
 	const playersTbl = document.getElementById("players");
 	const resultsOnly = "{{ results_only }}" === "True";
 	let socket = resultsOnly ? undefined : wsConnect(wsCreateUrl("pong_tournament", { "name": "{{ name }}" }), onMessage, exit);
+	let power = 0;
 
 	function onMessage(data) {
 		if (data?.type === undefined) {
@@ -58,17 +89,22 @@
 		}
 
 		switch (data.type) {
-			case "unlock_lock": showBtn(lockBtn); break;
+			case "unlock_lock": handleUnlockLock(); break;
 			case "unlock_ready": showBtn(readyBtn); break;
-			case "unlock_mix": showBtn(mixBtn); break;
+			case "unlock_play": showBtn(playBtn); break;
 			case "join": handleJoin(data.players); break;
-			case "mix": handleMix(data.player_pairs); break;
-			case "next_round_id": route(`/pong/online/${data.id}/{{ name }}`); break;
+			case "player_pairs": handlePlayerPairs(data.player_pairs); break;
+			case "next_round_id": route(`/pong/online/${data.id}/{{ name }}/${power}`); break;
 			case "bye": displayToast("You have received a bye for this round. Enjoy the break!"); break;
 			case "history": handleHistory(data.history); break;
 			case "end": handleEnd(data.winner); break;
 			default: console.error("Invalid message from server ignored."); break;
 		}
+	}
+
+	function handleUnlockLock() {
+		showBtn(lockBtn);
+		showBtn(powerBtn);
 	}
 
 	function handleJoin(players) {
@@ -84,7 +120,7 @@
 		});
 	}
 
-	function handleMix(playerPairs) {
+	function handlePlayerPairs(playerPairs) {
 		const tableBody = document.querySelector("#next-round tbody");
 		tableBody.innerHTML = '';
 
@@ -150,6 +186,7 @@
 			return;
 		}
 		hideBtn(lockBtn);
+		hideBtn(powerBtn);
 		socket.send(JSON.stringify({ type: "lock" }));
 	}
 
@@ -158,9 +195,14 @@
 		socket.send(JSON.stringify({ type: "ready" }));
 	}
 
-	mixBtn.onclick = () => {
-		hideBtn(mixBtn);
-		socket.send(JSON.stringify({ type: "mix" }));
+	playBtn.onclick = () => {
+		hideBtn(playBtn);
+		socket.send(JSON.stringify({ type: "play" }));
+	}
+
+	powerBtn.onclick = () => {
+		power = power === 1 ? 0 : 1;
+		powerBtn.classList.toggle("active");
 	}
 
 	if (resultsOnly) {
@@ -203,5 +245,9 @@
 	}
 
 	document.getElementById('content').addEventListener('pagechange', onPageChange);
+	hideBtn(lockBtn);
+	hideBtn(readyBtn);
+	hideBtn(playBtn);
+	hideBtn(powerBtn);
 </script>
 {% endblock %}

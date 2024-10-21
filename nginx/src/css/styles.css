@@ -36,6 +36,7 @@ html {
 }
 
 body {
+	font-family: 'Poppins', sans-serif;
 	min-height: 100vh;
 	min-height: 100dvh;
 	background-color: var(--base-clr);
@@ -79,4 +80,18 @@ body {
 a:focus {
 	border: 0.1rem solid var(--selection-clr) !important;
 	border-radius: 0.3rem !important;
+}
+
+.login-index {
+	padding: 1.5rem;
+	border-radius: 5px;
+	font-size: large;
+	box-sizing: border-box;
+	width: 50%;
+	margin-left: 2px;
+}
+
+.login-index:focus {
+	border: 3px solid var(--selection-clr) !important;
+	border-radius: 5px !important;
 }

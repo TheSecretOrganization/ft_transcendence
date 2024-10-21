@@ -1,15 +1,33 @@
 {% extends "./extends/base.html" %}
 
 {% block content %}
-<div class="container">
-	<div id="game">
-		<p>Roomd Id: {{room_id}}</p>
-		<canvas id="pong-canvas" class="game-canvas"></canvas>
-	</div>
+<div class="container-fluid h-100">
+	<div class="row h-100" id="pong-row">
+		<div id="game" class="col-9 d-flex align-items-center">
+			<div class="w-100 text-center">
+				<div class="d-inline-block" id="copy-id-div">
+					<button id="copy-id-btn" class="btn game-btns fw-bold"
+						onclick="copyElementText('room-id-text')">Room
+						Id: <span id="room-id-text" class="text-decoration-underline fw-light">
+							{{room_id}}</span></button>
+				</div>
+				<canvas id="pong-canvas" class="game-canvas"></canvas>
+			</div>
+		</div>
 
-	<button class="btn btn-primary" id="ready-btn">Ready</button>
-	<button class="btn btn-success" id="back-btn">Back</button>
-	<button class="btn btn-warning" id="power-btn">Power-Up</button>
+		<div class="col-3 game-params d-flex flex-column justify-content-center">
+			<div class="row mb-2">
+				<button class="btn game-btns mb-4 game-btns-scnd-clr fw-bold" id="ready-btn">Ready</button>
+			</div>
+			<div class="row mb-2">
+				<button class="btn game-btns mt-4 mb-2 fw-bold" id="power-btn">Power-Up</button>
+			</div>
+			<hr class="row-divider my-2 mx-0" id="pong-game-divider">
+			<div class="row">
+				<button class="btn game-btns mt-2 game-btns-scnd-clr fw-bold" id="back-btn">Back</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script>
@@ -17,13 +35,17 @@
 	const ctx = canvas.getContext('2d');
 	const readyBtn = document.getElementById('ready-btn');
 	const powerBtn = document.getElementById('power-btn');
-	const mode = "{{mode}}";
+	const mode = "{{ mode }}";
+	const tournamentGame = "{{ tournament_name }}" !== "0";
 	const localGame = mode === "local";
+	const mouseSensitivity = 0.25;
+	const font = `20px ${getFont()}`
 	let socket = wsConnect(wsCreateUrl("pong", {
 		"mode": mode,
 		"room_id": "{{room_id}}",
 		"player_needed": mode === "online" ? 2 : 1,
 		"tournament_name": "{{ tournament_name }}",
+		"power": "{{ power }}",
 	}), onMessage, exit);
 	let upKey = "w";
 	let downKey = "s";
@@ -33,7 +55,6 @@
 	let gameState;
 	let keyInterval = null;
 	let pointerLock = false;
-	const mouseSensitivity = 0.25;
 	let exitRoute = "/pong"
 	let host = false;
 
@@ -66,7 +87,7 @@
 	function handleGamePad(data) {
 		padN = data.content.game_pad
 		host = data.content.host
-		if (host) showBtn(powerBtn);
+		if (host && !tournamentGame) showBtn(powerBtn);
 		canvasResize(canvas);
 		if (!localGame)
 			drawCenteredText("Waiting for second player");
@@ -109,8 +130,10 @@
 		drawBall(gameState.ball);
 		drawPad(gameState.pad_1);
 		drawPad(gameState.pad_2);
-		drawText(`P1: ${gameState.score[0]}`, 20, 20);
-		drawText(`P2: ${gameState.score[1]}`, canvas.width - 80, 20);
+		drawText(`${gameState.players[0]}: ${gameState.score[0]}`, 20, 20);
+		ctx.font = font;
+		const secondPlayerText = `${gameState.players[1]}: ${gameState.score[1]}`;
+		drawText(secondPlayerText, canvas.width - ctx.measureText(secondPlayerText).width - 20, 20);
 	}
 
 	function drawBall(ball) {
@@ -127,18 +150,18 @@
 		ctx.fillRect(pad.x * canvas.width, pad.y * canvas.height, pad.width * canvas.width, pad.height * canvas.height);
 	}
 
-	function drawText(text, x, y, color = "black", font = `20px ${getFont()}`) {
+	function drawText(text, x, y, color = "black") {
 		ctx.fillStyle = color;
 		ctx.font = font;
 		ctx.fillText(text, x, y);
 	}
 
-	function drawCenteredText(text, color = "black", font = `20px ${getFont()}`) {
+	function drawCenteredText(text, color = "black") {
 		ctx.font = font;
 		const textWidth = ctx.measureText(text).width;
 		const x = (canvas.width - textWidth) / 2;
 		const y = canvas.height / 2;
-		drawText(text, x, y, color, font);
+		drawText(text, x, y, color);
 	}
 
 	function onPageChange(e) {
@@ -172,14 +195,16 @@
 		powerBtn.onclick = e => {
 			e.preventDefault();
 			if (!host) return;
-			const attr = "power-toggle";
-			powerBtn.toggleAttribute(attr);
-			sendToWebSocket("toggle_power", { power: powerBtn.hasAttribute(attr) });
+			const activeClass = "active";
+			powerBtn.classList.toggle(activeClass);
+			sendToWebSocket("toggle_power", { power: powerBtn.classList.contains(activeClass) });
 		};
+
 
 		readyBtn.addEventListener("click", e => {
 			hideBtn(readyBtn);
 			hideBtn(powerBtn);
+			document.getElementById("pong-game-divider").classList.toggle("hidden");
 			sendToWebSocket("game_ready", {
 				"pad_n": padN,
 			});
@@ -236,6 +261,8 @@
 			};
 		}
 	}
+
+	if (mode !== "online" || tournamentGame) document.getElementById("copy-id-div").classList.add("hidden");
 
 	initializeEvents();
 	checkAndUpdateUrl();

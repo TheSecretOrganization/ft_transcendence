@@ -52,29 +52,29 @@ class LoginTest(TestCase):
 		request = post(self.client, '/auth/login/', {})
 		self.assertEqual(request.status_code, 400)
 		self.assertFalse(get_user(self.client).is_authenticated)
-		request = post(self.client, '/auth/login/', {'username': 'mich'})
+		request = post(self.client, '/auth/login/', {'login-username': 'mich'})
 		self.assertEqual(request.status_code, 400)
 		self.assertFalse(get_user(self.client).is_authenticated)
-		request = post(self.client, '/auth/login/', {'password': 'mich443@'})
+		request = post(self.client, '/auth/login/', {'login-password': 'mich443@'})
 		self.assertEqual(request.status_code, 400)
 		self.assertFalse(get_user(self.client).is_authenticated)
 
 	def test_login_wrong_credentials(self):
-		request = post(self.client, '/auth/login/', {'username': 'mich', 'password': 'mich334'})
+		request = post(self.client, '/auth/login/', {'login-username': 'mich', 'login-password': 'mich334'})
 		self.assertEqual(request.status_code, 401)
 		self.assertFalse(get_user(self.client).is_authenticated)
 
 	def test_login(self):
-		request = post(self.client, '/auth/login/', {'username': 'mich', 'password': 'mich334@'})
+		request = post(self.client, '/auth/login/', {'login-username': 'mich', 'login-password': 'mich334@'})
 		self.assertEqual(request.status_code, 200)
 		self.assertTrue(get_user(self.client).is_authenticated)
-	
+
 	def test_logout_without_login(self):
 		request = self.client.get('/auth/logout/')
 		self.assertEqual(request.status_code, 401)
 
 	def test_logout(self):
-		request = post(self.client, '/auth/login/', {'username': 'mich', 'password': 'mich334@'})
+		request = post(self.client, '/auth/login/', {'login-username': 'mich', 'login-password': 'mich334@'})
 		self.assertEqual(request.status_code, 200)
 		self.assertTrue(get_user(self.client).is_authenticated)
 		request = self.client.get('/auth/logout/')
@@ -89,15 +89,15 @@ class RegisterTest(TestCase):
 	def test_register_without_param(self):
 		request = post(self.client, '/auth/register/', {})
 		self.assertEqual(request.status_code, 400)
-		request = post(self.client, '/auth/register/', {'username': 'ok'})
+		request = post(self.client, '/auth/register/', {'register-username': 'ok'})
 		self.assertEqual(request.status_code, 400)
-		request = post(self.client, '/auth/register/', {'password': 'ok'})
+		request = post(self.client, '/auth/register/', {'register-password': 'ok'})
 		self.assertEqual(request.status_code, 400)
 
 	def test_register(self):
 		request = post(self.client, '/auth/register/', {
-			'username': 'mich',
-			'password': 'mich334@',
+			'register-username': 'mich',
+			'register-password': 'mich334@',
 		})
 		self.assertEqual(request.status_code, 200)
 		user = get_user_model().objects.get(username='mich')
@@ -105,11 +105,11 @@ class RegisterTest(TestCase):
 
 	def test_register_already_exist(self):
 		get_user_model().objects.create_user(username='bob')
-		request = post(self.client, '/auth/register/', {'username': 'bob', 'password': 'ok'})
+		request = post(self.client, '/auth/register/', {'register-username': 'bob', 'register-password': 'ok'})
 		self.assertEqual(request.status_code, 400)
 
 	def test_register_invalid_password(self):
-		request = post(self.client, '/auth/register/', {'username': 'mich', 'new_password': '6chars'})
+		request = post(self.client, '/auth/register/', {'register-username': 'mich', 'new_password': '6chars'})
 		self.assertEqual(request.status_code, 400)
 		with self.assertRaises(User.DoesNotExist):
 			get_user_model().objects.get(username='mich')
@@ -150,7 +150,7 @@ class ChangePasswordTest(TestCase):
 		self.assertFalse(get_user(self.client).check_password(self.new_password))
 
 	def test_change_invalid_password(self):
-		request = post(self.client, self.route, 
+		request = post(self.client, self.route,
 				 {'current_password': self.password, 'new_password': '6chars'})
 		self.assertEqual(request.status_code, 400)
 		self.assertTrue(get_user(self.client).check_password(self.password))
