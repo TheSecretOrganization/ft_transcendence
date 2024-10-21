@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-21 13:34+0200\n"
+"POT-Creation-Date: 2024-10-21 15:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,48 +62,60 @@ msgstr ""
 msgid "TOURNAMENTS"
 msgstr ""
 
-#: pages/templates/extends/base.html:93
+#: pages/templates/extends/base.html:94
 msgid "COMMUNITY"
 msgstr ""
 
-#: pages/templates/extends/base.html:101
-msgid "CHAT"
+#: pages/templates/extends/base.html:102
+msgid "PROFILE"
 msgstr ""
 
-#: pages/templates/extends/base.html:107
+#: pages/templates/extends/base.html:108
 msgid "FRIENDS"
 msgstr ""
 
-#: pages/templates/extends/base.html:127
+#: pages/templates/extends/base.html:129 pages/templates/extends/base.html:248
 msgid "Room: "
 msgstr ""
 
-#: pages/templates/extends/base.html:127
+#: pages/templates/extends/base.html:129 pages/templates/extends/base.html:248
 msgid "General"
 msgstr ""
 
-#: pages/templates/extends/base.html:130
+#: pages/templates/extends/base.html:132
 msgid "Type your message here..."
 msgstr ""
 
-#: pages/templates/extends/base.html:132
+#: pages/templates/extends/base.html:134
 msgid "Send"
 msgstr ""
 
-#: pages/templates/extends/base.html:135
+#: pages/templates/extends/base.html:137
 msgid "Users Online"
 msgstr ""
 
-#: pages/templates/extends/base.html:325
+#: pages/templates/extends/base.html:233
+msgid "Private Chat with"
+msgstr ""
+
+#: pages/templates/extends/base.html:312 pages/templates/extends/base.html:315
+msgid "Unblock"
+msgstr ""
+
+#: pages/templates/extends/base.html:312 pages/templates/extends/base.html:315
+msgid "Block"
+msgstr ""
+
+#: pages/templates/extends/base.html:329
 msgid "General Chat"
 msgstr ""
 
-#: pages/templates/extends/base.html:370
+#: pages/templates/extends/base.html:374
 #, python-brace-format
 msgid " Private message from ${fromUser} "
 msgstr ""
 
-#: pages/templates/extends/base.html:371
+#: pages/templates/extends/base.html:375
 msgid "Show"
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-21 14:13+0200\n"
+"POT-Creation-Date: 2024-10-21 14:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,8 +50,6 @@ msgid "Create account"
 msgstr "Kreiraj nalog"
 
 #: ft_auth/templates/authentification.html:39
-#, fuzzy
-#| msgid "Already have an account ? Try"
 msgid "Already have an account? Try"
 msgstr "Već imate nalog? Pokušajte"
 
@@ -83,7 +81,7 @@ msgid "registering"
 msgstr "registracija"
 
 #: ft_auth/templates/authentification.html:130
-#: ft_auth/templates/settings.html:96
+#: ft_auth/templates/settings.html:97
 msgid "Passwords do not match"
 msgstr "Lozinke se ne podudaraju"
 
@@ -139,31 +137,27 @@ msgstr "Potvrdite promjene"
 msgid "Upload New Avatar"
 msgstr "Otpremi novi avatar"
 
-#: ft_auth/templates/settings.html:58
+#: ft_auth/templates/settings.html:59
 msgid "Choose File"
 msgstr "Odaberi datoteku"
 
-#: ft_auth/templates/settings.html:59
+#: ft_auth/templates/settings.html:60
 msgid "No file chosen"
 msgstr "Nije odabrana nijedna datoteka"
 
-#: ft_auth/templates/settings.html:60
-msgid "Max file size"
-msgstr "Maksimalna veličina datoteke"
-
-#: ft_auth/templates/settings.html:61
+#: ft_auth/templates/settings.html:62
 msgid "Upload"
 msgstr "Otpremi"
 
-#: ft_auth/templates/settings.html:124
+#: ft_auth/templates/settings.html:125
 msgid "File is too large. Maximum size is 2MB."
 msgstr "Datoteka je prevelika. Maksimalna veličina je 2MB."
 
-#: ft_auth/templates/settings.html:147
+#: ft_auth/templates/settings.html:148
 msgid "Avatar updated successfully."
 msgstr "Avatar je uspješno ažuriran."
 
-#: ft_auth/templates/settings.html:149
+#: ft_auth/templates/settings.html:150
 msgid "Error uploading avatar"
 msgstr "Greška prilikom postavljanja avatara"
 
@@ -202,6 +196,9 @@ msgstr "Veličina datoteke premašuje ograničenje od 2MB."
 #: ft_auth/views.py:87
 msgid "Invalid request"
 msgstr "Nevažeći zahtjev"
+
+#~ msgid "Max file size"
+#~ msgstr "Maksimalna veličina datoteke"
 
 #~ msgid "Loading"
 #~ msgstr "Loading"

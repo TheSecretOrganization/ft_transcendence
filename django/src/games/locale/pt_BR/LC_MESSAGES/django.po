@@ -51,8 +51,6 @@ msgid "Back"
 msgstr "Voltar"
 
 #: games/templates/pong_game.html:11
-#, fuzzy
-#| msgid "Room ID"
 msgid "Room ID:"
 msgstr "ID da sala"
 
@@ -129,7 +127,7 @@ msgstr "Você está sozinho no torneio..."
 
 #: games/templates/tournament.html:15
 msgid "Tournament name"
-msgstr "Nome de torneio inválido."
+msgstr "Nome do torneio"
 
 #: games/templates/tournament.html:19
 msgid "Rumble"

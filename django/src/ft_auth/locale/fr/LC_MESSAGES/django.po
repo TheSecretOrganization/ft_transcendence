@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-21 14:13+0200\n"
+"POT-Creation-Date: 2024-10-21 14:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,8 +49,6 @@ msgid "Create account"
 msgstr "Créer un compte"
 
 #: ft_auth/templates/authentification.html:39
-#, fuzzy
-#| msgid "Already have an account ? Try "
 msgid "Already have an account? Try"
 msgstr "Vous avez déjà un compte ? Essayez"
 
@@ -82,7 +80,7 @@ msgid "registering"
 msgstr "de vous inscrire"
 
 #: ft_auth/templates/authentification.html:130
-#: ft_auth/templates/settings.html:96
+#: ft_auth/templates/settings.html:97
 msgid "Passwords do not match"
 msgstr "Le mot de passe ne correspond pas"
 
@@ -138,31 +136,27 @@ msgstr "Confirmer les changements"
 msgid "Upload New Avatar"
 msgstr "Télécharger un nouvel avatar"
 
-#: ft_auth/templates/settings.html:58
+#: ft_auth/templates/settings.html:59
 msgid "Choose File"
 msgstr "Choisir un fichier"
 
-#: ft_auth/templates/settings.html:59
+#: ft_auth/templates/settings.html:60
 msgid "No file chosen"
 msgstr "Aucun fichier choisi"
 
-#: ft_auth/templates/settings.html:60
-msgid "Max file size"
-msgstr "Taille maximale du fichier"
-
-#: ft_auth/templates/settings.html:61
+#: ft_auth/templates/settings.html:62
 msgid "Upload"
 msgstr "Télécharger"
 
-#: ft_auth/templates/settings.html:124
+#: ft_auth/templates/settings.html:125
 msgid "File is too large. Maximum size is 2MB."
 msgstr "Le fichier est trop volumineux. La taille maximale est de 2 Mo."
 
-#: ft_auth/templates/settings.html:147
+#: ft_auth/templates/settings.html:148
 msgid "Avatar updated successfully."
 msgstr "Avatar mis à jour avec succès."
 
-#: ft_auth/templates/settings.html:149
+#: ft_auth/templates/settings.html:150
 msgid "Error uploading avatar"
 msgstr "Erreur lors du téléchargement de l'avatar"
 
@@ -201,6 +195,9 @@ msgstr "La taille du fichier dépasse la limite de 2 Mo."
 #: ft_auth/views.py:87
 msgid "Invalid request"
 msgstr "Demande invalide"
+
+#~ msgid "Max file size"
+#~ msgstr "Taille maximale du fichier"
 
 #~ msgid "Loading"
 #~ msgstr "Chargement"
