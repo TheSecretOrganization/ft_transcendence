@@ -1,5 +1,5 @@
 .navbar {
-	background-color: #424242;
+	background-color: var(--accent-clr);
 	height: var(--navbar-height);
 	min-height: var(--navbar-height);
 	display: flex;
@@ -56,7 +56,7 @@
 	background-color: transparent;
 	font-size: 20px;
 	border: none;
-	color: #f3e2f0;
+	color: var(--hover-clr);
 }
 
 .notif-hidden {
@@ -64,9 +64,9 @@
 }
 
 #notification-area {
-	border: 1px solid #ccc;
+	border: 1px solid var(--line-clr);
 	padding: 10px;
-	background-color: #f9f9f9;
+	background-color: var(--base-clr);
 	width: 200px;
 	position: absolute;
 	top: 50px;
