@@ -12,11 +12,11 @@
 			<div class="row">
 				<div class="col text-center">
 					{% if user.is_authenticated %}
-					<a class="btn btn-lg btn-info rounded-pill rounded-5" data-route href="/pong" tabindex="1">
+					<a class="btn btn-lg game-btns fw-bold" data-route href="/pong" tabindex="1">
 						<span>{% trans "Play" %}</span>
 					</a>
 					{% else %}
-					<a class="btn btn-lg btn-success rounded-pill rounded-5" data-route href="/login" tabindex="1"><span
+					<a class="btn login-index btn-success rounded-pill rounded-5 fw-bold" data-route href="/login" tabindex="1"><span
 							class="glyphicon glyphicon-log-in"></span> {% trans "Login" %}</a>
 					{% endif %}
 				</div>
