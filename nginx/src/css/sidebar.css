@@ -128,11 +128,3 @@
 .rotate svg:last-child {
 	rotate: 180deg;
 }
-
-#language-button {
-	margin-right: auto;
-	background-color: transparent;
-	font-size: 22px;
-	border: none;
-	color: #f3e2f0;
-}
