@@ -1,0 +1,129 @@
+.fr-friends-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 2rem auto;
+	max-width: 800px;
+	width: 100%;
+	background-color: var(--base-clr);
+	box-shadow: 0 4px 5px var(--accent-clr);
+	border: 3px solid var(--line-clr);
+	border-radius: 15px;
+}
+
+.fr-friends-content {
+	display: flex;
+	width: 90%;
+	height: 80%;
+	justify-content: space-between;
+	padding-top: 2rem;
+	padding-bottom: 2rem;
+	gap: 1rem;
+}
+
+.fr-invite-container {
+	width: 50%;
+	height: 95%;
+	padding: 1rem;
+	border: 1px solid var(--line-clr);
+	background-color: var(--light-base-clr);
+	border-radius: 5px;
+	box-shadow: 0 4px 5px var(--accent-clr);
+}
+
+.fr-invite-form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	gap: 1rem;
+	text-align: center;
+}
+
+.fr-invite-div {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 90%;
+}
+
+input#target {
+	width: 100%;
+	margin-top: 0.5rem;
+	padding: 1.5rem;
+	font-size: 1.5rem;
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	background-color: var(--base-clr);
+	color: var(--text-clr);
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+	transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input#target:focus {
+	border-color: var(--accent-clr);
+	box-shadow: 0 0 8px var(--accent-clr);
+	outline: none;
+}
+
+.fr-friends-list-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	overflow-y: auto;
+	height: 95%;
+	width: 50%;
+	padding: 1rem;
+	border: 1px solid var(--line-clr);
+	background-color: var(--light-base-clr);
+	border-radius: 5px;
+	box-shadow: 0 4px 5px var(--accent-clr);
+}
+
+.fr-friend-card {
+	width: 80%;
+	margin: 0.5rem 0;
+	padding: 0.5rem;
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	background-color: var(--base-clr);
+}
+
+#fr-invite-error {
+	color: var(--accent-clr);
+	margin-bottom: 1rem;
+}
+
+#fr-invite-btn {
+	margin-top: 1rem;
+	background-color: var(--hover-clr);
+	color: var(--text-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	padding: 0.5rem 1rem;
+	cursor: pointer;
+}
+
+#fr-invite-btn:hover {
+	background-color: var(--dark-hover-clr);
+}
+
+#fr-accept-btn,
+#fr-deny-btn,
+.fr-delete-btn {
+	padding: 0rem 0.5rem;
+	margin-left: 0.5rem;
+	background-color: var(--hover-clr);
+	color: var(--text-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#fr-accept-btn:hover,
+#fr-deny-btn:hover,
+.fr-delete-btn:hover {
+	background-color: var(--dark-hover-clr);
+}

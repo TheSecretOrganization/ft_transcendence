@@ -7,6 +7,7 @@ from django.views.decorators.http import require_POST
 from .models import Friend
 import json
 
+
 @require_POST
 def invite(request: HttpRequest):
 	data = json.loads(request.body.decode())
@@ -17,13 +18,21 @@ def invite(request: HttpRequest):
 
 	try:
 		target = get_user_model().objects.get(username=data['target'])
+		
+		if target == request.user:
+			return JsonResponse({'error': "You already are your own best friend :)"}, status=400)
+		
 		Friend.objects.create(origin=request.user, target=target)
 	except ValidationError as error:
 		return JsonResponse({'error': error.messages}, status=400)
 	except IntegrityError as error:
-		return JsonResponse({'error': f'{error}'}, status=400)
+		if 'unique_friend_request' in str(error):
+			return JsonResponse({'error': 'You have already sent a friend request to this user.'}, status=400)
+		elif 'unique_origin_target' in str(error):
+			return JsonResponse({'error': "You can't send a friend request to yourself."}, status=400)
+		return JsonResponse({'error': f'An error occurred: {error}'}, status=400)
 	except get_user_model().DoesNotExist:
-		return JsonResponse({'error': "Target doesn't exist"}, status=400)
+		return JsonResponse({'error': "This user doesn't exist"}, status=400)
 	return HttpResponse(status=200)
 
 def update_invite_status(request: HttpRequest, status: str):
@@ -66,7 +75,7 @@ def delete(request: HttpRequest):
 	try:
 		invite = Friend.objects.get(Q(origin=request.user) | Q(target=request.user), id=data['invite_id'])
 		if invite.status not in (Friend.Status.PENDING, Friend.Status.ACCEPTED):
-			return JsonResponse({'error': 'Invite should have status 1 or 2'}, status=400)
+			return JsonResponse({'error': 'Wrong invite status'}, status=400)
 		if invite.status == Friend.Status.PENDING and invite.target == request.user:
 			return JsonResponse({'error': 'You should accept or deny invite not delete it.'}, status=400)
 		invite.status = Friend.Status.DELETED
