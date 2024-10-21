@@ -1,41 +1,41 @@
 .game-canvas {
-	width: 60vw;
-	height: 80vh;
-	background-color: white;
-	border: 3px solid var(--line-clr);
-	margin: 0 auto;
+    width: 60vw;
+    height: 80vh;
+    background-color: white;
+    border: 3px solid var(--line-clr);
+    margin: 0 auto;
 }
 
 .pong-selection-buttons {
     border: 1px solid var(--line-clr);
     background-color: var(--base-clr);
-	color: var(--secondary-text-clr);
+    color: var(--secondary-text-clr);
     padding: 1.5rem;
     border-radius: 5px;
-	font-size: large;
-	box-sizing: border-box;
+    font-size: large;
+    box-sizing: border-box;
 }
 
 .pong-btn-scnd-color {
-    background-color: var(--secondary-base-clr);
+    background-color: var(--hover-clr);
 }
 
 .pong-btn-scnd-color:focus {
-	border: 3px solid var(--selection-clr) !important;
-	border-radius: 0.5rem !important;
+    border: 3px solid var(--selection-clr) !important;
+    border-radius: 0.5rem !important;
 }
 
 .pong-selection-buttons:hover {
     border: 1px solid var(--base-clr);
-    background-color: var(--hover-clr);
-	color: var(--secondary-text-clr);
+    background-color: var(--dark-hover-clr);
+    color: var(--secondary-text-clr);
 }
 
 .pong-selection-buttons:focus {
-	border: 3px solid var(--selection-clr) !important;
-	border-radius: 0.5rem !important;
+    border: 3px solid var(--selection-clr) !important;
+    border-radius: 0.5rem !important;
     background-color: var(--hover-clr);
-	color: var(--secondary-text-clr);
+    color: var(--secondary-text-clr);
 }
 
 .row-divider {
@@ -45,7 +45,7 @@
 }
 
 #back-btn {
-	display:block;
+    display: block;
 }
 
 .room-input-container {
@@ -89,36 +89,40 @@
 .game-btns {
     border: 1px solid var(--line-clr);
     background-color: var(--base-clr);
-	color: var(--secondary-text-clr);
+    color: var(--secondary-text-clr);
     padding: 1.5rem;
     border-radius: 5px;
-	font-size: large;
-	box-sizing: border-box;
+    font-size: large;
+    box-sizing: border-box;
     width: 70%;
     margin-left: 2px;
 }
 
 .game-btns-scnd-clr {
-    background-color: var(--secondary-base-clr) !important;
+    background-color: var(--hover-clr) !important;
+}
+
+.game-btns-scnd-clr:hover {
+    background-color: var(--dark-hover-clr) !important;
 }
 
 .game-btns:hover {
     border: 1px solid var(--base-clr);
-    background-color: var(--hover-clr);
-	color: var(--secondary-text-clr);
+    background-color: var(--dark-hover-clr);
+    color: var(--secondary-text-clr);
 }
 
 .game-btns.active {
     border: 1px solid var(--base-clr);
     background-color: var(--hover-clr);
-	color: var(--secondary-text-clr);
+    color: var(--secondary-text-clr);
 }
 
 .game-btns:focus {
-	border: 3px solid var(--selection-clr) !important;
-	border-radius: 0.5rem !important;
+    border: 3px solid var(--selection-clr) !important;
+    border-radius: 0.5rem !important;
     background-color: var(--hover-clr);
-	color: var(--secondary-text-clr);
+    color: var(--secondary-text-clr);
 }
 
 #pong-game-divider {

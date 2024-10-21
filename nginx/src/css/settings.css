@@ -112,7 +112,7 @@
 }
 
 .edit-button {
-	background-color: var(--base-clr);
+	background-color: var(--hover-clr);
 	color: var(--accent-clr);
 	border: 1px solid var(--line-clr);
 	border-radius: 50%;
@@ -126,7 +126,7 @@
 }
 
 .edit-button:hover {
-	background-color: var(--hover-clr);
+	background-color: var(--dark-hover-clr);
 	color: var(--base-clr);
 }
 

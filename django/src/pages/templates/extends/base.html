@@ -1,7 +1,7 @@
 {% load i18n %}
 <div id="navbar-wrapper">
 	<nav class="navbar">
-		<a class="navbar-brand nav navbar-nav navbar-left link-info text-decoration-none" data-route href="/">Johnny
+		<a class="navbar-brand nav navbar-nav navbar-left text-decoration-none" data-route href="/">Johnny
 			Depp</a>
 		<button id="language-button">
 			<i id="icon-lang" class="fa-solid fa-language"></i>
@@ -87,6 +87,7 @@
 				</div>
 			</ul>
 		</li>
+		{% if user.is_authenticated %}
 		<li>
 			<button onclick=toggleSubMenu(this) class="dropdown-btn">
 				<img draggable="false" src="/assets/community.svg" alt="community icon">
@@ -96,9 +97,9 @@
 			<ul class="sub-menu">
 				<div>
 					<li>
-						<a data-route href="/chat" tabindex="-1">
-							<img draggable="false" src="/assets/chat.svg" alt="chat icon">
-							<span class="fw-bold">{% trans "CHAT" %}</span>
+						<a data-route href="/profiles/{{ user.username }}" tabindex="-1">
+							<img draggable="false" src="/assets/person.svg" alt="person icon">
+							<span class="fw-bold">{% trans "PROFILE" %}</span>
 						</a>
 					</li>
 					<li>
@@ -110,6 +111,7 @@
 				</div>
 			</ul>
 		</li>
+		{% endif %}
 	</ul>
 </aside>
 
