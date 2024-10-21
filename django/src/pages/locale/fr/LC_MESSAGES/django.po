@@ -1,0 +1,131 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-21 16:58+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: pages/templates/404.html:9
+msgid "Error 404: Page not found"
+msgstr "Erreur 404 : Page non trouvée"
+
+#: pages/templates/404.html:15
+msgid "Home Page"
+msgstr "Page d'accueil"
+
+#: pages/templates/extends/base.html:20
+msgid "Profile"
+msgstr "Profil"
+
+#: pages/templates/extends/base.html:21
+msgid "Settings"
+msgstr "Paramètres"
+
+#: pages/templates/extends/base.html:26
+msgid "Log out"
+msgstr "Déconnexion"
+
+#: pages/templates/extends/base.html:35 pages/templates/index.html:20
+msgid "Login"
+msgstr "Connexion"
+
+#: pages/templates/extends/base.html:37
+msgid "Register"
+msgstr "Inscription"
+
+#: pages/templates/extends/base.html:53
+msgid "HOME"
+msgstr "ACCUEIL"
+
+#: pages/templates/extends/base.html:59
+msgid "GAMES"
+msgstr "JEUX"
+
+#: pages/templates/extends/base.html:67
+msgid "PONG"
+msgstr "PONG"
+
+#: pages/templates/extends/base.html:73
+msgid "TOURNAMENTS"
+msgstr "TOURNOIS"
+
+#: pages/templates/extends/base.html:82
+msgid "LANGUAGE"
+msgstr "LANGUE"
+
+#: pages/templates/extends/base.html:118
+msgid "COMMUNITY"
+msgstr "COMMUNAUTÉ"
+
+#: pages/templates/extends/base.html:126
+msgid "PROFILE"
+msgstr "PROFIL"
+
+#: pages/templates/extends/base.html:132
+msgid "FRIENDS"
+msgstr "AMIS"
+
+#: pages/templates/extends/base.html:153 pages/templates/extends/base.html:272
+msgid "Room: "
+msgstr "Salle : "
+
+#: pages/templates/extends/base.html:153 pages/templates/extends/base.html:272
+msgid "General"
+msgstr "Général"
+
+#: pages/templates/extends/base.html:156
+msgid "Type your message here..."
+msgstr "Tapez votre message ici..."
+
+#: pages/templates/extends/base.html:158
+msgid "Send"
+msgstr "Envoyer"
+
+#: pages/templates/extends/base.html:161
+msgid "Users Online"
+msgstr "Utilisateurs en ligne"
+
+#: pages/templates/extends/base.html:257
+msgid "Private Chat with"
+msgstr "Chat privé avec"
+
+#: pages/templates/extends/base.html:336 pages/templates/extends/base.html:339
+msgid "Unblock"
+msgstr "Débloquer"
+
+#: pages/templates/extends/base.html:336 pages/templates/extends/base.html:339
+msgid "Block"
+msgstr "Bloquer"
+
+#: pages/templates/extends/base.html:353
+msgid "General Chat"
+msgstr "Discussion Général"
+
+#: pages/templates/extends/base.html:398
+#, python-brace-format
+msgid " Private message from ${fromUser} "
+msgstr " Message privé de ${fromUser} "
+
+#: pages/templates/extends/base.html:399
+msgid "Show"
+msgstr "Afficher"
+
+#: pages/templates/index.html:16
+msgid "Play"
+msgstr "Jouer"
+
+#~ msgid "CHAT"
+#~ msgstr "DISCUSSION"

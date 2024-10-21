@@ -34,6 +34,8 @@ else
     echo "No superuser username provided. Skipping superuser creation."
 fi
 
+django-admin compilemessages
+
 echo "Collecting static files..."
 python manage.py collectstatic --noinput
 echo "Static files collected."

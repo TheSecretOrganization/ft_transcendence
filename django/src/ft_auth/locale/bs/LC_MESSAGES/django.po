@@ -1,0 +1,208 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-21 16:58+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: ft_auth/manager.py:8 ft_auth/manager.py:17
+msgid "No username provided"
+msgstr "Nije navedeno korisničko ime"
+
+#: ft_auth/manager.py:19
+msgid "No password provided"
+msgstr "Nije navedena lozinka"
+
+#: ft_auth/templates/authentification.html:9
+msgid "Register"
+msgstr "Registruj se"
+
+#: ft_auth/templates/authentification.html:18
+#: ft_auth/templates/authentification.html:66
+msgid "Username"
+msgstr "Korisničko ime"
+
+#: ft_auth/templates/authentification.html:24
+#: ft_auth/templates/authentification.html:72
+msgid "Password"
+msgstr "Lozinka"
+
+#: ft_auth/templates/authentification.html:30
+msgid "Confirm Password"
+msgstr "Potvrdi lozinku"
+
+#: ft_auth/templates/authentification.html:34
+msgid "Create account"
+msgstr "Kreiraj nalog"
+
+#: ft_auth/templates/authentification.html:39
+msgid "Already have an account? Try"
+msgstr "Već imate nalog? Pokušajte"
+
+#: ft_auth/templates/authentification.html:41
+msgid "logging in"
+msgstr "prijava"
+
+#: ft_auth/templates/authentification.html:45
+#: ft_auth/templates/authentification.html:86
+msgid "or"
+msgstr "ili"
+
+#: ft_auth/templates/authentification.html:47
+#: ft_auth/templates/authentification.html:88
+msgid "Login with"
+msgstr "Prijavi se sa"
+
+#: ft_auth/templates/authentification.html:57
+#: ft_auth/templates/authentification.html:75
+msgid "Login"
+msgstr "Prijava"
+
+#: ft_auth/templates/authentification.html:81
+msgid "Don't have an account yet? Try"
+msgstr "Još nemate nalog? Pokušajte"
+
+#: ft_auth/templates/authentification.html:82
+msgid "registering"
+msgstr "registracija"
+
+#: ft_auth/templates/authentification.html:130
+#: ft_auth/templates/settings.html:97
+msgid "Passwords do not match"
+msgstr "Lozinke se ne podudaraju"
+
+#: ft_auth/templates/authentification.html:137
+msgid "Account creation successful."
+msgstr "Uspješno kreiranje naloga."
+
+#: ft_auth/templates/authorize.html:6
+msgid "Enter your username"
+msgstr "Unesite svoje korisničko ime"
+
+#: ft_auth/templates/authorize.html:7
+msgid "Register with 42"
+msgstr "Registrujte se kod 42"
+
+#: ft_auth/templates/profiles.html:20
+msgid "Never played a game!"
+msgstr "Nikada nije odigrao igru!"
+
+#: ft_auth/templates/profiles.html:22
+msgid "Games history"
+msgstr "Istorija igara"
+
+#: ft_auth/templates/profiles.html:23
+msgid "Wins:"
+msgstr "Pobjede:"
+
+#: ft_auth/templates/profiles.html:24
+msgid "Games Played:"
+msgstr "Odigrane igre:"
+
+#: ft_auth/templates/profiles.html:25
+msgid "Win Percentage:"
+msgstr "Procenat pobjeda:"
+
+#: ft_auth/templates/settings.html:31
+msgid "Current Password"
+msgstr "Trenutna lozinka"
+
+#: ft_auth/templates/settings.html:36
+msgid "New Password"
+msgstr "Novu lozinku"
+
+#: ft_auth/templates/settings.html:41
+msgid "Confirm New Password"
+msgstr "Potvrdite novu lozinku"
+
+#: ft_auth/templates/settings.html:44
+msgid "Confirm changes"
+msgstr "Potvrdite promjene"
+
+#: ft_auth/templates/settings.html:53
+msgid "Upload New Avatar"
+msgstr "Otpremi novi avatar"
+
+#: ft_auth/templates/settings.html:59
+msgid "Choose File"
+msgstr "Odaberi datoteku"
+
+#: ft_auth/templates/settings.html:60
+msgid "No file chosen"
+msgstr "Nije odabrana nijedna datoteka"
+
+#: ft_auth/templates/settings.html:62
+msgid "Upload"
+msgstr "Otpremi"
+
+#: ft_auth/templates/settings.html:125
+msgid "File is too large. Maximum size is 2MB."
+msgstr "Datoteka je prevelika. Maksimalna veličina je 2MB."
+
+#: ft_auth/templates/settings.html:148
+msgid "Avatar updated successfully."
+msgstr "Avatar je uspješno ažuriran."
+
+#: ft_auth/templates/settings.html:150
+msgid "Error uploading avatar"
+msgstr "Greška prilikom postavljanja avatara"
+
+#: ft_auth/views.py:21
+msgid "Missing fields (required username and password)"
+msgstr "Polja koja nedostaju (obavezno korisničko ime i lozinka)"
+
+#: ft_auth/views.py:25
+msgid "Wrong credentials"
+msgstr "Pogrešne vjerodajnice"
+
+#: ft_auth/views.py:38
+msgid "You are not logged in"
+msgstr "Niste prijavljeni"
+
+#: ft_auth/views.py:44 ft_auth/views.py:60
+msgid "Missing fields"
+msgstr "Nedostajuća polja"
+
+#: ft_auth/views.py:50
+msgid "Username already exist"
+msgstr "Korisničko ime već postoji"
+
+#: ft_auth/views.py:62
+msgid "You must be authenticated to update password"
+msgstr "Morate biti autentificirani da ažurirate lozinku"
+
+#: ft_auth/views.py:65
+msgid "Invalid current password"
+msgstr "Nevažeća trenutna lozinka"
+
+#: ft_auth/views.py:82
+msgid "File size exceeds 2MB limit."
+msgstr "Veličina datoteke premašuje ograničenje od 2MB."
+
+#: ft_auth/views.py:87
+msgid "Invalid request"
+msgstr "Nevažeći zahtjev"
+
+#: ft_auth/views.py:113
+msgid "Username already taken"
+msgstr "Korisničko ime je već zauzeto"
+
+#~ msgid "Max file size"
+#~ msgstr "Maksimalna veličina datoteke"
+
+#~ msgid "Loading"
+#~ msgstr "Loading"

@@ -1,18 +1,18 @@
 {% extends "./extends/base.html" %}
-
+{% load i18n %}
 {% block content %}
 <div class="container-fluid d-flex vh-70">
 	<div class="row justify-content-center align-items-center w-100">
 		<div class="col-12 col-md-6">
 			<div class="row mb-4">
 				<div class="col text-center">
-					<h1>Error 404: Page not found</h1>
+					<h1>{% trans "Error 404: Page not found" %}</h1>
 				</div>
 			</div>
 			<div class="row mt-4">
 				<div class="col text-center">
 					<a class="btn pong-selection-buttons text-decoration-none" data-route href="/" tabindex="0">
-						<span class="fw-bold">Home Page</span>
+						<span class="fw-bold">{% trans "Home Page" %}</span>
 					</a>
 				</div>
 			</div>

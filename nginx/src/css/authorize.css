@@ -38,3 +38,7 @@
 	background-color: var(--dark-hover-clr);
 	color: var(--text-clr);
 }
+
+#username::placeholder {
+	font-size: 16px;
+}

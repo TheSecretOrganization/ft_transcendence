@@ -1,12 +1,12 @@
 {% extends "./extends/base.html" %}
-
+{% load i18n %}
 {% block content %}
 
 <div id="register-side" class="container">
 	<div class="column">
 		<form id="register-form" data-url="/api/auth/register/">
 			<div class="row">
-				<h1 class="text-center">Register</h1>
+				<h1 class="text-center">{% trans "Register" %}</h1>
 			</div>
 			<div class="row text-center text-wrap text-danger">
 				<p id="register-error"></p>
@@ -15,34 +15,37 @@
 			<div class="form-floating mb-3 row">
 				<input register-input type="text" class="form-control fs-3 fw-bold" id="register-username"
 					placeholder="Username" autocomplete="off" minlength="3" maxlength="15">
-				<label for="register-username">Username</label>
+				<label for="register-username">{% trans "Username" %}</label>
 			</div>
 
 			<div class="form-floating mb-3 row">
 				<input register-input type="password" class="form-control fs-3 fw-bold" id="register-password"
 					placeholder="Password" autocomplete="off">
-				<label for="register-password">Password</label>
+				<label for="register-password">{% trans "Password" %}</label>
 			</div>
 
 			<div class="form-floating  mb-3 row">
 				<input register-input type="password" class="form-control fs-3 fw-bold" id="register-password-confirm"
 					placeholder="Confirm Password" data-ignore="true" autocomplete="off">
-				<label for="register-password-confirm">Confirm Password</label>
+				<label for="register-password-confirm">{% trans "Confirm Password" %}</label>
 			</div>
 
-			<button register-input id="register-btn" type="submit" class="btn btn-success row w-100 m-0">Create
-				account</button>
+			<button register-input id="register-btn" type="submit" class="btn btn-success row w-100 m-0">
+				{% trans "Create account" %}</button>
 		</form>
 		<hr class="row border-bottom border-1 border-dark my-2">
 		</hr>
 		<div class="row">
-			<p class="fw-light" style="margin-bottom: 0px;">Already have an account? Try <a register-anchor data-route
-					href="/login" class="text-decoration-none text-success">logging in</a></p>
+			<p class="fw-light" style="margin-bottom: 0px;">{% trans "Already have an account? Try" %}
+				<a register-anchor data-route href="/login" class="text-decoration-none text-success">
+					{% trans "logging in" %}</a>
+			</p>
 		</div>
 		<div class="row">
-			<p class="fw-light text-center">or
+			<p class="fw-light text-center">{% trans "or" %}
 				<a register-anchor id="login-42-btn" class="btn btn-sm rounded-pill rounded-5 text-decoration-none"
-					href="{{ oauth_url }}">Login with <img class="image-text" src="/assets/42.svg" alt="42 logo"></a>
+					href="{{ oauth_url }}">{% trans "Login with" %} <img class="image-text" src="/assets/42.svg"
+						alt="42 logo"></a>
 			</p>
 		</div>
 	</div>
@@ -51,7 +54,7 @@
 	<div class="column">
 		<form id="login-form" data-url="/api/auth/login/">
 			<div class="row">
-				<h1 class="text-center">Login</h1>
+				<h1 class="text-center">{% trans "Login" %}</h1>
 			</div>
 			<div class="row text-center text-wrap text-danger">
 				<p id="login-error"></p>
@@ -60,27 +63,30 @@
 			<div class="form-floating mb-3 row">
 				<input login-input type="text" class="form-control fs-3 fw-bold" id="login-username"
 					placeholder="Username" autocomplete="off">
-				<label for="login-username">Username</label>
+				<label for="login-username">{% trans "Username" %}</label>
 			</div>
 
 			<div class="form-floating mb-3 row">
 				<input login-input type="password" class="form-control fs-3 fw-bold" id="login-password"
 					placeholder="Password" autocomplete="off">
-				<label for="login-password">Password</label>
+				<label for="login-password">{% trans "Password" %}</label>
 			</div>
 
-			<button login-input id="login-btn" type="submit" class="btn btn-success row w-100 m-0">Login</button>
+			<button login-input id="login-btn" type="submit" class="btn btn-success row w-100 m-0">{% trans "Login" %}
+			</button>
 		</form>
 		<hr class="row border-bottom border-1 border-dark my-2">
 		</hr>
 		<div class="row">
-			<p class="fw-light" style="margin-bottom: 0px;">Don't have an account yet? Try <a login-anchor data-route
-					href="/register" class="text-decoration-none text-success">registering</a></p>
+			<p class="fw-light" style="margin-bottom: 0px;">{% trans "Don't have an account yet? Try" %} <a login-anchor
+					data-route href="/register" class="text-decoration-none text-success">{% trans "registering" %}</a>
+			</p>
 		</div>
 		<div class="row">
-			<p class="fw-light text-center">or
+			<p class="fw-light text-center">{% trans "or" %}
 				<a login-anchor id="login-42-btn" class="btn btn-sm rounded-pill rounded-5 text-decoration-none"
-					href="{{ oauth_url }}">Login with <img class="image-text" src="/assets/42.svg" alt="42 logo"></a>
+					href="{{ oauth_url }}">{% trans "Login with" %} <img class="image-text" src="/assets/42.svg"
+						alt="42 logo"></a>
 			</p>
 		</div>
 	</div>
@@ -121,14 +127,14 @@
 		e.preventDefault();
 
 		if (!validate()) {
-			document.getElementById('register-error').textContent = 'Passwords don\'t match';
+			document.getElementById('register-error').textContent = "{% trans 'Passwords do not match' %}";
 			emptyPasswords();
 			return;
 		}
 
 		submitForm('register-form', () => {
 			route('/login');
-			displayToast("Account creation successful.", "bg-success");
+			displayToast("{% trans 'Account creation successful.' %}", "bg-success");
 		}, (json) => {
 			document.getElementById('register-error').textContent = json.error;
 			emptyPasswords();

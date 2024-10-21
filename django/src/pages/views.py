@@ -4,6 +4,8 @@ from django.db.models import Q
 from django.views.decorators.http import require_GET
 from django.http import JsonResponse, HttpRequest
 from django.template.loader import get_template
+from django.utils.translation import activate
+from django.conf import settings
 from urllib.parse import quote
 from friends.models import Friend
 from logging import getLogger
@@ -160,5 +162,19 @@ def profiles(request: HttpRequest, username: str):
 	return create_response(request, 'profiles.html', {'target': target, 'games': games, 'wins': win, 'win_percentage': win_percentage}, title=f"{target.username} Profile")
 
 @require_GET
-def settings(request: HttpRequest):
+def user_settings(request: HttpRequest):
 	return create_response(request, 'settings.html', title="Settings", need_authentication=True)
+
+@require_GET
+def translate(request):
+    if 'lang' in request.GET:
+        lang = request.GET['lang']
+        if lang not in dict(settings.LANGUAGES):
+            return JsonResponse({'status': 'error', 'message': 'Invalid language code'})
+        activate(lang)
+        request.session[settings.LANGUAGE_COOKIE_NAME] = lang
+        response = JsonResponse({'status': 'success', 'language': lang})
+        response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang)
+        return response
+    else:
+        return JsonResponse({'status': 'error', 'message': 'No language provided'})

@@ -1,3 +1,4 @@
+{% load i18n %}
 <div id="navbar-wrapper">
 	<nav class="navbar">
 		<a class="navbar-brand nav navbar-nav navbar-left text-decoration-none" data-route href="/">Johnny
@@ -15,13 +16,14 @@
 					<img src="{{ user.avatar.url }}" alt="Profile" class="navbar-profile-img">
 				</button>
 				<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-					<li><a class="dropdown-item" data-route href="/profiles/{{ user.username }}">Profile</a></li>
-					<li><a class="dropdown-item" data-route href="/settings">Settings <span
+					<li><a class="dropdown-item" data-route href="/profiles/{{ user.username }}">
+							{% trans "Profile" %}</a></li>
+					<li><a class="dropdown-item" data-route href="/settings">{% trans "Settings" %} <span
 								class="glyphicon glyphicon-cog"></span></a></li>
 					<li>
 						<hr class="dropdown-divider">
 					</li>
-					<li><button id="logout-button-navbar" class="dropdown-item fw-bold">Log out <span
+					<li><button id="logout-button-navbar" class="dropdown-item fw-bold">{% trans "Log out" %} <span
 								class="glyphicon glyphicon-log-out"></span></button></li>
 				</ul>
 			</div>
@@ -30,9 +32,9 @@
 		<ul id="navbar-list"
 			class="list-group list-group-flush list-group-horizontal-sm list-unstyled nav navbar-nav navbar-right">
 			<li class="m-2"><a class="btn btn btn-success rounded-pill rounded-5" data-route href="/login"><span
-						class="glyphicon glyphicon-log-in"></span> Login</a></li>
+						class="glyphicon glyphicon-log-in"></span> {% trans "Login" %}</a></li>
 			<li class="m-2"><a class="btn btn btn-outline-success rounded-pill rounded-5" data-route
-					href="/register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
+					href="/register"><span class="glyphicon glyphicon-user"></span> {% trans "Register" %}</a></li>
 		</ul>
 		{% endif %}
 	</nav>
@@ -48,13 +50,13 @@
 		<li class="active">
 			<a data-route href="/">
 				<img draggable="false" src="/assets/home.svg" alt="home icon">
-				<span class="fw-bold">HOME</span>
+				<span class="fw-bold">{% trans "HOME" %}</span>
 			</a>
 		</li>
 		<li>
 			<button onclick=toggleSubMenu(this) class="dropdown-btn">
 				<img draggable="false" src="/assets/controller.svg" alt="controller icon">
-				<span class="fw-bold">GAMES</span>
+				<span class="fw-bold">{% trans "GAMES" %}</span>
 				<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
 			</button>
 			<ul class="sub-menu">
@@ -62,13 +64,48 @@
 					<li>
 						<a data-route href="/pong" tabindex="-1">
 							<img draggable="false" src="/assets/pong-racket.svg" alt="racket icon">
-							<span class="fw-bold">PONG</span>
+							<span class="fw-bold">{% trans "PONG" %}</span>
 						</a>
 					</li>
 					<li>
 						<a data-route href="/tournaments" tabindex="-1">
 							<img draggable="false" src="/assets/trophy.svg" alt="trophy icon">
-							<span class="fw-bold">TOURNAMENTS</span>
+							<span class="fw-bold">{% trans "TOURNAMENTS" %}</span>
+						</a>
+					</li>
+				</div>
+			</ul>
+		</li>
+		<li>
+			<button onclick="toggleSubMenu(this)" class="dropdown-btn" id="language-button">
+				<img draggable="false" src="/assets/translate.svg" alt="translate icon">
+				<span class="fw-bold">{% trans "LANGUAGE" %}</span>
+				<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
+			</button>
+			<ul class="sub-menu">
+				<div id="language-menu">
+					<li>
+						<a href="#" data-lang="fr">
+							<img draggable="false" src="/assets/fr.svg" alt="french icon">
+							<span class="fw-bold">Français</span>
+						</a>
+					</li>
+					<li>
+						<a href="#" data-lang="en">
+							<img draggable="false" src="/assets/en.svg" alt="england icon">
+							<span class="fw-bold">English</span>
+						</a>
+					</li>
+					<li>
+						<a href="#" data-lang="bs">
+							<img draggable="false" src="/assets/bs.svg" alt="bosnian flag icon">
+							<span class="fw-bold">Bosanski</span>
+						</a>
+					</li>
+					<li>
+						<a href="#" data-lang="pt-br">
+							<img draggable="false" src="/assets/pt-br.svg" alt="brazilian icon">
+							<span class="fw-bold">Brasileiro</span>
 						</a>
 					</li>
 				</div>
@@ -78,7 +115,7 @@
 		<li>
 			<button onclick=toggleSubMenu(this) class="dropdown-btn">
 				<img draggable="false" src="/assets/community.svg" alt="community icon">
-				<span class="fw-bold">COMMUNITY</span>
+				<span class="fw-bold">{% trans "COMMUNITY" %}</span>
 				<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
 			</button>
 			<ul class="sub-menu">
@@ -86,13 +123,13 @@
 					<li>
 						<a data-route href="/profiles/{{ user.username }}" tabindex="-1">
 							<img draggable="false" src="/assets/person.svg" alt="person icon">
-							<span class="fw-bold">PROFILE</span>
+							<span class="fw-bold">{% trans "PROFILE" %}</span>
 						</a>
 					</li>
 					<li>
 						<a data-route href="/friends" tabindex="-1">
 							<img draggable="false" src="/assets/group.svg" alt="group icon">
-							<span class="fw-bold">FRIENDS</span>
+							<span class="fw-bold">{% trans "FRIENDS" %}</span>
 						</a>
 					</li>
 				</div>
@@ -113,14 +150,15 @@
 		<i class="fa-solid fa-message icon-msg" style="font-size: 40px;"></i>
 	</button>
 	<div id="chat-container" class="toggled">
-		<div id="chat-title">Room: <span id="room-name">General</span></div>
+		<div id="chat-title">{% trans "Room: " %}<span id="room-name">{% trans "General" %}</span></div>
 		<div id="chat-log"></div>
 		<form id="chat-form">
-			<input id="chat-input" type="text" placeholder="Type your message here..." autocomplete="off" />
-			<button type="submit" id="chat-send-btn">Send</button>
+			<input id="chat-input" type="text" placeholder="{% trans 'Type your message here...' %}"
+				autocomplete="off" />
+			<button type="submit" id="chat-send-btn">{% trans "Send" %}</button>
 		</form>
 		<div id="users-wrapper">
-			<h6>Users Online</h6>
+			<h6>{% trans "Users Online" %}</h6>
 			<ul id="user-list"></ul>
 		</div>
 	</div>
@@ -153,6 +191,41 @@
 	})
 </script>
 
+<script>
+	const languageButton = document.getElementById('language-button');
+	const languageMenu = document.getElementById('language-menu');
+
+	languageButton.addEventListener('click', function () {
+		const isVisible = languageMenu.style.display === 'block';
+		languageMenu.style.display = isVisible ? 'none' : 'block';
+	});
+
+	function changeLanguage(lang) {
+		fetch(`/api/pages/translate/?lang=${lang}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+			.then(response => response.json())
+			.then(data => {
+				handleLocation();
+			})
+			.catch(error => {
+				console.error('Error changing language:', error);
+			});
+	}
+
+	document.querySelectorAll('#language-menu a').forEach(item => {
+		item.addEventListener('click', function (event) {
+			event.preventDefault();
+			const lang = this.getAttribute('data-lang');
+			changeLanguage(lang)
+			languageMenu.style.display = 'none';
+		});
+	})
+</script>
+
 {% if user.is_authenticated %}
 <script>
 	let currentChatRoom = 'General';
@@ -167,7 +240,9 @@
 
 	function startPrivateChat(otherUsername) {
 		if (blockedUsers.includes(otherUsername)) {
-			alert(`You have blocked ${otherUsername}. Unblock them to start a private chat.`);
+			const blockAlertTrans = "You have blocked";
+			const unblockAlertTrans = "Unblock them to start a private chat";
+			alert(`${blockAlertTrans} ${otherUsername}. ${unblockAlertTrans}.`);
 			return;
 		}
 		const roomName = `private_chat_${otherUsername}`;
@@ -179,8 +254,8 @@
 		window.chatSocket.onopen = function () {
 			loadChatHistory(roomName);
 		};
-
-		document.getElementById('chat-title').textContent = `Private Chat with ${otherUsername}`;
+		const privateChatTrans = "{% trans 'Private Chat with' %}"
+		document.getElementById('chat-title').textContent = `${privateChatTrans} ${otherUsername}`;
 		currentChatRoom = roomName;
 	}
 
@@ -194,7 +269,7 @@
 			loadChatHistory('General');
 		};
 
-		document.getElementById('chat-title').textContent = 'Room: General';
+		document.getElementById('chat-title').textContent = "{% trans 'Room: ' %} " + "{% trans 'General' %}";
 		currentChatRoom = 'General';
 		const notificationArea = document.getElementById('notification-area');
 		notificationArea.innerHTML = '';
@@ -258,10 +333,10 @@
 
 			if (user !== "{{ user }}") {
 				const blockButton = document.createElement('button');
-				blockButton.textContent = blockedUsers.includes(user) ? "Unblock" : "Block";
+				blockButton.textContent = blockedUsers.includes(user) ? "{% trans 'Unblock' %}" : "{% trans 'Block' %}";
 				blockButton.addEventListener('click', () => {
 					toggleBlockUser(user);
-					blockButton.textContent = blockedUsers.includes(user) ? "Unblock" : "Block";
+					blockButton.textContent = blockedUsers.includes(user) ? "{% trans 'Unblock' %}" : "{% trans 'Block' %}";
 				});
 				userItem.appendChild(blockButton);
 
@@ -275,7 +350,7 @@
 				privateChatButton.addEventListener('click', () => startPrivateChat(user));
 				userItem.appendChild(privateChatButton);
 			} else {
-				userItem.textContent = 'General Chat';
+				userItem.textContent = "{% trans 'General Chat' %}";
 				const generalChatButton = document.createElement('button');
 				generalChatButton.textContent = "GC";
 				generalChatButton.addEventListener('click', () => joinGeneralChat());
@@ -320,8 +395,8 @@
 		const notificationDiv = document.createElement('div');
 		notificationDiv.classList.add('notification');
 		notificationDiv.innerHTML = `
-			<p>Private message from ${fromUser}</p>
-			<button onclick="joinPrivateChat('${fromUser}')">Show</button>
+			<p>{% blocktrans %} Private message from ${fromUser} {% endblocktrans %}</p>
+			<button onclick="joinPrivateChat('${fromUser}')">{% trans "Show" %}</button>
 		`;
 		notificationArea.appendChild(notificationDiv);
 	}
@@ -362,7 +437,9 @@
 		const message = messageInput.value.trim();
 		const otherUsername = currentChatRoom.split('private_chat_')[1];
 		if (otherUsername && blockedUsers.includes(otherUsername)) {
-			alert(`You have blocked ${otherUsername}. Unblock them to send messages.`);
+			const blockAlertTrans = "You have blocked";
+			const unblockAlertTrans = "Unblock them to send messages";
+			alert(`${blockAlertTrans} ${otherUsername}. ${unblockAlertTrans}.`);
 			return;
 		}
 		if (window.chatSocket && window.chatSocket.readyState === WebSocket.OPEN && message) {

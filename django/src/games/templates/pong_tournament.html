@@ -1,7 +1,7 @@
 {% extends "./extends/base.html" %}
 
-{% block content %}
 {% load i18n %}
+{% block content %}
 <div class="container">
 	<div class="row">
 		<div class="col text-center">
@@ -40,8 +40,8 @@
 						<tr>
 							<th>{% trans "Player 1" %}</th>
 							<th>{% trans "Player 2" %}</th>
-							<th>Score 1</th>
-							<th>Score 2</th>
+							<th>{% trans "Score 1" %}</th>
+							<th>{% trans "Score 2" %}</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -95,7 +95,7 @@
 			case "join": handleJoin(data.players); break;
 			case "player_pairs": handlePlayerPairs(data.player_pairs); break;
 			case "next_round_id": route(`/pong/online/${data.id}/{{ name }}/${power}`); break;
-			case "bye": displayToast("You have received a bye for this round. Enjoy the break!", "bg-info"); break;
+			case "bye": displayToast(" {% trans 'You have received a bye for this round. Enjoy the break!' %}", "bg-info"); break;
 			case "history": handleHistory(data.history); break;
 			case "end": handleEnd(data.winner); break;
 			default: console.error("Invalid message from server ignored."); break;
@@ -162,7 +162,8 @@
 			socket.close();
 		socket = undefined;
 		const title = document.getElementById("winner");
-		title.innerHTML = `Congratulations to ${winner}!`;
+		const trandCongrat = "{% trans 'Congratulations to' %}"
+		title.innerHTML = `${trandCongrat} ${winner}!`;
 		title.classList.remove("hidden");
 	}
 
@@ -182,7 +183,7 @@
 		const tableBody = document.querySelector("#players tbody");
 		const rowCount = tableBody.rows.length;
 		if (rowCount < 2) {
-			displayToast("You are alone in the tournament...", "bg-warning");
+			displayToast(" {% trans 'You are alone in the tournament...' %}", "bg-warning");
 			return;
 		}
 		hideBtn(lockBtn);

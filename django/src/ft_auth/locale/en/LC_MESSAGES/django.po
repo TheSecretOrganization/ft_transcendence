@@ -1,0 +1,201 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-21 16:58+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ft_auth/manager.py:8 ft_auth/manager.py:17
+msgid "No username provided"
+msgstr ""
+
+#: ft_auth/manager.py:19
+msgid "No password provided"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:9
+msgid "Register"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:18
+#: ft_auth/templates/authentification.html:66
+msgid "Username"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:24
+#: ft_auth/templates/authentification.html:72
+msgid "Password"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:30
+msgid "Confirm Password"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:34
+msgid "Create account"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:39
+msgid "Already have an account? Try"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:41
+msgid "logging in"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:45
+#: ft_auth/templates/authentification.html:86
+msgid "or"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:47
+#: ft_auth/templates/authentification.html:88
+msgid "Login with"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:57
+#: ft_auth/templates/authentification.html:75
+msgid "Login"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:81
+msgid "Don't have an account yet? Try"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:82
+msgid "registering"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:130
+#: ft_auth/templates/settings.html:97
+msgid "Passwords do not match"
+msgstr ""
+
+#: ft_auth/templates/authentification.html:137
+msgid "Account creation successful."
+msgstr ""
+
+#: ft_auth/templates/authorize.html:6
+msgid "Enter your username"
+msgstr ""
+
+#: ft_auth/templates/authorize.html:7
+msgid "Register with 42"
+msgstr ""
+
+#: ft_auth/templates/profiles.html:20
+msgid "Never played a game!"
+msgstr ""
+
+#: ft_auth/templates/profiles.html:22
+msgid "Games history"
+msgstr ""
+
+#: ft_auth/templates/profiles.html:23
+msgid "Wins:"
+msgstr ""
+
+#: ft_auth/templates/profiles.html:24
+msgid "Games Played:"
+msgstr ""
+
+#: ft_auth/templates/profiles.html:25
+msgid "Win Percentage:"
+msgstr ""
+
+#: ft_auth/templates/settings.html:31
+msgid "Current Password"
+msgstr ""
+
+#: ft_auth/templates/settings.html:36
+msgid "New Password"
+msgstr ""
+
+#: ft_auth/templates/settings.html:41
+msgid "Confirm New Password"
+msgstr ""
+
+#: ft_auth/templates/settings.html:44
+msgid "Confirm changes"
+msgstr ""
+
+#: ft_auth/templates/settings.html:53
+msgid "Upload New Avatar"
+msgstr ""
+
+#: ft_auth/templates/settings.html:59
+msgid "Choose File"
+msgstr ""
+
+#: ft_auth/templates/settings.html:60
+msgid "No file chosen"
+msgstr ""
+
+#: ft_auth/templates/settings.html:62
+msgid "Upload"
+msgstr ""
+
+#: ft_auth/templates/settings.html:125
+msgid "File is too large. Maximum size is 2MB."
+msgstr ""
+
+#: ft_auth/templates/settings.html:148
+msgid "Avatar updated successfully."
+msgstr ""
+
+#: ft_auth/templates/settings.html:150
+msgid "Error uploading avatar"
+msgstr ""
+
+#: ft_auth/views.py:21
+msgid "Missing fields (required username and password)"
+msgstr ""
+
+#: ft_auth/views.py:25
+msgid "Wrong credentials"
+msgstr ""
+
+#: ft_auth/views.py:38
+msgid "You are not logged in"
+msgstr ""
+
+#: ft_auth/views.py:44 ft_auth/views.py:60
+msgid "Missing fields"
+msgstr ""
+
+#: ft_auth/views.py:50
+msgid "Username already exist"
+msgstr ""
+
+#: ft_auth/views.py:62
+msgid "You must be authenticated to update password"
+msgstr ""
+
+#: ft_auth/views.py:65
+msgid "Invalid current password"
+msgstr ""
+
+#: ft_auth/views.py:82
+msgid "File size exceeds 2MB limit."
+msgstr ""
+
+#: ft_auth/views.py:87
+msgid "Invalid request"
+msgstr ""
+
+#: ft_auth/views.py:113
+msgid "Username already taken"
+msgstr ""

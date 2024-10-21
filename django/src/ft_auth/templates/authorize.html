@@ -1,8 +1,10 @@
+{% load i18n %}
 <form id="ft-username-form" class="hidden ft-form-container" data-url="/api/auth/authorize/">
 	<div id="ft-username-error"></div>
 	<div class="ft-input-wrapper">
-		<input type="text" autocomplete="off" class="ft-username" id="username" placeholder="Enter your username" minlength="3" maxlength="15"/>
-		<button type="submit" class="ft-button">Register with 42</button>
+		<input type="text" autocomplete="off" class="ft-username" id="username"
+			placeholder="{% trans 'Enter your username' %}" minlength="3" maxlength="15" />
+		<button type="submit" class="ft-button">{% trans "Register with 42" %}</button>
 	</div>
 </form>
 

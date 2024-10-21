@@ -1,0 +1,211 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-10-21 16:58+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ft_auth/manager.py:8 ft_auth/manager.py:17
+msgid "No username provided"
+msgstr "Nenhum nome de usuário fornecido"
+
+#: ft_auth/manager.py:19
+msgid "No password provided"
+msgstr "Nenhuma senha fornecida"
+
+#: ft_auth/templates/authentification.html:9
+msgid "Register"
+msgstr "Registrar"
+
+#: ft_auth/templates/authentification.html:18
+#: ft_auth/templates/authentification.html:66
+msgid "Username"
+msgstr "Nome de usuário"
+
+#: ft_auth/templates/authentification.html:24
+#: ft_auth/templates/authentification.html:72
+msgid "Password"
+msgstr "Senha"
+
+#: ft_auth/templates/authentification.html:30
+msgid "Confirm Password"
+msgstr "Confirmar senha"
+
+#: ft_auth/templates/authentification.html:34
+msgid "Create account"
+msgstr "Criar conta"
+
+#: ft_auth/templates/authentification.html:39
+msgid "Already have an account? Try"
+msgstr "Já tem uma conta? Tente"
+
+#: ft_auth/templates/authentification.html:41
+msgid "logging in"
+msgstr "entrar"
+
+#: ft_auth/templates/authentification.html:45
+#: ft_auth/templates/authentification.html:86
+msgid "or"
+msgstr "ou"
+
+#: ft_auth/templates/authentification.html:47
+#: ft_auth/templates/authentification.html:88
+msgid "Login with"
+msgstr "Entrar com"
+
+#: ft_auth/templates/authentification.html:57
+#: ft_auth/templates/authentification.html:75
+msgid "Login"
+msgstr "Entrar"
+
+#: ft_auth/templates/authentification.html:81
+msgid "Don't have an account yet? Try"
+msgstr "Ainda não tem uma conta? Tente"
+
+#: ft_auth/templates/authentification.html:82
+msgid "registering"
+msgstr "registrar"
+
+#: ft_auth/templates/authentification.html:130
+#: ft_auth/templates/settings.html:97
+msgid "Passwords do not match"
+msgstr "A senha não corresponde"
+
+#: ft_auth/templates/authentification.html:137
+msgid "Account creation successful."
+msgstr "Criação de conta bem-sucedida."
+
+#: ft_auth/templates/authorize.html:6
+msgid "Enter your username"
+msgstr "Digite seu nome de usuário"
+
+#: ft_auth/templates/authorize.html:7
+msgid "Register with 42"
+msgstr "Registrar com 42"
+
+#: ft_auth/templates/profiles.html:20
+msgid "Never played a game!"
+msgstr "Nunca jogou um jogo!"
+
+#: ft_auth/templates/profiles.html:22
+msgid "Games history"
+msgstr "Histórico de jogos"
+
+#: ft_auth/templates/profiles.html:23
+msgid "Wins:"
+msgstr "Vitórias:"
+
+#: ft_auth/templates/profiles.html:24
+msgid "Games Played:"
+msgstr "Jogos jogados:"
+
+#: ft_auth/templates/profiles.html:25
+msgid "Win Percentage:"
+msgstr "Percentual de vitórias:"
+
+#: ft_auth/templates/settings.html:31
+msgid "Current Password"
+msgstr "Senha atual"
+
+#: ft_auth/templates/settings.html:36
+msgid "New Password"
+msgstr "Nova senha"
+
+#: ft_auth/templates/settings.html:41
+msgid "Confirm New Password"
+msgstr "Confirmar nova senha"
+
+#: ft_auth/templates/settings.html:44
+msgid "Confirm changes"
+msgstr "Confirmar alterações"
+
+#: ft_auth/templates/settings.html:53
+msgid "Upload New Avatar"
+msgstr "Carregar novo avatar"
+
+#: ft_auth/templates/settings.html:59
+msgid "Choose File"
+msgstr "Escolher arquivo"
+
+#: ft_auth/templates/settings.html:60
+msgid "No file chosen"
+msgstr "Nenhum arquivo escolhido"
+
+#: ft_auth/templates/settings.html:62
+msgid "Upload"
+msgstr "Carregar"
+
+#: ft_auth/templates/settings.html:125
+msgid "File is too large. Maximum size is 2MB."
+msgstr "O arquivo é muito grande. O tamanho máximo é de 2 MB."
+
+#: ft_auth/templates/settings.html:148
+msgid "Avatar updated successfully."
+msgstr "Avatar atualizado com sucesso."
+
+#: ft_auth/templates/settings.html:150
+msgid "Error uploading avatar"
+msgstr "Erro ao carregar o avatar"
+
+#: ft_auth/views.py:21
+msgid "Missing fields (required username and password)"
+msgstr "Campos ausentes (nome de usuário e senha obrigatórios)"
+
+#: ft_auth/views.py:25
+msgid "Wrong credentials"
+msgstr "Identificadores incorretos"
+
+#: ft_auth/views.py:38
+msgid "You are not logged in"
+msgstr "Você não está conectado"
+
+#: ft_auth/views.py:44 ft_auth/views.py:60
+msgid "Missing fields"
+msgstr "Campos ausentes"
+
+#: ft_auth/views.py:50
+msgid "Username already exist"
+msgstr "O nome de usuário já existe"
+
+#: ft_auth/views.py:62
+msgid "You must be authenticated to update password"
+msgstr "Você deve estar autenticado para atualizar a senha"
+
+#: ft_auth/views.py:65
+msgid "Invalid current password"
+msgstr "Senha atual inválida"
+
+#: ft_auth/views.py:82
+msgid "File size exceeds 2MB limit."
+msgstr "O tamanho do arquivo excede o limite de 2 MB."
+
+#: ft_auth/views.py:87
+msgid "Invalid request"
+msgstr "Solicitação inválida"
+
+#: ft_auth/views.py:113
+msgid "Username already taken"
+msgstr "Nome de usuário já utilizado"
+
+#~ msgid "Max file size"
+#~ msgstr "Tamanho máximo do arquivo"
+
+#~ msgid "Loading"
+#~ msgstr "Carregando"
+
+#, fuzzy, python-format
+#~ msgid "Wins: %(wins)s on %(games.count)s"
+#~ msgstr "Vitórias: %(wins)s em %(games.count)s jogos"
