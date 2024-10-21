@@ -74,6 +74,7 @@ class Tournament(AsyncWebsocketConsumer):
         if lock:
             await self.archive()
             await self.check_current_games_state()
+            await self.send_play_elements()
 
     async def disconnect(self, close_code):
         try:
@@ -85,10 +86,12 @@ class Tournament(AsyncWebsocketConsumer):
                 and creator == self.user.username
             ):
                 await self.redis.delete(f"pong_{self.name}_lock")
+                await self.redis.delete(f"pong_{self.name}_play")
                 await self.redis.delete(f"pong_{self.name}_creator")
                 await self.redis.delete(f"pong_{self.name}_players")
                 await self.redis.delete(f"pong_{self.name}_usernames")
                 await self.redis.delete(f"pong_{self.name}_current_games")
+                await self.redis.delete(f"pong_{self.name}_player_pairs")
                 await self.redis.delete(f"pong_{self.name}_history")
                 await self.redis.delete(f"pong_{self.name}_history_ids")
                 await self.redis.delete(f"pong_{self.name}_ready_players")
@@ -174,50 +177,71 @@ class Tournament(AsyncWebsocketConsumer):
     async def mix(self):
         players = await self.get_decoded_list(f"pong_{self.name}_players")
         random.shuffle(players)
-        self.player_pairs = []
-        self.uuid_list = []
+        player_pairs = []
         last_player = None
 
         if len(players) % 2 != 0:
             last_player = players.pop()
 
         for i in range(0, len(players), 2):
-            self.player_pairs.append((players[i], players[i + 1]))
-            game_id = str(uuid4())
-            self.uuid_list.append(game_id)
-            await self.redis.rpush(f"pong_{self.name}_current_games", game_id)
+            player_pairs.append((players[i], players[i + 1]))
+            await self.redis.rpush(
+                f"pong_{self.name}_current_games", str(uuid4())
+            )
 
         if last_player:
-            self.player_pairs.append((last_player, "-"))
+            player_pairs.append((last_player, "-"))
             players.append(last_player)
 
+        await self.redis.set(
+            f"pong_{self.name}_player_pairs", json.dumps(player_pairs)
+        )
+        await self.redis.set(f"pong_{self.name}_play", 1)
         await self.send_message(
             self.GROUP,
             {
-                "type": "send_player_pairs",
-                "player_pairs": self.player_pairs,
+                "type": "send_play_elements",
             },
         )
-        await self.send_message(self.CLIENT, {"type": "unlock_play"})
 
-    async def send_player_pairs(self, event):
-        await self.send_message(
-            self.CLIENT,
-            {"type": "player_pairs", "player_pairs": event["player_pairs"]},
-        )
+    async def send_play_elements(self, event=None):
+        player_pairs = await self.redis.get(f"pong_{self.name}_player_pairs")
+        play = await self.redis.get(f"pong_{self.name}_play")
+        players = await self.get_decoded_list(f"pong_{self.name}_players")
+
+        if player_pairs:
+            await self.send_message(
+                self.CLIENT,
+                {
+                    "type": "player_pairs",
+                    "player_pairs": json.loads(player_pairs),
+                },
+            )
+
+        if (
+            self.user.username in players
+            and play != None
+            and int(play.decode("utf-8")) == 1
+        ):
+            await self.send_message(self.CLIENT, {"type": "unlock_play"})
 
     async def play(self):
+        await self.redis.set(f"pong_{self.name}_play", 0)
         await self.send_message(
             self.GROUP,
             {
                 "type": "send_next_round_id",
-                "player_pairs": self.player_pairs,
-                "uuid_list": self.uuid_list,
+                "player_pairs": json.loads(
+                    await self.redis.get(f"pong_{self.name}_player_pairs")
+                ),
+                "uuid_list": await self.get_decoded_list(
+                    f"pong_{self.name}_current_games"
+                ),
             },
         )
 
     async def send_next_round_id(self, event):
-        player_pairs: List[Tuple] = event["player_pairs"]
+        player_pairs: List = event["player_pairs"]
         uuid_list: List = event["uuid_list"]
 
         for i, (player1, player2) in enumerate(player_pairs):
@@ -237,12 +261,12 @@ class Tournament(AsyncWebsocketConsumer):
         current_games = await self.get_decoded_list(
             f"pong_{self.name}_current_games"
         )
-        broadcast = False
+        one_game_is_over = False
 
         for uuid in current_games:
             try:
                 game = await sync_to_async(pong.objects.get)(uuid=uuid)
-                broadcast = True
+                one_game_is_over = True
                 user1 = await sync_to_async(lambda: game.user1.username)()
                 user2 = await sync_to_async(lambda: game.user2.username)()
                 loser = user2 if game.score1 > game.score2 else user1
@@ -265,14 +289,15 @@ class Tournament(AsyncWebsocketConsumer):
             except pong.DoesNotExist:
                 continue
 
-        await self.redis.copy(
-            f"pong_{self.name}_players",
-            f"pong_{self.name}_ready_players",
-            replace=True,
-        )
+        if one_game_is_over:
+            await self.redis.copy(
+                f"pong_{self.name}_players",
+                f"pong_{self.name}_ready_players",
+                replace=True,
+            )
 
-        if broadcast:
-            await self.send_message(self.GROUP, {"type": "broadcast_history"})
+        if one_game_is_over:
+            await self.send_message(self.GROUP, {"type": "send_history"})
         else:
             await self.send_history()
 
@@ -280,10 +305,7 @@ class Tournament(AsyncWebsocketConsumer):
         if len(players) < 2:
             await self.save_tournament_to_db(players[0])
 
-    async def broadcast_history(self, event):
-        await self.send_history()
-
-    async def send_history(self):
+    async def send_history(self, event=None):
         await self.send_message(
             self.CLIENT,
             {
