@@ -1,63 +1,73 @@
 {% extends './extends/base.html' %}
 {% load i18n %}
 {% block content %}
-<h1>{% trans "Friends" %}</h1>
-<form id="invite-form" data-url="/api/friends/invite/">
-	<div>
-		<div id="invite-error"></div>
-		<label for="target">{% trans "Target" %} </label>
-		<input id="target" type="text" name="target">
-	</div>
-	<button id="invite-btn" type="submit">{% trans "Invite" %}</button>
-</form>
-{% if friends.count == 0 %}
-<p> {% trans "You don't have any friend :/" %}</p>
-{% else %}
-<div id="show-error"></div>
-{% for friend in friends %}
-<div>
-	<h4>{{ friend.other_user.username }}</h4>
-	<p>{% trans "Status: " %}{{ friend.get_status_display }}</p>
-	<div>
-		{% if friend.status == 1 and friend.target == user %}
-		<button id="accept-btn" data-invite="{{ friend.id }}">{% trans "Accept" %}</button>
-		<button id="deny-btn" data-invite="{{ friend.id }}">{% trans "Deny" %}</button>
-		{% else %}
-		<button id="delete-btn" data-invite="{{ friend.id }}">{% trans "Delete" %}</button>
-		{% endif %}
+<div class="fr-friends-container">
+	<h1>Friends</h1>
+	<hr class="profile-divider">
+	<div class="fr-friends-content">
+		<div class="fr-invite-container">
+			<form id="invite-form" class="fr-invite-form" data-url="/api/friends/invite/">
+				<div class="fr-invite-div">
+					<div id="fr-invite-error"></div>
+					<label for="target">Search for friends:</label>
+				</div>
+				<div class="fr-invite-div">
+					<input id="target" type="text" name="target" placeholder="Enter username" autocomplete="off">
+				</div>
+				<div class="fr-invite-div">
+					<button id="fr-invite-btn" type="submit">Invite friends</button>
+				</div>
+			</form>
+		</div>
+		<div class="fr-friends-list-container">
+			{% if friends.count == 0 %}
+			<p>You don't have any friends yet !</p>
+			{% else %}
+			<div id="show-error"></div>
+			{% for friend in friends %}
+			<div class="fr-friend-card">
+				<h4>{{ friend.other_user.username }}</h4>
+				<p>Status: {{ friend.get_status_display }}</p>
+				<div>
+					{% if friend.status == 1 and friend.target == user %}
+					<button data-type="accept" data-invite="{{ friend.id }}">Accept</button>
+					<button data-type="deny" data-invite="{{ friend.id }}">Deny</button>
+					{% else %}
+					<button data-type="delete" data-invite="{{ friend.id }}">Delete</button>
+					{% endif %}
+				</div>
+			</div>
+			{% endfor %}
+			{% endif %}
+		</div>
 	</div>
 </div>
-{% endfor %}
-{% endif %}
 
 <script>
-	function registerBtn(id, route) {
-		let el = document.getElementById(id);
-		if (el == null) return;
-		if (!('invite' in el.dataset)) {
-			console.error(`Any invite data in ${el}`);
-			return;
-		}
-		let inviteId = el.dataset.invite;
-		el.onclick = function (e) {
-			postFetch(`/api/friends/${route}/`, { 'invite_id': inviteId })
+	document.querySelectorAll('[data-type][data-invite]').forEach((element) => {
+		const type = element.dataset.type;
+		const id = element.dataset.invite;
+		element.onclick = function (e) {
+			postFetch(`/api/friends/${type}/`, { 'invite_id': id })
 				.then(response => {
 					if (response.status == 200)
 						handleLocation();
-					else return response.json();
+					else
+					{
+						response.json()
+							.then(json =>
+								document.getElementById('fr-invite-error').textContent = json.error
+							)
+							.catch(error => console.error(error));
+					}
 				})
-				.then(json => document.getElementById('show-error').textContent = json.error)
 				.catch(error => console.error(error));
-		}
-	}
+		};
+	});
 
-	registerBtn('accept-btn', 'accept');
-	registerBtn('deny-btn', 'deny');
-	registerBtn('delete-btn', 'delete');
-
-	document.getElementById('invite-btn').onclick = function (e) {
+	document.getElementById('fr-invite-btn').onclick = function (e) {
 		e.preventDefault();
-		let divError = document.getElementById('invite-error');
+		let divError = document.getElementById('fr-invite-error');
 		divError.textContent = '';
 		submitForm('invite-form', () => route('/friends'), (json) => {
 			divError.textContent = json.error;
