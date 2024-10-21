@@ -22,7 +22,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         if self.scope['url_route']['kwargs'].get('username'):
             await self.notify_other_user(other_username)
-        
+
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(f'user_{self.username}', self.channel_name)
         await self.remove_active_user()
@@ -53,7 +53,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'username': username,
                 }
             )
-        
+
     async def notify_other_user(self, other_username):
         other_user_channel = f'user_{other_username}'
         await self.channel_layer.group_send(
@@ -63,8 +63,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'from_user': self.username,
             }
         )
-    
-    async def send_chat_history(self):
+
+    async def send_chat_history(self, event=None):
         messages = await self.redis.lrange(f'chat_{self.room_group_name}_messages', 0, -1)
         history = [json.loads(message) for message in messages]
 
