@@ -8,9 +8,17 @@
 }
 
 .navbar-brand {
-	color: white;
+	color: var(--hover-clr);
 	margin-left: 5rem;
 	font-size: 1.25em;
+}
+
+.navbar-brand:hover {
+	color: var(--dark-hover-clr);
+}
+
+.navbar-brand:focus {
+	color: var(--dark-hover-clr);
 }
 
 .div-navbar-profile {
