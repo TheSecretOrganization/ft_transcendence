@@ -239,6 +239,8 @@ class Tournament(AsyncWebsocketConsumer):
             message = f"{self.name}: {player1} | {player2}"
 
             if player2 != "-":
+                await self.redis.rpush(f"pong_{uuid_list[i]}_white_list", player1)
+                await self.redis.rpush(f"pong_{uuid_list[i]}_white_list", player2)
                 message = f"{message} - {uuid_list[i]}"
 
             formatted_message = json.dumps(

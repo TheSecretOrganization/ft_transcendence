@@ -47,7 +47,7 @@ class Pong(AsyncWebsocketConsumer):
         await self.send_message(
             "client", "game_pad", {"game_pad": self.pad_n, "host": self.host}
         )
-        if self.tournament_name != "0":
+        if self.is_tournament_game:
             await self.send_message(
                 "client",
                 "tournament_name",
@@ -62,6 +62,14 @@ class Pong(AsyncWebsocketConsumer):
         self.tournament_name = self.check_missing_param(
             query_params, "tournament_name"
         )
+        self.is_tournament_game = self.tournament_name != "0"
+        white_list = await self.get_decoded_list(f"pong_{self.room_id}_white_list")
+
+        if self.is_tournament_game and self.user.username not in white_list:
+            raise ConnectionRefusedError(
+                "User not in white list"
+            )
+
         self.power = query_params.get("power", ["False"])[0] == "True"
         self.host = await self.redis.get(self.room_id) == None
         self.pad_n = "pad_1" if self.host else "pad_2"
@@ -101,6 +109,7 @@ class Pong(AsyncWebsocketConsumer):
 
             await self.redis.delete(self.room_id)
             await self.redis.delete(f"pong_{self.room_id}_id")
+            await self.redis.delete(f"pong_{self.room_id}_white_list")
             logger.info(f"Room {self.room_id} has been closed by the host.")
 
             if self.mode == "online" and len(players) == 2:
@@ -351,6 +360,11 @@ class Pong(AsyncWebsocketConsumer):
             raise AttributeError(f"Missing query parameter: {param_name}")
         else:
             return param
+
+    async def get_decoded_list(self, name):
+        l = await self.redis.lrange(name, 0, -1)
+        decoded_list = [el.decode("utf-8") for el in l]
+        return decoded_list
 
     class Info:
         def __init__(
