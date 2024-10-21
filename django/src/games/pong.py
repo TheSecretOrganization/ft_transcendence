@@ -94,10 +94,6 @@ class Pong(AsyncWebsocketConsumer):
         self.connected = False
 
         if hasattr(self, "host") and self.host:
-            await self.channel_layer.group_send(
-                f"{self.room_id}_watcher",
-                {"type": "watcher_stop", "id": self.room_id},
-            )
             players = await self.redis.lrange(f"pong_{self.room_id}_id", 0, -1)
 
             if hasattr(self, "game_task"):
@@ -105,7 +101,6 @@ class Pong(AsyncWebsocketConsumer):
 
             await self.redis.delete(self.room_id)
             await self.redis.delete(f"pong_{self.room_id}_id")
-            await self.redis.delete(f"{self.room_id}_watcher")
             logger.info(f"Room {self.room_id} has been closed by the host.")
 
             if self.mode == "online" and len(players) == 2:
