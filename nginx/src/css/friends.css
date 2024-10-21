@@ -70,7 +70,6 @@ input#target:focus {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	/* max-height: 300px; */
 	overflow-y: auto;
 	height: 95%;
 	width: 50%;
