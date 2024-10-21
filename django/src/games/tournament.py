@@ -203,7 +203,7 @@ class Tournament(AsyncWebsocketConsumer):
                 "type": "send_play_elements",
             },
         )
-        await self.messages()
+        await self.send_ids_to_general()
 
     async def send_play_elements(self, event=None):
         player_pairs = await self.redis.get(f"pong_{self.name}_player_pairs")
@@ -226,7 +226,7 @@ class Tournament(AsyncWebsocketConsumer):
         ):
             await self.send_message(self.CLIENT, {"type": "unlock_play"})
 
-    async def messages(self):
+    async def send_ids_to_general(self):
         group_name = "chat_general"
         player_pairs = json.loads(
             await self.redis.get(f"pong_{self.name}_player_pairs")
@@ -236,12 +236,12 @@ class Tournament(AsyncWebsocketConsumer):
         )
 
         for i, (player1, player2) in enumerate(player_pairs):
-            message = f"{self.name}: {player1} | {player2}"
+            message = f"[{self.name}] - {player1} x {player2}"
 
             if player2 != "-":
                 await self.redis.rpush(f"pong_{uuid_list[i]}_white_list", player1)
                 await self.redis.rpush(f"pong_{uuid_list[i]}_white_list", player2)
-                message = f"{message} - {uuid_list[i]}"
+                message = f"{message}\n{uuid_list[i]}"
 
             formatted_message = json.dumps(
                 {"message": message, "username": "server"}
