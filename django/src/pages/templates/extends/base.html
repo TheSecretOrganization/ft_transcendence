@@ -3,17 +3,6 @@
 	<nav class="navbar">
 		<a class="navbar-brand nav navbar-nav navbar-left text-decoration-none" data-route href="/">Johnny
 			Depp</a>
-		<button id="language-button">
-			<i id="icon-lang" class="fa-solid fa-language"></i>
-		</button>
-		<div id="language-menu" style="display: none;">
-			<ul>
-				<li><a href="#" data-lang="en">English</a></li>
-				<li><a href="#" data-lang="fr">French</a></li>
-				<li><a href="#" data-lang="bs">Bosnian</a></li>
-				<li><a href="#" data-lang="pt-br">Brazilian</a></li>
-			</ul>
-		</div>
 		{% if user.is_authenticated %}
 		<button id="notif-button">
 			<i id="icon-notif" class="fa-solid fa-bell"></i>
@@ -82,6 +71,41 @@
 						<a data-route href="/tournaments" tabindex="-1">
 							<img draggable="false" src="/assets/trophy.svg" alt="trophy icon">
 							<span class="fw-bold">{% trans "TOURNAMENTS" %}</span>
+						</a>
+					</li>
+				</div>
+			</ul>
+		</li>
+		<li>
+			<button onclick="toggleSubMenu(this)" class="dropdown-btn" id="language-button">
+				<img draggable="false" src="/assets/translate.svg" alt="translate icon">
+				<span class="fw-bold">{% trans "LANGUAGE" %}</span>
+				<img draggable="false" src="/assets/arrow-down.svg" alt="arrow down icon">
+			</button>
+			<ul class="sub-menu">
+				<div id="language-menu">
+					<li>
+						<a href="#" data-lang="fr">
+							<img draggable="false" src="/assets/fr.svg" alt="french icon">
+							<span class="fw-bold">Français</span>
+						</a>
+					</li>
+					<li>
+						<a href="#" data-lang="en">
+							<img draggable="false" src="/assets/en.svg" alt="england icon">
+							<span class="fw-bold">English</span>
+						</a>
+					</li>
+					<li>
+						<a href="#" data-lang="bs">
+							<img draggable="false" src="/assets/bs.svg" alt="bosnian flag icon">
+							<span class="fw-bold">Bosanski</span>
+						</a>
+					</li>
+					<li>
+						<a href="#" data-lang="pt-br">
+							<img draggable="false" src="/assets/pt-br.svg" alt="brazilian icon">
+							<span class="fw-bold">Brasileiro</span>
 						</a>
 					</li>
 				</div>
