@@ -85,7 +85,6 @@ class Tournament(AsyncWebsocketConsumer):
                 and creator == self.user.username
             ):
                 await self.redis.delete(f"pong_{self.name}_lock")
-                await self.redis.delete(f"pong_{self.name}_ready")
                 await self.redis.delete(f"pong_{self.name}_creator")
                 await self.redis.delete(f"pong_{self.name}_players")
                 await self.redis.delete(f"pong_{self.name}_usernames")
@@ -142,7 +141,9 @@ class Tournament(AsyncWebsocketConsumer):
     async def lock(self):
         await self.redis.set(f"pong_{self.name}_lock", 1)
         await self.redis.copy(
-            f"pong_{self.name}_players", f"pong_{self.name}_ready_players"
+            f"pong_{self.name}_players",
+            f"pong_{self.name}_ready_players",
+            replace=True,
         )
         await self.send_message(self.GROUP, {"type": "unlock_ready"})
 
@@ -157,13 +158,11 @@ class Tournament(AsyncWebsocketConsumer):
         await self.redis.lrem(
             f"pong_{self.name}_ready_players", 1, self.user.username
         )
-        players = await self.get_decoded_list(f"pong_{self.name}_players")
-        await self.redis.incr(f"pong_{self.name}_ready")
-        ready_encoded = await self.redis.get(f"pong_{self.name}_ready")
-        ready = int(ready_encoded.decode("utf-8"))
+        ready_players = await self.get_decoded_list(
+            f"pong_{self.name}_ready_players"
+        )
 
-        if ready >= len(players):
-            await self.redis.set(f"pong_{self.name}_ready", 0)
+        if len(ready_players) <= 0:
             await self.send_message(self.GROUP, {"type": "exec_mix"})
 
     async def exec_mix(self, event):
@@ -267,7 +266,9 @@ class Tournament(AsyncWebsocketConsumer):
                 continue
 
         await self.redis.copy(
-            f"pong_{self.name}_players", f"pong_{self.name}_ready_players"
+            f"pong_{self.name}_players",
+            f"pong_{self.name}_ready_players",
+            replace=True,
         )
 
         if broadcast:
@@ -299,9 +300,7 @@ class Tournament(AsyncWebsocketConsumer):
         )
 
         if len(current_games) <= 0:
-            await self.channel_layer.group_send(
-                self.name, {"type": "unlock_ready"}
-            )
+            await self.send_message(self.GROUP, {"type": "unlock_ready"})
 
     async def get_decoded_list(self, name):
         l = await self.redis.lrange(name, 0, -1)
