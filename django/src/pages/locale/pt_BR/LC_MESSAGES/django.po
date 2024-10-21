@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-21 13:34+0200\n"
+"POT-Creation-Date: 2024-10-21 15:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,53 +62,66 @@ msgstr "PONG"
 msgid "TOURNAMENTS"
 msgstr "TORNEIOS"
 
-#: pages/templates/extends/base.html:93
+#: pages/templates/extends/base.html:94
 msgid "COMMUNITY"
 msgstr "COMUNIDADE"
 
-#: pages/templates/extends/base.html:101
-msgid "CHAT"
-msgstr "CHAT"
+#: pages/templates/extends/base.html:102
+msgid "PROFILE"
+msgstr "PERFIL"
 
-#: pages/templates/extends/base.html:107
+#: pages/templates/extends/base.html:108
 msgid "FRIENDS"
 msgstr "AMIGOS"
 
-#: pages/templates/extends/base.html:127
+#: pages/templates/extends/base.html:129 pages/templates/extends/base.html:248
 msgid "Room: "
 msgstr "Sala: "
 
-#: pages/templates/extends/base.html:127
+#: pages/templates/extends/base.html:129 pages/templates/extends/base.html:248
 msgid "General"
 msgstr "Geral"
 
-#: pages/templates/extends/base.html:130
+#: pages/templates/extends/base.html:132
 msgid "Type your message here..."
 msgstr "Digite sua mensagem aqui..."
 
-#: pages/templates/extends/base.html:132
+#: pages/templates/extends/base.html:134
 msgid "Send"
 msgstr "Enviar"
 
-#: pages/templates/extends/base.html:135
+#: pages/templates/extends/base.html:137
 msgid "Users Online"
 msgstr "Usuários Online"
 
-#: pages/templates/extends/base.html:325
-#, fuzzy
-#| msgid "General"
-msgid "General Chat"
-msgstr "Geral"
+#: pages/templates/extends/base.html:233
+msgid "Private Chat with"
+msgstr "Bate-papo privado com"
 
-#: pages/templates/extends/base.html:370
+#: pages/templates/extends/base.html:312 pages/templates/extends/base.html:315
+msgid "Unblock"
+msgstr "Desbloquear"
+
+#: pages/templates/extends/base.html:312 pages/templates/extends/base.html:315
+msgid "Block"
+msgstr "Bloquear"
+
+#: pages/templates/extends/base.html:329
+msgid "General Chat"
+msgstr "Discussão geral"
+
+#: pages/templates/extends/base.html:374
 #, python-brace-format
 msgid " Private message from ${fromUser} "
 msgstr " Mensagem privada de ${fromUser} "
 
-#: pages/templates/extends/base.html:371
+#: pages/templates/extends/base.html:375
 msgid "Show"
 msgstr "Mostrar"
 
 #: pages/templates/index.html:16
 msgid "Play"
 msgstr "Jogar"
+
+#~ msgid "CHAT"
+#~ msgstr "CHAT"

@@ -51,8 +51,6 @@ msgid "Back"
 msgstr "Retour"
 
 #: games/templates/pong_game.html:11
-#, fuzzy
-#| msgid "Room ID"
 msgid "Room ID:"
 msgstr "ID de la salle"
 
@@ -129,7 +127,7 @@ msgstr "Vous êtes seul dans le tournoi..."
 
 #: games/templates/tournament.html:15
 msgid "Tournament name"
-msgstr "Nom de tournoi invalide."
+msgstr "Nom du tournoi"
 
 #: games/templates/tournament.html:19
 msgid "Rumble"

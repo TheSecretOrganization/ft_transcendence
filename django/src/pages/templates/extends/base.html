@@ -209,7 +209,7 @@
 		})
 			.then(response => response.json())
 			.then(data => {
-				location.reload();
+				handleLocation();
 			})
 			.catch(error => {
 				console.error('Error changing language:', error);
@@ -240,7 +240,9 @@
 
 	function startPrivateChat(otherUsername) {
 		if (blockedUsers.includes(otherUsername)) {
-			alert(`You have blocked ${otherUsername}. Unblock them to start a private chat.`);
+			const blockAlertTrans = "You have blocked";
+			const unblockAlertTrans = "Unblock them to start a private chat";
+			alert(`${blockAlertTrans} ${otherUsername}. ${unblockAlertTrans}.`);
 			return;
 		}
 		const roomName = `private_chat_${otherUsername}`;
@@ -252,8 +254,8 @@
 		window.chatSocket.onopen = function () {
 			loadChatHistory(roomName);
 		};
-
-		document.getElementById('chat-title').textContent = `Private Chat with ${otherUsername}`;
+		const privateChatTrans = "{% trans 'Private Chat with' %}"
+		document.getElementById('chat-title').textContent = `${privateChatTrans} ${otherUsername}`;
 		currentChatRoom = roomName;
 	}
 
@@ -267,7 +269,7 @@
 			loadChatHistory('General');
 		};
 
-		document.getElementById('chat-title').textContent = 'Room: General';
+		document.getElementById('chat-title').textContent = "{% trans 'Room: ' %} " + "{% trans 'General' %}";
 		currentChatRoom = 'General';
 		const notificationArea = document.getElementById('notification-area');
 		notificationArea.innerHTML = '';
@@ -331,10 +333,10 @@
 
 			if (user !== "{{ user }}") {
 				const blockButton = document.createElement('button');
-				blockButton.textContent = blockedUsers.includes(user) ? "Unblock" : "Block";
+				blockButton.textContent = blockedUsers.includes(user) ? "{% trans 'Unblock' %}" : "{% trans 'Block' %}";
 				blockButton.addEventListener('click', () => {
 					toggleBlockUser(user);
-					blockButton.textContent = blockedUsers.includes(user) ? "Unblock" : "Block";
+					blockButton.textContent = blockedUsers.includes(user) ? "{% trans 'Unblock' %}" : "{% trans 'Block' %}";
 				});
 				userItem.appendChild(blockButton);
 
@@ -435,7 +437,9 @@
 		const message = messageInput.value.trim();
 		const otherUsername = currentChatRoom.split('private_chat_')[1];
 		if (otherUsername && blockedUsers.includes(otherUsername)) {
-			alert(`You have blocked ${otherUsername}. Unblock them to send messages.`);
+			const blockAlertTrans = "You have blocked";
+			const unblockAlertTrans = "Unblock them to send messages";
+			alert(`${blockAlertTrans} ${otherUsername}. ${unblockAlertTrans}.`);
 			return;
 		}
 		if (window.chatSocket && window.chatSocket.readyState === WebSocket.OPEN && message) {

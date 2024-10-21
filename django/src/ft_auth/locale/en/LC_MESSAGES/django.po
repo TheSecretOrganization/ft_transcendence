@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-21 14:13+0200\n"
+"POT-Creation-Date: 2024-10-21 14:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,7 +80,7 @@ msgid "registering"
 msgstr ""
 
 #: ft_auth/templates/authentification.html:130
-#: ft_auth/templates/settings.html:96
+#: ft_auth/templates/settings.html:97
 msgid "Passwords do not match"
 msgstr ""
 
@@ -136,31 +136,27 @@ msgstr ""
 msgid "Upload New Avatar"
 msgstr ""
 
-#: ft_auth/templates/settings.html:58
+#: ft_auth/templates/settings.html:59
 msgid "Choose File"
 msgstr ""
 
-#: ft_auth/templates/settings.html:59
+#: ft_auth/templates/settings.html:60
 msgid "No file chosen"
 msgstr ""
 
-#: ft_auth/templates/settings.html:60
-msgid "Max file size"
-msgstr ""
-
-#: ft_auth/templates/settings.html:61
+#: ft_auth/templates/settings.html:62
 msgid "Upload"
 msgstr ""
 
-#: ft_auth/templates/settings.html:124
+#: ft_auth/templates/settings.html:125
 msgid "File is too large. Maximum size is 2MB."
 msgstr ""
 
-#: ft_auth/templates/settings.html:147
+#: ft_auth/templates/settings.html:148
 msgid "Avatar updated successfully."
 msgstr ""
 
-#: ft_auth/templates/settings.html:149
+#: ft_auth/templates/settings.html:150
 msgid "Error uploading avatar"
 msgstr ""
 

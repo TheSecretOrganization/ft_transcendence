@@ -52,8 +52,6 @@ msgid "Back"
 msgstr "Nazad"
 
 #: games/templates/pong_game.html:11
-#, fuzzy
-#| msgid "Room ID"
 msgid "Room ID:"
 msgstr "ID sobe"
 
@@ -130,7 +128,7 @@ msgstr "Sami ste na turniru..."
 
 #: games/templates/tournament.html:15
 msgid "Tournament name"
-msgstr "Nevažeće ime turnira."
+msgstr "Naziv turnira"
 
 #: games/templates/tournament.html:19
 msgid "Rumble"

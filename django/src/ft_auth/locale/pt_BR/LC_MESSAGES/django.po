@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-21 14:13+0200\n"
+"POT-Creation-Date: 2024-10-21 14:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,8 +49,6 @@ msgid "Create account"
 msgstr "Criar conta"
 
 #: ft_auth/templates/authentification.html:39
-#, fuzzy
-#| msgid "Already have an account ? Try "
 msgid "Already have an account? Try"
 msgstr "Já tem uma conta? Tente"
 
@@ -82,7 +80,7 @@ msgid "registering"
 msgstr "registrar"
 
 #: ft_auth/templates/authentification.html:130
-#: ft_auth/templates/settings.html:96
+#: ft_auth/templates/settings.html:97
 msgid "Passwords do not match"
 msgstr "A senha não corresponde"
 
@@ -138,31 +136,27 @@ msgstr "Confirmar alterações"
 msgid "Upload New Avatar"
 msgstr "Carregar novo avatar"
 
-#: ft_auth/templates/settings.html:58
+#: ft_auth/templates/settings.html:59
 msgid "Choose File"
 msgstr "Escolher arquivo"
 
-#: ft_auth/templates/settings.html:59
+#: ft_auth/templates/settings.html:60
 msgid "No file chosen"
 msgstr "Nenhum arquivo escolhido"
 
-#: ft_auth/templates/settings.html:60
-msgid "Max file size"
-msgstr "Tamanho máximo do arquivo"
-
-#: ft_auth/templates/settings.html:61
+#: ft_auth/templates/settings.html:62
 msgid "Upload"
 msgstr "Carregar"
 
-#: ft_auth/templates/settings.html:124
+#: ft_auth/templates/settings.html:125
 msgid "File is too large. Maximum size is 2MB."
 msgstr "O arquivo é muito grande. O tamanho máximo é de 2 MB."
 
-#: ft_auth/templates/settings.html:147
+#: ft_auth/templates/settings.html:148
 msgid "Avatar updated successfully."
 msgstr "Avatar atualizado com sucesso."
 
-#: ft_auth/templates/settings.html:149
+#: ft_auth/templates/settings.html:150
 msgid "Error uploading avatar"
 msgstr "Erro ao carregar o avatar"
 
@@ -201,6 +195,9 @@ msgstr "O tamanho do arquivo excede o limite de 2 MB."
 #: ft_auth/views.py:87
 msgid "Invalid request"
 msgstr "Solicitação inválida"
+
+#~ msgid "Max file size"
+#~ msgstr "Tamanho máximo do arquivo"
 
 #~ msgid "Loading"
 #~ msgstr "Carregando"
