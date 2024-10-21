@@ -61,10 +61,13 @@ function logout() {
 		}).catch(error => console.error(error));
 }
 
-function displayToast(message) {
+function displayToast(message, colorClass = "") {
 	const toastContentElement = document.getElementById('toast-content');
 	toastContentElement.textContent = message;
 	const toastElement = document.getElementById('toast');
+	toastElement.classList.remove('bg-success', 'bg-danger', 'bg-warning', 'bg-info', 'bg-primary', 'bg-secondary', 'bg-light', 'bg-dark');
+	if (colorClass !== "")
+		toastElement.classList.add(colorClass);
 	const toast = new bootstrap.Toast(toastElement);
 	toast.show();
 }

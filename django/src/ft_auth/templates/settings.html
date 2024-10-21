@@ -100,7 +100,7 @@
 
 		submitForm('password-form', () => {
 			route('/settings');
-			displayToast("Password changed successfully.");
+			displayToast("Password changed successfully.", "bg-success");
 		}, (json) => {
 			document.getElementById('password-error').textContent = json.error;
 			emptyPasswords();
@@ -144,7 +144,7 @@
 						const avatarImg = document.querySelector('.profile-image-container img');
 						avatarImg.src = data.avatar_url;
 						hideModal();
-						displayToast("Avatar updated successfully.");
+						displayToast("Avatar updated successfully.", "bg-success");
 					} else {
 						alert('Error uploading avatar');
 					}

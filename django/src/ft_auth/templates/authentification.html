@@ -128,7 +128,7 @@
 
 		submitForm('register-form', () => {
 			route('/login');
-			displayToast("Account creation successful.");
+			displayToast("Account creation successful.", "bg-success");
 		}, (json) => {
 			document.getElementById('register-error').textContent = json.error;
 			emptyPasswords();

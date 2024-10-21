@@ -95,7 +95,7 @@
 			case "join": handleJoin(data.players); break;
 			case "player_pairs": handlePlayerPairs(data.player_pairs); break;
 			case "next_round_id": route(`/pong/online/${data.id}/{{ name }}/${power}`); break;
-			case "bye": displayToast("You have received a bye for this round. Enjoy the break!"); break;
+			case "bye": displayToast("You have received a bye for this round. Enjoy the break!", "bg-info"); break;
 			case "history": handleHistory(data.history); break;
 			case "end": handleEnd(data.winner); break;
 			default: console.error("Invalid message from server ignored."); break;
@@ -182,7 +182,7 @@
 		const tableBody = document.querySelector("#players tbody");
 		const rowCount = tableBody.rows.length;
 		if (rowCount < 2) {
-			displayToast("You are alone in the tournament...");
+			displayToast("You are alone in the tournament...", "bg-warning");
 			return;
 		}
 		hideBtn(lockBtn);
