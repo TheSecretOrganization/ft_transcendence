@@ -74,6 +74,7 @@
 				</div>
 			</ul>
 		</li>
+		{% if user.is_authenticated %}
 		<li>
 			<button onclick=toggleSubMenu(this) class="dropdown-btn">
 				<img draggable="false" src="/assets/community.svg" alt="community icon">
@@ -83,9 +84,9 @@
 			<ul class="sub-menu">
 				<div>
 					<li>
-						<a data-route href="/chat" tabindex="-1">
-							<img draggable="false" src="/assets/chat.svg" alt="chat icon">
-							<span class="fw-bold">CHAT</span>
+						<a data-route href="/profiles/{{ user.username }}" tabindex="-1">
+							<img draggable="false" src="/assets/person.svg" alt="person icon">
+							<span class="fw-bold">PROFILE</span>
 						</a>
 					</li>
 					<li>
@@ -97,6 +98,7 @@
 				</div>
 			</ul>
 		</li>
+		{% endif %}
 	</ul>
 </aside>
 
