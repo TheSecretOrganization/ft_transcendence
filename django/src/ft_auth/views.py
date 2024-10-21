@@ -49,7 +49,8 @@ def register(request: HttpRequest):
 	except IntegrityError:
 		return JsonResponse({'error': _('Username already exist')}, status=400)
 	except ValidationError as error:
-		return JsonResponse({'error': error.messages}, status=400)
+		error_messages = ' '.join(error.messages)
+		return JsonResponse({'error': error_messages}, status=400)
 	return HttpResponse(status=200)
 
 @require_POST
@@ -65,7 +66,8 @@ def password_update(request: HttpRequest):
 	try:
 		validate_password(data['new_password'])
 	except ValidationError as error:
-		return JsonResponse({'error': error.messages}, status=400)
+		error_messages = ' '.join(error.messages)
+		return JsonResponse({'error': error_messages}, status=400)
 	request.user.set_password(data['new_password'])
 	request.user.save()
 	logger.info(f"Updated password of {request.user.username}.")
