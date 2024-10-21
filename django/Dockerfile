@@ -16,7 +16,7 @@ COPY conf/requirements.txt requirements.txt
 
 RUN apt update && \
     apt upgrade -y && \
-    apt install -y openssl coreutils && \
+    apt install -y openssl coreutils gettext && \
     apt clean && \
     pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
