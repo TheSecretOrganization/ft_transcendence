@@ -51,6 +51,8 @@ def register(request: HttpRequest):
 	except ValidationError as error:
 		error_messages = ' '.join([_(message) for message in error.messages])
 		return JsonResponse({'error': error_messages}, status=400)
+	except TypeError as err:
+		return JsonResponse({'error': str(err)}, status=400)
 	return HttpResponse(status=200)
 
 @require_POST
