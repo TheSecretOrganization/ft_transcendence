@@ -2,38 +2,38 @@
 {% load i18n %}
 {% block content %}
 <div class="fr-friends-container">
-	<h1>Friends</h1>
+	<h1>{% trans "Friends" %}</h1>
 	<hr class="profile-divider">
 	<div class="fr-friends-content">
 		<div class="fr-invite-container">
 			<form id="invite-form" class="fr-invite-form" data-url="/api/friends/invite/">
 				<div class="fr-invite-div">
 					<div id="fr-invite-error"></div>
-					<label for="target">Search for friends:</label>
+					<label for="target">{% trans "Search for friends:" %}</label>
 				</div>
 				<div class="fr-invite-div">
-					<input id="target" type="text" name="target" placeholder="Enter username" autocomplete="off">
+					<input id="target" type="text" name="target" placeholder="{% trans 'Enter username' %}" autocomplete="off">
 				</div>
 				<div class="fr-invite-div">
-					<button id="fr-invite-btn" type="submit">Invite friends</button>
+					<button id="fr-invite-btn" type="submit">{% trans "Invite friends" %}</button>
 				</div>
 			</form>
 		</div>
 		<div class="fr-friends-list-container">
 			{% if friends.count == 0 %}
-			<p>You don't have any friends yet !</p>
+			<p>{% trans "You don't have any friends yet !" %}</p>
 			{% else %}
 			<div id="show-error"></div>
 			{% for friend in friends %}
 			<div class="fr-friend-card">
 				<h4>{{ friend.other_user.username }}</h4>
-				<p>Status: {{ friend.get_status_display }}</p>
+				<p>{% trans "Status: " %}{{ friend.get_status_display }}</p>
 				<div>
 					{% if friend.status == 1 and friend.target == user %}
-					<button data-type="accept" data-invite="{{ friend.id }}">Accept</button>
-					<button data-type="deny" data-invite="{{ friend.id }}">Deny</button>
+					<button data-type="accept" data-invite="{{ friend.id }}">{% trans "Accept" %}</button>
+					<button data-type="deny" data-invite="{{ friend.id }}">{% trans "Deny" %}</button>
 					{% else %}
-					<button data-type="delete" data-invite="{{ friend.id }}">Delete</button>
+					<button data-type="delete" data-invite="{{ friend.id }}">{% trans "Delete" %}</button>
 					{% endif %}
 				</div>
 			</div>

@@ -59,7 +59,7 @@
 			<label for="avatarInput" class="custom-file-label">{% trans "Choose File" %}</label>
 			<span id="file-name" class="file-name">{% trans "No file chosen" %}</span>
 			<div class="modal-spacer"></div>
-			<small>Max file size: 2MB</small>
+			<small>Max file size : 2MB</small>
 			<button id="upload-avatar-btn" type="submit" class="upload-btn">{% trans "Upload" %}</button>
 		</form>
 	</div>
@@ -102,7 +102,7 @@
 
 		submitForm('password-form', () => {
 			route('/settings');
-			displayToast("Password changed successfully.", "bg-success");
+			displayToast("{% trans 'Password changed successfully.' %}", "bg-success");
 		}, (json) => {
 			document.getElementById('password-error').textContent = json.error;
 			emptyPasswords();

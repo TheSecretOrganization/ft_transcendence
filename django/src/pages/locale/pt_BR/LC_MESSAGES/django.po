@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-21 16:58+0200\n"
+"POT-Creation-Date: 2024-10-22 08:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,11 +78,11 @@ msgstr "PERFIL"
 msgid "FRIENDS"
 msgstr "AMIGOS"
 
-#: pages/templates/extends/base.html:153 pages/templates/extends/base.html:272
+#: pages/templates/extends/base.html:153 pages/templates/extends/base.html:273
 msgid "Room: "
 msgstr "Sala: "
 
-#: pages/templates/extends/base.html:153 pages/templates/extends/base.html:272
+#: pages/templates/extends/base.html:153 pages/templates/extends/base.html:273
 msgid "General"
 msgstr "Geral"
 
@@ -98,28 +98,28 @@ msgstr "Enviar"
 msgid "Users Online"
 msgstr "Usuários Online"
 
-#: pages/templates/extends/base.html:257
+#: pages/templates/extends/base.html:258
 msgid "Private Chat with"
 msgstr "Bate-papo privado com"
 
-#: pages/templates/extends/base.html:336 pages/templates/extends/base.html:339
+#: pages/templates/extends/base.html:337 pages/templates/extends/base.html:340
 msgid "Unblock"
 msgstr "Desbloquear"
 
-#: pages/templates/extends/base.html:336 pages/templates/extends/base.html:339
+#: pages/templates/extends/base.html:337 pages/templates/extends/base.html:340
 msgid "Block"
 msgstr "Bloquear"
 
-#: pages/templates/extends/base.html:353
+#: pages/templates/extends/base.html:354
 msgid "General Chat"
 msgstr "Discussão geral"
 
-#: pages/templates/extends/base.html:398
+#: pages/templates/extends/base.html:399
 #, python-brace-format
 msgid " Private message from ${fromUser} "
 msgstr " Mensagem privada de ${fromUser} "
 
-#: pages/templates/extends/base.html:399
+#: pages/templates/extends/base.html:400
 msgid "Show"
 msgstr "Mostrar"
 

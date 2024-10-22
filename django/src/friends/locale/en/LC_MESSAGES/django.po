@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-16 17:01+0200\n"
+"POT-Creation-Date: 2024-10-22 08:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,34 +17,39 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: friends/templates/friends.html:4
+
+#: friends/templates/friends.html:5
 msgid "Friends"
 msgstr ""
 
-#: friends/templates/friends.html:8
-msgid "Target"
+#: friends/templates/friends.html:12
+msgid "Search for friends:"
 msgstr ""
 
-#: friends/templates/friends.html:11
-msgid "Invite"
+#: friends/templates/friends.html:15
+msgid "Enter username"
 msgstr ""
 
-#: friends/templates/friends.html:14
-msgid "You don't have any friend :/"
-msgstr ""
-
-#: friends/templates/friends.html:20
-msgid "Status: "
-msgstr ""
-
-#: friends/templates/friends.html:23
-msgid "Accept"
+#: friends/templates/friends.html:18
+msgid "Invite friends"
 msgstr ""
 
 #: friends/templates/friends.html:24
+msgid "You don't have any friends yet !"
+msgstr ""
+
+#: friends/templates/friends.html:30
+msgid "Status: "
+msgstr ""
+
+#: friends/templates/friends.html:33
+msgid "Accept"
+msgstr ""
+
+#: friends/templates/friends.html:34
 msgid "Deny"
 msgstr ""
 
-#: friends/templates/friends.html:26
+#: friends/templates/friends.html:36
 msgid "Delete"
 msgstr ""
