@@ -63,12 +63,12 @@ class Pong(AsyncWebsocketConsumer):
             query_params, "tournament_name"
         )
         self.is_tournament_game = self.tournament_name != "0"
-        white_list = await self.get_decoded_list(f"pong_{self.room_id}_white_list")
+        white_list = await self.get_decoded_list(
+            f"pong_{self.room_id}_white_list"
+        )
 
         if self.is_tournament_game and self.user.username not in white_list:
-            raise ConnectionRefusedError(
-                "User not in white list"
-            )
+            raise ConnectionRefusedError("User not in white list")
 
         self.power = query_params.get("power", ["False"])[0] == "True"
         self.host = await self.redis.get(self.room_id) == None
@@ -166,9 +166,9 @@ class Pong(AsyncWebsocketConsumer):
                 self.info.players_usernames.append(
                     event["content"]["username"]
                 )
-            else:
-                self.info.players_usernames.append("Player 1")
-                self.info.players_usernames.append("Player 2")
+            elif len(self.info.players_usernames) == 0:
+                self.info.players_usernames.append("1")
+                self.info.players_usernames.append("2")
 
             if len(self.info.players_ids) == self.info.player_needed:
                 await self.redis.set(self.room_id, 1)
@@ -232,8 +232,17 @@ class Pong(AsyncWebsocketConsumer):
                     self.info.score[0] == self.win_goal
                     or self.info.score[1] == self.win_goal
                 ):
+                    winner = self.get_winner()
+                    if self.mode == "online":
+                        winner = (
+                            self.info.players_usernames[0]
+                            if self.info.players_ids[0] == self.get_winner()
+                            else self.info.players_usernames[1]
+                        )
                     await self.send_message(
-                        "group", "game_stop", {"winner": self.get_winner()}
+                        "group",
+                        "game_stop",
+                        {"winner": winner},
                     )
                     break
                 await self.send_game_state()
@@ -252,9 +261,7 @@ class Pong(AsyncWebsocketConsumer):
                 else self.info.players_ids[1]
             )
         else:
-            return (
-                "Pad 1" if self.info.score[0] > self.info.score[1] else "Pad 2"
-            )
+            return "1" if self.info.score[0] > self.info.score[1] else "2"
 
     async def move_pad(self, pad_number, direction):
         pad = self.pad_1 if pad_number == "pad_1" else self.pad_2
