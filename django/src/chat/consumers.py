@@ -6,6 +6,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.username = self.scope['user'].username if self.scope['user'].is_authenticated else 'Anonyme'
         self.redis = redis.Redis(host="redis", decode_responses=True)
+        self.broadcast_group = "chat_broadcast"
 
         if self.scope['url_route']['kwargs'].get('username'):
             other_username = self.scope['url_route']['kwargs']['username']
@@ -16,18 +17,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.channel_layer.group_add(f'user_{self.username}', self.channel_name)
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+        await self.channel_layer.group_add(self.broadcast_group, self.channel_name)
         await self.add_active_user()
         await self.accept()
         await self.broadcast_active_users()
 
         if self.scope['url_route']['kwargs'].get('username'):
             await self.notify_other_user(other_username)
-        
+
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(f'user_{self.username}', self.channel_name)
         await self.remove_active_user()
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
         await self.broadcast_active_users()
+        await self.channel_layer.group_discard(self.broadcast_group, self.channel_name)
         await self.redis.close()
 
     async def receive(self, text_data):
@@ -53,7 +56,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'username': username,
                 }
             )
-        
+
     async def notify_other_user(self, other_username):
         other_user_channel = f'user_{other_username}'
         await self.channel_layer.group_send(
@@ -63,8 +66,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'from_user': self.username,
             }
         )
-    
-    async def send_chat_history(self):
+
+    async def send_chat_history(self, event=None):
         messages = await self.redis.lrange(f'chat_{self.room_group_name}_messages', 0, -1)
         history = [json.loads(message) for message in messages]
 
@@ -98,7 +101,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def broadcast_active_users(self):
         active_users = await self.redis.smembers('active_users')
         await self.channel_layer.group_send(
-            self.room_group_name,
+            self.broadcast_group,
             {
                 'type': 'send_active_users',
                 'users': list(active_users),
