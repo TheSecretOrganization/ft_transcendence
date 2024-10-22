@@ -12,7 +12,8 @@
 					<label for="target">{% trans "Search for friends:" %}</label>
 				</div>
 				<div class="fr-invite-div">
-					<input id="target" type="text" name="target" placeholder="{% trans 'Enter username' %}" autocomplete="off">
+					<input id="target" type="text" name="target" placeholder="{% trans 'Enter username' %}"
+						autocomplete="off">
 				</div>
 				<div class="fr-invite-div">
 					<button id="fr-invite-btn" type="submit">{% trans "Invite friends" %}</button>
@@ -30,10 +31,13 @@
 				<p>{% trans "Status: " %}{{ friend.get_status_display }}</p>
 				<div>
 					{% if friend.status == 1 and friend.target == user %}
-					<button data-type="accept" data-invite="{{ friend.id }}">{% trans "Accept" %}</button>
-					<button data-type="deny" data-invite="{{ friend.id }}">{% trans "Deny" %}</button>
+					<button data-type="accept" data-invite="{{ friend.id }}" class="fr-accept-btn">
+						{% trans "Accept" %}</button>
+					<button data-type="deny" data-invite="{{ friend.id }}" class="fr-deny-btn">
+						{% trans "Deny" %}</button>
 					{% else %}
-					<button data-type="delete" data-invite="{{ friend.id }}">{% trans "Delete" %}</button>
+					<button data-type="delete" data-invite="{{ friend.id }}" class="fr-delete-btn">
+						{% trans "Delete" %}</button>
 					{% endif %}
 				</div>
 			</div>
@@ -52,8 +56,7 @@
 				.then(response => {
 					if (response.status == 200)
 						handleLocation();
-					else
-					{
+					else {
 						response.json()
 							.then(json =>
 								document.getElementById('fr-invite-error').textContent = json.error
