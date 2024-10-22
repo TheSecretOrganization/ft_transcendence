@@ -159,13 +159,15 @@
 }
 
 #users-wrapper {
+	height: 110px;
 	margin-top: 10px;
 	background-color: var(--base-clr);
 	padding: 10px;
-	border: none;
 	border: 1px solid var(--accent-clr);
 	border-radius: 5px;
 	box-shadow: 0 2px 4px var(--accent-clr);
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 #user-list {
