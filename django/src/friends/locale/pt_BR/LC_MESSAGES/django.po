@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-22 08:40+0200\n"
+"POT-Creation-Date: 2024-10-22 09:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,6 +53,30 @@ msgstr "Negar"
 #: friends/templates/friends.html:36
 msgid "Delete"
 msgstr "Excluir"
+
+#: friends/views.py:24
+msgid "You already are your own best friend :)"
+msgstr "Você já é o seu próprio melhor amigo :)"
+
+#: friends/views.py:31
+msgid "You have already sent a friend request to this user."
+msgstr "Você já enviou um pedido de amizade para este usuário."
+
+#: friends/views.py:33
+msgid "You can't send a friend request to yourself."
+msgstr "Você não pode enviar um pedido de amizade para si mesmo."
+
+#: friends/views.py:36
+msgid "This user doesn't exist"
+msgstr "Este usuário não existe."
+
+#: friends/views.py:53 friends/views.py:85
+msgid "Friend invite doesn't exist"
+msgstr "O convite de amizade não existe."
+
+#: friends/views.py:81
+msgid "You should accept or deny invite not delete it."
+msgstr "Você deve aceitar ou recusar o convite, não excluí-lo."
 
 #~ msgid "Target"
 #~ msgstr "Alvo"

@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.db.utils import IntegrityError
 from django.http import HttpRequest, JsonResponse, HttpResponse
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 from .models import Friend
 import json
@@ -20,19 +21,19 @@ def invite(request: HttpRequest):
 		target = get_user_model().objects.get(username=data['target'])
 		
 		if target == request.user:
-			return JsonResponse({'error': "You already are your own best friend :)"}, status=400)
+			return JsonResponse({'error': _("You already are your own best friend :)")}, status=400)
 		
 		Friend.objects.create(origin=request.user, target=target)
 	except ValidationError as error:
 		return JsonResponse({'error': error.messages}, status=400)
 	except IntegrityError as error:
 		if 'unique_friend_request' in str(error):
-			return JsonResponse({'error': 'You have already sent a friend request to this user.'}, status=400)
+			return JsonResponse({'error': _('You have already sent a friend request to this user.')}, status=400)
 		elif 'unique_origin_target' in str(error):
-			return JsonResponse({'error': "You can't send a friend request to yourself."}, status=400)
+			return JsonResponse({'error': _("You can't send a friend request to yourself.")}, status=400)
 		return JsonResponse({'error': f'An error occurred: {error}'}, status=400)
 	except get_user_model().DoesNotExist:
-		return JsonResponse({'error': "This user doesn't exist"}, status=400)
+		return JsonResponse({'error': _("This user doesn't exist")}, status=400)
 	return HttpResponse(status=200)
 
 def update_invite_status(request: HttpRequest, status: str):
@@ -49,7 +50,7 @@ def update_invite_status(request: HttpRequest, status: str):
 		invite.status = status
 		invite.save()
 	except Friend.DoesNotExist:
-		return JsonResponse({'error': "Friend invite doesn't exist"}, status=400)
+		return JsonResponse({'error': _("Friend invite doesn't exist")}, status=400)
 	except ValidationError as error:
 		return JsonResponse({'error': error.messages}, status=400)
 	except IntegrityError as error:
@@ -77,11 +78,11 @@ def delete(request: HttpRequest):
 		if invite.status not in (Friend.Status.PENDING, Friend.Status.ACCEPTED):
 			return JsonResponse({'error': 'Wrong invite status'}, status=400)
 		if invite.status == Friend.Status.PENDING and invite.target == request.user:
-			return JsonResponse({'error': 'You should accept or deny invite not delete it.'}, status=400)
+			return JsonResponse({'error': _('You should accept or deny invite not delete it.')}, status=400)
 		invite.status = Friend.Status.DELETED
 		invite.save()
 	except Friend.DoesNotExist:
-		return JsonResponse({'error': "Friend invite doesn't exist"}, status=400)
+		return JsonResponse({'error': _("Friend invite doesn't exist")}, status=400)
 	except ValidationError as error:
 		return JsonResponse({'error': error.messages}, status=400)
 	except IntegrityError as error:
