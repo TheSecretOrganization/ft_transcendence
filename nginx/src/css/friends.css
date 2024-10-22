@@ -110,8 +110,8 @@ input#target:focus {
 	background-color: var(--dark-hover-clr);
 }
 
-#fr-accept-btn,
-#fr-deny-btn,
+.fr-accept-btn,
+.fr-deny-btn,
 .fr-delete-btn {
 	padding: 0rem 0.5rem;
 	margin-left: 0.5rem;
@@ -122,8 +122,8 @@ input#target:focus {
 	cursor: pointer;
 }
 
-#fr-accept-btn:hover,
-#fr-deny-btn:hover,
+.fr-accept-btn:hover,
+.fr-deny-btn:hover,
 .fr-delete-btn:hover {
 	background-color: var(--dark-hover-clr);
 }
