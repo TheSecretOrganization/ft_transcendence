@@ -6,6 +6,8 @@ class UserManager(BaseUserManager):
 	def create_user(self, username, password=None):
 		if not username:
 			raise TypeError(_('No username provided'))
+		if username == "server":
+			raise TypeError(_('Username reserved'))
 		user = self.model(username=username)
 		user.set_password(password)
 		user.clean_fields()
