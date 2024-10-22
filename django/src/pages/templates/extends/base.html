@@ -4,10 +4,12 @@
 		<a class="navbar-brand nav navbar-nav navbar-left text-decoration-none" data-route href="/">Johnny
 			Depp</a>
 		{% if user.is_authenticated %}
-		<button id="notif-button">
+		<button id="notif-button" onClick="toggleNotificationArea()">
 			<i id="icon-notif" class="fa-solid fa-bell"></i>
 		</button>
-		<div id="notification-area" class="notif-hidden"></div>
+		<div id="notification-area" hidden>
+			<p id="no-notifications">{% trans "You don't have any notifications at the moment." %}</p>
+		</div>
 		<div class="container-dropdown">
 			<div class="dropdown">
 				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -273,7 +275,8 @@
 		document.getElementById('chat-title').textContent = "{% trans 'Room: ' %} " + "{% trans 'General' %}";
 		currentChatRoom = 'General';
 		const notificationArea = document.getElementById('notification-area');
-		notificationArea.innerHTML = '';
+		notificationArea.innerHTML = `
+		<p id="no-notifications">{% trans "You don't have any notifications at the moment." %}</p>`;
 	}
 
 	window.joinPrivateChat = function (otherUsername) {
@@ -292,7 +295,8 @@
 		document.getElementById('chat-title').textContent = `Private Chat with ${otherUsername}`;
 		currentChatRoom = roomName;
 		const notificationArea = document.getElementById('notification-area');
-		notificationArea.innerHTML = '';
+		notificationArea.innerHTML = `
+		<p id="no-notifications">{% trans "You don't have any notifications at the moment." %}</p>`;
 	}
 
 	function handleOnMessage(data) {
@@ -379,27 +383,54 @@
 		chatLog.scrollTop = chatLog.scrollHeight;
 	}
 
+	document.getElementById('notif-button').onclick = function () {
+		toggleNotificationArea();
+	};
+
+	function toggleNotificationArea() {
+		const notificationArea = document.getElementById('notification-area');
+
+		if (notificationArea.hidden) {
+			notificationArea.hidden = false;
+		} else {
+			notificationArea.hidden = true;
+		}
+		const notifIcon = document.getElementById('icon-notif');
+		if (notifIcon.classList.contains('fa-spin-pulse')) {
+			notifIcon.classList.remove('fa-spin-pulse');
+		}
+	}
+
 	function showPrivateChatNotification(fromUser) {
 		if (blockedUsers.includes(fromUser)) {
 			console.log(`Notification from ${fromUser} ignored because they are blocked.`);
 			return;
 		}
+
 		const notifIcon = document.getElementById('icon-notif');
 		notifIcon.classList.remove('fa-solid', 'fa-bell');
 		notifIcon.classList.add('fa-solid', 'fa-bell', 'fa-spin-pulse');
+
 		const notificationArea = document.getElementById('notification-area');
-		document.getElementById('notif-button').addEventListener('click', function () {
-			notifIcon.classList.remove('fa-solid', 'fa-bell', 'fa-spin-pulse');
-			notifIcon.classList.add('fa-solid', 'fa-bell');
-			notificationArea.classList.toggle('notif-hidden');
-		});
+		const noNotificationsMessage = document.getElementById('no-notifications');
+
+		if (noNotificationsMessage) {
+			noNotificationsMessage.style.display = 'none';
+		}
+
 		const notificationDiv = document.createElement('div');
 		notificationDiv.classList.add('notification');
 		notificationDiv.innerHTML = `
-			<p>{% blocktrans %} Private message from ${fromUser} {% endblocktrans %}</p>
-			<button class="display-notif" onclick="joinPrivateChat('${fromUser}')">{% trans "Show" %}</button>
-		`;
+		<p>Private message from ${fromUser}</p>
+		<button class="display-notif" onclick="joinPrivateChat('${fromUser}')">Show</button>
+	`;
+
 		notificationArea.appendChild(notificationDiv);
+
+		document.getElementById('notif-button').addEventListener('click', function () {
+			notifIcon.classList.remove('fa-solid', 'fa-bell', 'fa-spin-pulse');
+			notifIcon.classList.add('fa-solid', 'fa-bell');
+		});
 	}
 
 	function handleDefault(data) {

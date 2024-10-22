@@ -67,10 +67,6 @@
 	color: var(--hover-clr);
 }
 
-.notif-hidden {
-	display: none;
-}
-
 .notification {
 	background-color: var(--light-base-clr);
 	border: 1px solid var(--line-clr);
