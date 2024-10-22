@@ -209,20 +209,29 @@ class Tournament(AsyncWebsocketConsumer):
         player_pairs = await self.redis.get(f"pong_{self.name}_player_pairs")
         play = await self.redis.get(f"pong_{self.name}_play")
         players = await self.get_decoded_list(f"pong_{self.name}_players")
+        block_send = False
 
         if player_pairs:
+            json_list = json.loads(player_pairs)
             await self.send_message(
                 self.CLIENT,
                 {
                     "type": "player_pairs",
-                    "player_pairs": json.loads(player_pairs),
+                    "player_pairs": json_list,
                 },
             )
+
+            for sublist in json_list:
+                if self.user.username in sublist:
+                    if sublist[1] == "-":
+                        block_send = True
+                    break
 
         if (
             self.user.username in players
             and play != None
             and int(play.decode("utf-8")) == 1
+            and block_send == False
         ):
             await self.send_message(self.CLIENT, {"type": "unlock_play"})
 
@@ -239,14 +248,20 @@ class Tournament(AsyncWebsocketConsumer):
             message = f"[{self.name}] - {player1} x {player2}"
 
             if player2 != "-":
-                await self.redis.rpush(f"pong_{uuid_list[i]}_white_list", player1)
-                await self.redis.rpush(f"pong_{uuid_list[i]}_white_list", player2)
+                await self.redis.rpush(
+                    f"pong_{uuid_list[i]}_white_list", player1
+                )
+                await self.redis.rpush(
+                    f"pong_{uuid_list[i]}_white_list", player2
+                )
                 message = f"{message}\n{uuid_list[i]}"
 
             formatted_message = json.dumps(
                 {"message": message, "username": "server"}
             )
-            await self.redis.rpush(f"chat_{group_name}_messages", formatted_message)
+            await self.redis.rpush(
+                f"chat_{group_name}_messages", formatted_message
+            )
 
         await self.channel_layer.group_add(group_name, self.channel_name)
         await self.channel_layer.group_send(
@@ -281,9 +296,9 @@ class Tournament(AsyncWebsocketConsumer):
                 continue
 
             message = (
-                {"type": "bye"}
-                if player2 == "-"
-                else {"type": "next_round_id", "id": uuid_list[i]}
+                {"type": "next_round_id", "id": uuid_list[i]}
+                if player2 != "-" and i < len(uuid_list)
+                else {"type": "bye"}
             )
             await self.send_message(self.CLIENT, message)
             break
