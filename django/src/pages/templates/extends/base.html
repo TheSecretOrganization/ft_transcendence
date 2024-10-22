@@ -230,6 +230,7 @@
 <script>
 	let currentChatRoom = 'General';
 	let blockedUsers = [];
+	window.chatSocket = undefined;
 
 	if (!window.chatSocket) {
 		window.chatSocket = wsConnect(wsCreateUrl(`chat/General/`), handleOnMessage, handleOnError);
@@ -431,6 +432,16 @@
 		}
 	}
 
+	function onPageChange(e) {
+		if (window.chatSocket) {
+			window.chatSocket.close();
+			window.chatSocket = undefined;
+		}
+		e.srcElement.removeEventListener('pagechange', onPageChange);
+	}
+
+	document.getElementById('content').addEventListener('pagechange', onPageChange);
+
 	document.getElementById("chat-form").addEventListener("submit", e => {
 		e.preventDefault();
 		const messageInput = document.getElementById('chat-input');
@@ -457,6 +468,6 @@
 		this.classList.toggle("toggled");
 	});
 
-	loadChatHistory('General');
+	loadChatHistory(currentChatRoom);
 </script>
 {% endif %}
