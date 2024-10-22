@@ -43,8 +43,6 @@ def register(request: HttpRequest):
 	if not data or not all(k in data for k in ['register-username', 'register-password']):
 		return JsonResponse({'error': _('Missing fields')}, status=400)
 	try:
-		if data['register-username'].lower() == "server":
-			raise IntegrityError()
 		validate_password(data['register-password'])
 		get_user_model().objects.create_user(data['register-username'], data['register-password'])
 		logger.info(f"user '{data['register-username']}' created.")
