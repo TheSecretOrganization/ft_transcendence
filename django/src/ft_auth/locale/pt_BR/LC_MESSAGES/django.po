@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-21 16:58+0200\n"
+"POT-Creation-Date: 2024-10-22 08:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,7 +80,7 @@ msgid "registering"
 msgstr "registrar"
 
 #: ft_auth/templates/authentification.html:130
-#: ft_auth/templates/settings.html:97
+#: ft_auth/templates/settings.html:98
 msgid "Passwords do not match"
 msgstr "A senha não corresponde"
 
@@ -144,19 +144,23 @@ msgstr "Escolher arquivo"
 msgid "No file chosen"
 msgstr "Nenhum arquivo escolhido"
 
-#: ft_auth/templates/settings.html:62
+#: ft_auth/templates/settings.html:63
 msgid "Upload"
 msgstr "Carregar"
 
-#: ft_auth/templates/settings.html:125
+#: ft_auth/templates/settings.html:105
+msgid "Password changed successfully."
+msgstr "Senha alterada com sucesso."
+
+#: ft_auth/templates/settings.html:126
 msgid "File is too large. Maximum size is 2MB."
 msgstr "O arquivo é muito grande. O tamanho máximo é de 2 MB."
 
-#: ft_auth/templates/settings.html:148
+#: ft_auth/templates/settings.html:149
 msgid "Avatar updated successfully."
 msgstr "Avatar atualizado com sucesso."
 
-#: ft_auth/templates/settings.html:150
+#: ft_auth/templates/settings.html:151
 msgid "Error uploading avatar"
 msgstr "Erro ao carregar o avatar"
 
@@ -172,31 +176,31 @@ msgstr "Identificadores incorretos"
 msgid "You are not logged in"
 msgstr "Você não está conectado"
 
-#: ft_auth/views.py:44 ft_auth/views.py:60
+#: ft_auth/views.py:44 ft_auth/views.py:62
 msgid "Missing fields"
 msgstr "Campos ausentes"
 
-#: ft_auth/views.py:50
+#: ft_auth/views.py:52
 msgid "Username already exist"
 msgstr "O nome de usuário já existe"
 
-#: ft_auth/views.py:62
+#: ft_auth/views.py:64
 msgid "You must be authenticated to update password"
 msgstr "Você deve estar autenticado para atualizar a senha"
 
-#: ft_auth/views.py:65
+#: ft_auth/views.py:67
 msgid "Invalid current password"
 msgstr "Senha atual inválida"
 
-#: ft_auth/views.py:82
+#: ft_auth/views.py:84
 msgid "File size exceeds 2MB limit."
 msgstr "O tamanho do arquivo excede o limite de 2 MB."
 
-#: ft_auth/views.py:87
+#: ft_auth/views.py:89
 msgid "Invalid request"
 msgstr "Solicitação inválida"
 
-#: ft_auth/views.py:113
+#: ft_auth/views.py:115
 msgid "Username already taken"
 msgstr "Nome de usuário já utilizado"
 

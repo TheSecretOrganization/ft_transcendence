@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-21 16:58+0200\n"
+"POT-Creation-Date: 2024-10-22 08:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -79,11 +79,11 @@ msgstr "PROFIL"
 msgid "FRIENDS"
 msgstr "PRIJATELJI"
 
-#: pages/templates/extends/base.html:153 pages/templates/extends/base.html:272
+#: pages/templates/extends/base.html:153 pages/templates/extends/base.html:273
 msgid "Room: "
 msgstr "Soba: "
 
-#: pages/templates/extends/base.html:153 pages/templates/extends/base.html:272
+#: pages/templates/extends/base.html:153 pages/templates/extends/base.html:273
 msgid "General"
 msgstr "Opšta soba"
 
@@ -99,28 +99,28 @@ msgstr "Pošalji"
 msgid "Users Online"
 msgstr "Korisnici na mreži"
 
-#: pages/templates/extends/base.html:257
+#: pages/templates/extends/base.html:258
 msgid "Private Chat with"
 msgstr "Privatni chat s"
 
-#: pages/templates/extends/base.html:336 pages/templates/extends/base.html:339
+#: pages/templates/extends/base.html:337 pages/templates/extends/base.html:340
 msgid "Unblock"
 msgstr "Otključaj"
 
-#: pages/templates/extends/base.html:336 pages/templates/extends/base.html:339
+#: pages/templates/extends/base.html:337 pages/templates/extends/base.html:340
 msgid "Block"
 msgstr "Blokiraj"
 
-#: pages/templates/extends/base.html:353
+#: pages/templates/extends/base.html:354
 msgid "General Chat"
 msgstr "Opšta soba"
 
-#: pages/templates/extends/base.html:398
+#: pages/templates/extends/base.html:399
 #, python-brace-format
 msgid " Private message from ${fromUser} "
 msgstr " Privatna poruka od ${fromUser} "
 
-#: pages/templates/extends/base.html:399
+#: pages/templates/extends/base.html:400
 msgid "Show"
 msgstr "Prikaži"
 

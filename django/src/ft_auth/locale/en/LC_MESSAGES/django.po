@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-21 16:58+0200\n"
+"POT-Creation-Date: 2024-10-22 08:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,7 +80,7 @@ msgid "registering"
 msgstr ""
 
 #: ft_auth/templates/authentification.html:130
-#: ft_auth/templates/settings.html:97
+#: ft_auth/templates/settings.html:98
 msgid "Passwords do not match"
 msgstr ""
 
@@ -144,19 +144,23 @@ msgstr ""
 msgid "No file chosen"
 msgstr ""
 
-#: ft_auth/templates/settings.html:62
+#: ft_auth/templates/settings.html:63
 msgid "Upload"
 msgstr ""
 
-#: ft_auth/templates/settings.html:125
+#: ft_auth/templates/settings.html:105
+msgid "Password changed successfully."
+msgstr ""
+
+#: ft_auth/templates/settings.html:126
 msgid "File is too large. Maximum size is 2MB."
 msgstr ""
 
-#: ft_auth/templates/settings.html:148
+#: ft_auth/templates/settings.html:149
 msgid "Avatar updated successfully."
 msgstr ""
 
-#: ft_auth/templates/settings.html:150
+#: ft_auth/templates/settings.html:151
 msgid "Error uploading avatar"
 msgstr ""
 
@@ -172,30 +176,30 @@ msgstr ""
 msgid "You are not logged in"
 msgstr ""
 
-#: ft_auth/views.py:44 ft_auth/views.py:60
+#: ft_auth/views.py:44 ft_auth/views.py:62
 msgid "Missing fields"
 msgstr ""
 
-#: ft_auth/views.py:50
+#: ft_auth/views.py:52
 msgid "Username already exist"
 msgstr ""
 
-#: ft_auth/views.py:62
+#: ft_auth/views.py:64
 msgid "You must be authenticated to update password"
 msgstr ""
 
-#: ft_auth/views.py:65
+#: ft_auth/views.py:67
 msgid "Invalid current password"
 msgstr ""
 
-#: ft_auth/views.py:82
+#: ft_auth/views.py:84
 msgid "File size exceeds 2MB limit."
 msgstr ""
 
-#: ft_auth/views.py:87
+#: ft_auth/views.py:89
 msgid "Invalid request"
 msgstr ""
 
-#: ft_auth/views.py:113
+#: ft_auth/views.py:115
 msgid "Username already taken"
 msgstr ""
