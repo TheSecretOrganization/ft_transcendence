@@ -397,7 +397,7 @@
 		notificationDiv.classList.add('notification');
 		notificationDiv.innerHTML = `
 			<p>{% blocktrans %} Private message from ${fromUser} {% endblocktrans %}</p>
-			<button onclick="joinPrivateChat('${fromUser}')">{% trans "Show" %}</button>
+			<button class="display-notif" onclick="joinPrivateChat('${fromUser}')">{% trans "Show" %}</button>
 		`;
 		notificationArea.appendChild(notificationDiv);
 	}

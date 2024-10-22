@@ -71,12 +71,36 @@
 	display: none;
 }
 
-#notification-area {
+.notification {
+	background-color: var(--light-base-clr);
 	border: 1px solid var(--line-clr);
-	padding: 10px;
+	border-radius: 5px;
+	margin-bottom: 3px;
+	padding: 0.5rem;
+}
+
+.display-notif {
+	background-color: var(--hover-clr);
+	color: var(--text-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.display-notif:hover {
+	background-color: var(--dark-hover-clr);
+}
+
+#notification-area {
 	background-color: var(--base-clr);
+	box-shadow: 0 4px 5px var(--accent-clr);
+	border: 1px solid var(--line-clr);
+	border-radius: 5px;
+	padding: 10px;
 	width: 200px;
+	max-height: 200px;
 	position: absolute;
 	top: 50px;
 	right: 20px;
+	overflow: auto;
 }
