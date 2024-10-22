@@ -323,7 +323,7 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: './es_data/'
+      device: '${HOME}/es_data'
   kibanadata:
     driver: local
   logstashdata01:
